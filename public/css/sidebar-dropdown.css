@@ -1,0 +1,61 @@
+/* Stile per il dropdown nella sidebar */
+.sidebar .nav-item.dropdown {
+  position: relative;
+}
+
+.sidebar .dropdown-menu {
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  min-width: 10rem;
+  margin-top: 0;
+  margin-left: 0.125rem;
+  z-index: 1000;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+}
+
+/* Mostra il dropdown al passaggio del mouse */
+.sidebar .nav-item.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+/* Stile per gli elementi del dropdown */
+.sidebar .dropdown-item {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: #3a3b45;
+  white-space: nowrap;
+}
+
+.sidebar .dropdown-item:hover, 
+.sidebar .dropdown-item:focus {
+  color: #2e2f37;
+  text-decoration: none;
+  background-color: #f8f9fc;
+}
+
+/* Stile alternativo: menu a tendina che si apre verso il basso */
+@media (max-width: 768px) {
+  .sidebar .dropdown-menu {
+    position: static;
+    float: none;
+    width: auto;
+    margin-top: 0;
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+    left: 0;
+  }
+  
+  .sidebar .dropdown-item {
+    padding-left: 2.5rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .sidebar .dropdown-item:hover, 
+  .sidebar .dropdown-item:focus {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
