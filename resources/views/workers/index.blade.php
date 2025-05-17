@@ -42,6 +42,9 @@
               <td>{{ $worker->license_worker }}</td>
               <td>{{ $worker->worker_email }}</td>
               <td>
+                <a href="{{ route('workers.show', $worker->id) }}" class="btn btn-info btn-sm">
+                  <i class="bi bi-eye"></i>
+                </a>
                 <a href="{{ route('workers.edit', $worker->id) }}" class="btn btn-warning btn-sm">
                   <i class="bi bi-pencil"></i>
                 </a>

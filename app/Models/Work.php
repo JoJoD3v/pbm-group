@@ -40,4 +40,10 @@ class Work extends Model
         return $this->belongsToMany(Worker::class, 'work_worker')
                     ->withTimestamps();
     }
+    
+    // Relazione con le ricevute
+    public function ricevute()
+    {
+        return $this->hasMany(Ricevuta::class);
+    }
 }

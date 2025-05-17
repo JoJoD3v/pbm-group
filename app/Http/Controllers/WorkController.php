@@ -88,6 +88,8 @@ class WorkController extends Controller
 
     public function show(Work $work)
     {
+        // Carica le ricevute associate al lavoro
+        $work->load('ricevute');
         return view('works.show', compact('work'));
     }
     

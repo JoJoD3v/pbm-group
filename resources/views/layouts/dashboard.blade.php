@@ -33,8 +33,12 @@
 
   <!-- Wrapper -->
   <div id="wrapper">
-    <!-- Sidebar -->
-    @include('partials.sidebar')
+    <!-- Sidebar - Carica la sidebar diversa in base al ruolo -->
+    @if(Auth::user()->role === 'dipendente')
+      @include('partials.worker_sidebar')
+    @else
+      @include('partials.sidebar')
+    @endif
     <!-- End Sidebar -->
 
     <!-- Content Wrapper -->

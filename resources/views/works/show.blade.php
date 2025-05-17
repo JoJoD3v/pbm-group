@@ -1,5 +1,9 @@
 @extends('layouts.dashboard')
 
+@php
+use Illuminate\Support\Str;
+@endphp
+
 @section('content')
 <div class="container-fluid mt-4">
   <div class="card shadow mb-4">
@@ -148,7 +152,104 @@
           </div>
         </div>
       </div>
+
+      <!-- Sezione Ricevute -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card shadow">
+            <div class="card-header py-3">
+              <h6 class="m-0 font-weight-bold text-primary">Ricevute</h6>
+            </div>
+            <div class="card-body">
+              @if($work->ricevute && $work->ricevute->count() > 0)
+                <div class="table-responsive">
+                  <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Numero Ricevuta</th>
+                        <th>Nome Ricevente</th>
+                        <th>Fattura</th>
+                        <th>Pagamento</th>
+                        <th>Somma Pagata</th>
+                        <th>Data Creazione</th>
+                        <th>Firma</th>
+                        <th>Bolla</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach($work->ricevute as $ricevuta)
+                        <tr>
+                          <td>{{ $ricevuta->numero_ricevuta }}</td>
+                          <td>{{ $ricevuta->nome_ricevente }}</td>
+                          <td>
+                            @if($ricevuta->fattura)
+                              <span class="badge badge-success">Sì</span>
+                            @else
+                              <span class="badge badge-secondary">No</span>
+                            @endif
+                          </td>
+                          <td>
+                            @if($ricevuta->pagamento_effettuato)
+                              <span class="badge badge-success">Effettuato</span>
+                            @else
+                              <span class="badge badge-warning">Non effettuato</span>
+                            @endif
+                          </td>
+                          <td>
+                            @if($ricevuta->somma_pagamento)
+                              {{ number_format($ricevuta->somma_pagamento, 2, ',', '.') }} €
+                            @else
+                              -
+                            @endif
+                          </td>
+                          <td>{{ \Carbon\Carbon::parse($ricevuta->created_at)->format('d/m/Y H:i') }}</td>
+                          <td>
+                            @if(Str::startsWith($ricevuta->firma_base64, 'data:image'))
+                              <!-- Immagine piccola visualizzabile direttamente -->
+                              <div style="max-width: 150px; margin: 0 auto;">
+                                <img src="{{ $ricevuta->firma_base64 }}" alt="Firma" class="img-fluid img-thumbnail">
+                              </div>
+
+                            @else
+                              {{ Str::limit($ricevuta->firma_base64, 30) }}
+                            @endif
+                          </td>
+                          <td>
+                            @if($ricevuta->foto_bolla)
+                              <a href="{{ asset('storage/' . $ricevuta->foto_bolla) }}" target="_blank" class="btn btn-sm btn-info">
+                                Visualizza Bolla
+                              </a>
+                            @else
+                              <span class="text-muted">Nessuna bolla</span>
+                            @endif
+                          </td>
+                        </tr>
+                      @endforeach
+                    </tbody>
+                  </table>
+                </div>
+              @else
+                <div class="alert alert-info">
+                  Nessuna ricevuta disponibile per questo lavoro.
+                </div>
+              @endif
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+  // Script per visualizzare la firma nel modal
+  $(document).ready(function() {
+    $('.view-signature').on('click', function() {
+      var signatureData = $(this).data('signature');
+      $('#signatureImage').attr('src', signatureData);
+    });
+  });
+</script>
 @endsection

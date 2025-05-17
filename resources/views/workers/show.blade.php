@@ -34,6 +34,10 @@
             <td>{{ $worker->worker_email }}</td>
           </tr>
           <tr>
+            <th>Fondo Cassa</th>
+            <td>€ {{ number_format($worker->fondo_cassa, 2, ',', '.') }}</td>
+          </tr>
+          <tr>
             <th>Data Creazione</th>
             <td>{{ $worker->created_at->format('d/m/Y H:i') }}</td>
           </tr>
@@ -42,6 +46,78 @@
             <td>{{ $worker->updated_at->format('d/m/Y H:i') }}</td>
           </tr>
         </table>
+      </div>
+      
+      <!-- Sezione Carte Prepagate Assegnate -->
+      <div class="mt-4">
+        <h5 class="font-weight-bold text-primary">Carte Prepagate Assegnate</h5>
+        @if($worker->assignedCreditCards && $worker->assignedCreditCards->count() > 0)
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>ID Carta</th>
+                  <th>Numero Carta</th>
+                  <th>Scadenza</th>
+                  <th>Saldo Disponibile</th>
+                  <th>Data Assegnazione</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($worker->assignedCreditCards as $carta)
+                <tr>
+                  <td>{{ $carta->id }}</td>
+                  <td>{{ substr($carta->numero_carta, 0, 4) . ' **** **** ' . substr($carta->numero_carta, -4) }}</td>
+                  <td>{{ $carta->scadenza_carta }}</td>
+                  <td class="font-weight-bold">€ {{ number_format($carta->fondo_carta, 2, ',', '.') }}</td>
+                  <td>{{ $carta->pivot ? $carta->pivot->created_at->format('d/m/Y') : 'N/D' }}</td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        @else
+          <div class="alert alert-info">
+            Nessuna carta prepagata assegnata a questo lavoratore.
+          </div>
+        @endif
+      </div>
+      
+      <!-- Sezione Autoveicoli Assegnati -->
+      <div class="mt-4">
+        <h5 class="font-weight-bold text-primary">Autoveicoli Assegnati</h5>
+        @if($worker->vehicles && $worker->vehicles->count() > 0)
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>ID Veicolo</th>
+                  <th>Targa</th>
+                  <th>Marca</th>
+                  <th>Modello</th>
+                  <th>Data Assegnazione</th>
+                  <th>Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($worker->vehicles as $veicolo)
+                <tr>
+                  <td>{{ $veicolo->id }}</td>
+                  <td>{{ $veicolo->plate_number }}</td>
+                  <td>{{ $veicolo->brand }}</td>
+                  <td>{{ $veicolo->model }}</td>
+                  <td>{{ $veicolo->pivot ? $veicolo->pivot->data_assegnazione : 'N/D' }}</td>
+                  <td>{{ $veicolo->pivot ? $veicolo->pivot->note : '' }}</td>
+                </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        @else
+          <div class="alert alert-info">
+            Nessun autoveicolo assegnato a questo lavoratore.
+          </div>
+        @endif
       </div>
       
       <div class="mt-3">

@@ -20,6 +20,16 @@ class Worker extends Model
         'cognome_worker',
         'license_worker',
         'worker_email',
+        'fondo_cassa',
+    ];
+    
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'fondo_cassa' => 'decimal:2',
     ];
     
     /**
@@ -41,11 +51,22 @@ class Worker extends Model
                     ->withTimestamps();
     }
     
-    /**
+         /**
      * Ottieni il nome completo del worker
      */
     public function getFullNameAttribute()
     {
         return $this->name_worker . ' ' . $this->cognome_worker;
+    }
+    
+    /**
+     * Relazione many-to-many con le CreditCards
+     */
+    public function assignedCreditCards()
+    {
+        return $this->belongsToMany(CreditCard::class, 'credit_card_worker', 'worker_id', 'credit_card_id')
+                    ->whereNull('credit_card_worker.data_restituzione')
+                    ->select('credit_cards.*')
+                    ->withTimestamps();
     }
 }

@@ -103,5 +103,18 @@
       </div>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCashflow" aria-expanded="false" aria-controls="collapseCashflow">
+        <i class="bi bi-cash-coin"></i>
+        <span>Fondo Cassa</span>
+      </a>
+      <div id="collapseCashflow" class="collapse" aria-labelledby="headingCashflow" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+          <a class="collapse-item" href="{{ route('reports.cashflow.index') }}">Report Movimenti</a>
+          <a class="collapse-item" href="{{ route('worker.cash.recharge') }}">Ricarica Fondo Cassa</a>
+        </div>
+      </div>
+    </li>
+
     <!-- Aggiungi qui altre voci di menu -->
   </ul>

@@ -49,4 +49,13 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+    /**
+     * Ottiene il worker associato a questo utente
+     * La relazione è basata sul campo email dell'utente e worker_email del worker
+     */
+    public function worker()
+    {
+        return $this->hasOne(Worker::class, 'worker_email', 'email');
+    }
 }
