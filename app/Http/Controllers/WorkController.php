@@ -11,9 +11,26 @@ use App\Models\Deposit;
 
 class WorkController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $works = Work::with('customer')->get();
+        $query = Work::with('customer');
+        
+        // Filtro per data inizio
+        if ($request->filled('data_inizio')) {
+            $query->whereDate('created_at', '>=', $request->data_inizio);
+        }
+        
+        // Filtro per data fine
+        if ($request->filled('data_fine')) {
+            $query->whereDate('created_at', '<=', $request->data_fine);
+        }
+        
+        // Filtro per tipo di lavoro
+        if ($request->filled('tipo_lavoro')) {
+            $query->where('tipo_lavoro', $request->tipo_lavoro);
+        }
+        
+        $works = $query->get();
         return view('works.index', compact('works'));
     }
 

@@ -13,10 +13,39 @@
          </div>
       @endif
 
-      <div class="mb-3">
-         <a href="{{ route('works.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus"></i> Aggiungi Lavoro
-         </a>
+      <!-- Filtri di ricerca -->
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h6 class="m-0 font-weight-bold text-primary">Filtri</h6>
+            </div>
+            <div class="card-body">
+              <form action="{{ route('works.index') }}" method="GET" class="row">
+                <div class="col-md-4 mb-3">
+                  <label for="data_inizio">Data inizio</label>
+                  <input type="date" class="form-control" id="data_inizio" name="data_inizio" value="{{ request('data_inizio') }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="data_fine">Data fine</label>
+                  <input type="date" class="form-control" id="data_fine" name="data_fine" value="{{ request('data_fine') }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="tipo_lavoro">Tipo Lavoro</label>
+                  <select class="form-control" id="tipo_lavoro" name="tipo_lavoro">
+                    <option value="">Tutti</option>
+                    <option value="smaltimento" {{ request('tipo_lavoro') == 'smaltimento' ? 'selected' : '' }}>Smaltimento</option>
+                    <option value="trasporto" {{ request('tipo_lavoro') == 'trasporto' ? 'selected' : '' }}>Trasporto</option>
+                  </select>
+                </div>
+                <div class="col-md-12">
+                  <button type="submit" class="btn btn-primary">Filtra</button>
+                  <a href="{{ route('works.index') }}" class="btn btn-secondary">Reset</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="table-responsive">
