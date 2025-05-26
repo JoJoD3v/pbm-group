@@ -1,10 +1,8 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
   <!-- Logo e titolo -->
   <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
-    <div class="sidebar-brand-icon rotate-n-15">
-      <i class="fas fa-laugh-wink"></i>
-    </div>
-    <div class="sidebar-brand-text mx-3">Gestionale</div>
+    <img src="{{ asset('img/logo/logo.jpg') }}" alt="PBM Group Logo" class="sidebar-brand-logo">
+    <div class="sidebar-brand-text mx-2">PBM Group</div>
   </a>
 
   <!-- Divider -->
@@ -49,4 +47,4 @@
   <div class="text-center d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>
   </div>
-</ul> 
+</ul>
