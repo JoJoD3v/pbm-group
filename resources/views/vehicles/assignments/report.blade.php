@@ -21,17 +21,20 @@
 
             <!-- Filtri -->
             <form method="GET" class="mb-4">
-                <div class="row">
-                    <div class="col-md-4">
+                <div class="row">                    <div class="col-md-4">
                         <div class="form-group">
                             <label for="data_inizio">Data Inizio</label>
-                            <input type="date" class="form-control" id="data_inizio" name="data_inizio" value="{{ request('data_inizio') }}">
+                            <div class="italian-date-input">
+                                <input type="date" class="form-control" id="data_inizio" name="data_inizio" value="{{ request('data_inizio') }}">
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="data_fine">Data Fine</label>
-                            <input type="date" class="form-control" id="data_fine" name="data_fine" value="{{ request('data_fine') }}">
+                            <div class="italian-date-input">
+                                <input type="date" class="form-control" id="data_fine" name="data_fine" value="{{ request('data_fine') }}">
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -44,18 +47,15 @@
                         </div>
                     </div>
                 </div>
-            </form>
-
-            <!-- Tabella -->
+            </form>            <!-- Tabella -->
             <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0">
                     <thead>
-                        <tr>
-                            <th>Automezzo</th>
+                        <tr>                            <th>Automezzo</th>
                             <th>Targa</th>
                             <th>Lavoratore</th>
-                            <th>Data Assegnazione</th>
-                            <th>Data Restituzione</th>
+                            <th class="datetime-column">Data Assegnazione</th>
+                            <th class="datetime-column">Data Restituzione</th>
                             <th>Note</th>
                             <th>Azioni</th>
                         </tr>
@@ -65,11 +65,10 @@
                             <tr>
                                 <td>{{ $assignment->vehicle_nome }}</td>
                                 <td>{{ $assignment->targa }}</td>
-                                <td>{{ $assignment->name_worker }} {{ $assignment->cognome_worker }}</td>
-                                <td>{{ \Carbon\Carbon::parse($assignment->data_assegnazione)->format('d/m/Y H:i') }}</td>
-                                <td>
+                                <td>{{ $assignment->name_worker }} {{ $assignment->cognome_worker }}</td>                                <td class="datetime-column">@formatDateTime($assignment->data_assegnazione)</td>
+                                <td class="datetime-column">
                                     @if($assignment->data_restituzione)
-                                        {{ \Carbon\Carbon::parse($assignment->data_restituzione)->format('d/m/Y H:i') }}
+                                        @formatDateTime($assignment->data_restituzione)
                                     @else
                                         <span class="badge bg-success">Attualmente Assegnato</span>
                                     @endif
@@ -95,11 +94,15 @@
 
 <script>
     $(document).ready(function() {
+        // La configurazione globale si applica automaticamente
         $('#dataTable').DataTable({
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Italian.json'
-            },
-            order: [[3, 'desc']] // Ordina per data di assegnazione decrescente
+            order: [[3, 'desc']], // Ordina per data di assegnazione decrescente
+            columnDefs: [
+                {
+                    targets: [3, 4], // Colonne datetime (0-based index)
+                    type: 'date-eu-time' // Usa il tipo date-eu-time per ordinamento corretto con ora e minuti
+                }
+            ]
         });
     });
 </script>

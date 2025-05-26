@@ -30,12 +30,12 @@
         <div class="mb-3">
           <label for="targa" class="form-label">Numero di Targa</label>
           <input type="text" name="targa" id="targa" class="form-control" value="{{ old('targa') }}" required>
-        </div>
-
-        <!-- Scadenza Assicurazione -->
+        </div>        <!-- Scadenza Assicurazione -->
         <div class="mb-3">
           <label for="scadenza_assicurazione" class="form-label">Scadenza Assicurazione</label>
-          <input type="date" name="scadenza_assicurazione" id="scadenza_assicurazione" class="form-control" value="{{ old('scadenza_assicurazione') }}">
+          <div class="italian-date-input">
+            <input type="date" name="scadenza_assicurazione" id="scadenza_assicurazione" class="form-control" value="{{ old('scadenza_assicurazione') }}">
+          </div>
           <small class="text-muted">Opzionale</small>
         </div>
 

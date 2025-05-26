@@ -17,11 +17,11 @@
                             @error('numero_carta')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                        </div>
-
-                        <div class="form-group">
+                        </div>                        <div class="form-group">
                             <label for="scadenza_carta">Data di Scadenza</label>
-                            <input type="date" class="form-control @error('scadenza_carta') is-invalid @enderror" id="scadenza_carta" name="scadenza_carta" value="{{ old('scadenza_carta') }}" required>
+                            <div class="italian-date-input">
+                                <input type="date" class="form-control @error('scadenza_carta') is-invalid @enderror" id="scadenza_carta" name="scadenza_carta" value="{{ old('scadenza_carta') }}" required>
+                            </div>
                             @error('scadenza_carta')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

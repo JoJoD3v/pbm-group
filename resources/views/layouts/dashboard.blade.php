@@ -24,9 +24,11 @@
 
   <!-- DataTables CSS -->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
-
   <!-- Il file di stile personalizzato -->
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+  
+  <!-- Stile per il formato date italiano -->
+  <link rel="stylesheet" href="{{ asset('css/date-format.css') }}">
 
   <!-- CSS per il dropdown della sidebar (non più utilizzato) -->
   <!-- <link rel="stylesheet" href="{{ asset('css/sidebar-dropdown.css') }}"> -->
@@ -75,10 +77,19 @@
 
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>    <!-- Moment.js per gestione date -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/locale/it.min.js"></script>    
+    
     <!-- File JS con le opzioni di DataTables -->
-    <script src="{{ asset('js/datatables-config.js') }}"></script>
+    <script src="{{ asset('js/datatables-config.js') }}"></script>    
+    
+    <!-- File JS per la gestione e validazione del formato date italiano -->
+    <script src="{{ asset('js/italian-date-validation.js') }}"></script>
+    <script src="{{ asset('js/date-format-handler.js') }}"></script>
+    
+    <!-- File JS per il selettore di date con calendario -->
+    <script src="{{ asset('js/date-picker-manager.js') }}"></script>
 
     <!-- Script per gestire il collapse della sidebar -->
     <script>

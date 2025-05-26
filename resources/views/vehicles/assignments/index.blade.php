@@ -20,16 +20,13 @@
         <div class="alert alert-danger">
           {{ session('error') }}
         </div>
-      @endif
-
-      <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      @endif      <div class="table-responsive">
+        <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0">
           <thead>
-            <tr>
-              <th>Automezzo</th>
+            <tr>              <th>Automezzo</th>
               <th>Targa</th>
               <th>Lavoratore</th>
-              <th>Data Assegnazione</th>
+              <th class="datetime-column">Data Assegnazione</th>
               <th>Note</th>
               <th>Azioni</th>
             </tr>
@@ -39,10 +36,9 @@
               <tr>
                 <td>{{ $assignment->vehicle_nome }}</td>
                 <td>{{ $assignment->targa }}</td>
-                <td>{{ $assignment->name_worker }} {{ $assignment->cognome_worker }}</td>
-                <td>
+                <td>{{ $assignment->name_worker }} {{ $assignment->cognome_worker }}</td>                <td class="datetime-column">
                   @if($assignment->data_assegnazione)
-                    {{ \Carbon\Carbon::parse($assignment->data_assegnazione)->format('d/m/Y H:i') }}
+                    @formatDateTime($assignment->data_assegnazione)
                   @else
                     N/D
                   @endif
@@ -73,10 +69,16 @@
 
 <script>
   $(document).ready(function() {
+    // La configurazione globale si applica automaticamente
+    // Ma specifichiamo l'ordinamento per data decrescente
     $('#dataTable').DataTable({
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Italian.json'
-      }
+      "order": [[3, 'desc']], // Ordina per data di assegnazione (colonna 3) in ordine decrescente
+      "columnDefs": [
+        {
+          "targets": 3, // Colonna della data (0-based index)
+          "type": "date-eu-time" // Usa il tipo date-eu-time per ordinamento corretto
+        }
+      ]
     });
   });
 </script>

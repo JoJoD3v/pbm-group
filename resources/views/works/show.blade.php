@@ -43,11 +43,10 @@ use Illuminate\Support\Str;
               </div>
 
               <div class="row mb-3">
-                <div class="col-md-6">
-                  <strong>Data Esecuzione:</strong>
+                <div class="col-md-6">                  <strong>Data Esecuzione:</strong>
                   <p>
                     @if($work->data_esecuzione)
-                      {{ \Carbon\Carbon::parse($work->data_esecuzione)->format('d/m/Y') }}
+                      @formatDate($work->data_esecuzione)
                     @else
                       N/D
                     @endif
@@ -111,13 +110,12 @@ use Illuminate\Support\Str;
               </div>
 
               <div class="row mb-3">
-                <div class="col-md-6">
-                  <strong>Data Creazione:</strong>
-                  <p>{{ \Carbon\Carbon::parse($work->created_at)->format('d/m/Y H:i') }}</p>
+                <div class="col-md-6">                  <strong>Data Creazione:</strong>
+                  <p>@formatDateTime($work->created_at)</p>
                 </div>
                 <div class="col-md-6">
                   <strong>Data Aggiornamento:</strong>
-                  <p>{{ \Carbon\Carbon::parse($work->updated_at)->format('d/m/Y H:i') }}</p>
+                  <p>@formatDateTime($work->updated_at)</p>
                 </div>
               </div>
 
@@ -163,7 +161,7 @@ use Illuminate\Support\Str;
             <div class="card-body">
               @if($work->ricevute && $work->ricevute->count() > 0)
                 <div class="table-responsive">
-                  <table class="table table-bordered table-hover">
+                  <table class="table table-bordered table-hover dataTable">
                     <thead class="thead-light">
                       <tr>
                         <th>Numero Ricevuta</th>
@@ -171,7 +169,7 @@ use Illuminate\Support\Str;
                         <th>Fattura</th>
                         <th>Pagamento</th>
                         <th>Somma Pagata</th>
-                        <th>Data Creazione</th>
+                        <th class="datetime-column">Data Creazione</th>
                         <th>Firma</th>
                         <th>Bolla</th>
                       </tr>
@@ -202,7 +200,7 @@ use Illuminate\Support\Str;
                               -
                             @endif
                           </td>
-                          <td>{{ \Carbon\Carbon::parse($ricevuta->created_at)->format('d/m/Y H:i') }}</td>
+                          <td class="datetime-column">@formatDateTime($ricevuta->created_at)</td>
                           <td>
                             @if(Str::startsWith($ricevuta->firma_base64, 'data:image'))
                               <!-- Immagine piccola visualizzabile direttamente -->
@@ -243,12 +241,22 @@ use Illuminate\Support\Str;
 @endsection
 
 @section('scripts')
-<script>
-  // Script per visualizzare la firma nel modal
+<script>  // Script per visualizzare la firma nel modal e inizializzare DataTable
   $(document).ready(function() {
     $('.view-signature').on('click', function() {
       var signatureData = $(this).data('signature');
       $('#signatureImage').attr('src', signatureData);
+    });
+    
+    // Inizializza DataTable con ordinamento per data
+    $('.dataTable').DataTable({
+      order: [[5, 'desc']], // Ordina per data creazione decrescente
+      columnDefs: [
+        {
+          targets: 5, // Colonna datetime (0-based index)
+          type: 'date-eu-time' // Usa il tipo date-eu-time per l'ordinamento con ora e minuti
+        }
+      ]
     });
   });
 </script>

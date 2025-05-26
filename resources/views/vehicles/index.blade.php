@@ -14,16 +14,14 @@
         <div class="alert alert-success">
           {{ session('success') }}
         </div>
-      @endif
-
-      <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      @endif      <div class="table-responsive">
+        <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>ID</th>
               <th>Nome</th>
               <th>Targa</th>
-              <th>Scadenza Assicurazione</th>
+              <th class="date-column">Scadenza Assicurazione</th>
               <th>Azioni</th>
             </tr>
           </thead>
@@ -33,9 +31,9 @@
                 <td>{{ $vehicle->id }}</td>
                 <td>{{ $vehicle->nome }}</td>
                 <td>{{ $vehicle->targa }}</td>
-                <td>
+                <td class="date-column">
                   @if($vehicle->scadenza_assicurazione)
-                    {{ \Carbon\Carbon::parse($vehicle->scadenza_assicurazione)->format('d/m/Y') }}
+                    @formatDate($vehicle->scadenza_assicurazione)
                   @else
                     N/D
                   @endif
@@ -66,12 +64,16 @@
   </div>
 </div>
 
-<script>
-  $(document).ready(function() {
+<script>  $(document).ready(function() {
+    // La configurazione globale si applica automaticamente
     $('#dataTable').DataTable({
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.10.24/i18n/Italian.json'
-      }
+      order: [[3, 'asc']], // Ordina per scadenza assicurazione crescente
+      columnDefs: [
+        {
+          targets: 3, // Colonna data (0-based index)
+          type: 'date-eu' // Usa il tipo date-eu per l'ordinamento
+        }
+      ]
     });
   });
 </script>

@@ -21,14 +21,17 @@
               <h6 class="m-0 font-weight-bold text-primary">Filtri</h6>
             </div>
             <div class="card-body">
-              <form action="{{ route('works.index') }}" method="GET" class="row">
-                <div class="col-md-4 mb-3">
+              <form action="{{ route('works.index') }}" method="GET" class="row">                <div class="col-md-4 mb-3">
                   <label for="data_inizio">Data inizio</label>
-                  <input type="date" class="form-control" id="data_inizio" name="data_inizio" value="{{ request('data_inizio') }}">
+                  <div class="italian-date-input">
+                    <input type="date" class="form-control" id="data_inizio" name="data_inizio" value="{{ request('data_inizio') }}">
+                  </div>
                 </div>
                 <div class="col-md-4 mb-3">
                   <label for="data_fine">Data fine</label>
-                  <input type="date" class="form-control" id="data_fine" name="data_fine" value="{{ request('data_fine') }}">
+                  <div class="italian-date-input">
+                    <input type="date" class="form-control" id="data_fine" name="data_fine" value="{{ request('data_fine') }}">
+                  </div>
                 </div>
                 <div class="col-md-4 mb-3">
                   <label for="tipo_lavoro">Tipo Lavoro</label>
@@ -46,13 +49,11 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="table-responsive">
-         <table id="worksTable" class="table table-bordered datatable" width="100%" cellspacing="0">
+      </div>      <div class="table-responsive">
+         <table id="worksTable" class="table table-bordered dataTable" width="100%" cellspacing="0">
             <thead class="thead-light">
                 <tr>
-                    <th>Data</th>
+                    <th class="datetime-column">Data</th>
                     <th>Tipo Lavoro</th>
                     <th>Cliente</th>
                     <th>Status</th>
@@ -65,7 +66,7 @@
             <tbody>
               @foreach($works as $work)
                 <tr>
-                    <td>{{ \Carbon\Carbon::parse($work->created_at)->format('d/m/Y H:i') }}</td>
+                    <td class="datetime-column">@formatDateTime($work->created_at)</td>
                     <td>{{ $work->tipo_lavoro }}</td>
                   <td>
                     @if($work->customer)
@@ -108,11 +109,24 @@
                     </form>
                   </td>
                 </tr>
-              @endforeach
-            </tbody>
+              @endforeach            </tbody>
          </table>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  $(document).ready(function() {
+    $('#worksTable').DataTable({
+      order: [[4, 'desc']], // Ordina per data decrescente (colonna 4)
+      columnDefs: [
+        {
+          targets: 4, // Colonna data e ora (0-based index)
+          type: 'date-eu-time' // Usa il tipo date-eu-time per ordinamento corretto
+        }
+      ]
+    });
+  });
+</script>
 @endsection

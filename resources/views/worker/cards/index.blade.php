@@ -21,15 +21,14 @@
                 <h6 class="m-0 font-weight-bold text-primary">Carte Prepagate Assegnate</h6>
             </div>
             <div class="card-body">
-                @if($creditCards->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                @if($creditCards->count() > 0)                    <div class="table-responsive">
+                        <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Numero Carta</th>
                                     <th>Saldo</th>
-                                    <th>Data Assegnazione</th>
+                                    <th class="date-column">Data Assegnazione</th>
                                     <th>Azioni</th>
                                 </tr>
                             </thead>
@@ -39,7 +38,7 @@
                                         <td>{{ $card->id }}</td>
                                         <td>{{ substr($card->numero_carta, 0, 4) . ' **** **** ' . substr($card->numero_carta, -4) }}</td>
                                         <td>€ {{ number_format($card->fondo_carta, 2, ',', '.') }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($card->data_assegnazione)->format('d/m/Y') }}</td>
+                                        <td class="date-column">@formatDate($card->data_assegnazione)</td>
                                         <td>
                                             <a href="{{ route('worker.cards.show', $card->id) }}" class="btn btn-primary btn-sm">
                                                 <i class="bi bi-eye"></i> Dettagli

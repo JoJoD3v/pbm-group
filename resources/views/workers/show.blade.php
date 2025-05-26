@@ -36,14 +36,13 @@
           <tr>
             <th>Fondo Cassa</th>
             <td>€ {{ number_format($worker->fondo_cassa, 2, ',', '.') }}</td>
-          </tr>
-          <tr>
+          </tr>            <tr>
             <th>Data Creazione</th>
-            <td>{{ $worker->created_at->format('d/m/Y H:i') }}</td>
+            <td>@formatDateTime($worker->created_at)</td>
           </tr>
           <tr>
             <th>Ultimo Aggiornamento</th>
-            <td>{{ $worker->updated_at->format('d/m/Y H:i') }}</td>
+            <td>@formatDateTime($worker->updated_at)</td>
           </tr>
         </table>
       </div>
@@ -52,15 +51,14 @@
       <div class="mt-4">
         <h5 class="font-weight-bold text-primary">Carte Prepagate Assegnate</h5>
         @if($worker->assignedCreditCards && $worker->assignedCreditCards->count() > 0)
-          <div class="table-responsive">
-            <table class="table table-bordered">
+          <div class="table-responsive">            <table class="table table-bordered dataTable">
               <thead>
                 <tr>
                   <th>ID Carta</th>
                   <th>Numero Carta</th>
-                  <th>Scadenza</th>
+                  <th class="date-column">Scadenza</th>
                   <th>Saldo Disponibile</th>
-                  <th>Data Assegnazione</th>
+                  <th class="date-column">Data Assegnazione</th>
                 </tr>
               </thead>
               <tbody>
@@ -68,9 +66,9 @@
                 <tr>
                   <td>{{ $carta->id }}</td>
                   <td>{{ substr($carta->numero_carta, 0, 4) . ' **** **** ' . substr($carta->numero_carta, -4) }}</td>
-                  <td>{{ $carta->scadenza_carta }}</td>
+                  <td class="date-column">@formatDate($carta->scadenza_carta)</td>
                   <td class="font-weight-bold">€ {{ number_format($carta->fondo_carta, 2, ',', '.') }}</td>
-                  <td>{{ $carta->pivot ? $carta->pivot->created_at->format('d/m/Y') : 'N/D' }}</td>
+                  <td class="date-column">{{ $carta->pivot ? @formatDate($carta->pivot->created_at) : 'N/D' }}</td>
                 </tr>
                 @endforeach
               </tbody>
@@ -86,16 +84,15 @@
       <!-- Sezione Autoveicoli Assegnati -->
       <div class="mt-4">
         <h5 class="font-weight-bold text-primary">Autoveicoli Assegnati</h5>
-        @if($worker->vehicles && $worker->vehicles->count() > 0)
-          <div class="table-responsive">
-            <table class="table table-bordered">
+        @if($worker->vehicles && $worker->vehicles->count() > 0)          <div class="table-responsive">
+            <table class="table table-bordered dataTable">
               <thead>
                 <tr>
                   <th>ID Veicolo</th>
                   <th>Targa</th>
                   <th>Marca</th>
                   <th>Modello</th>
-                  <th>Data Assegnazione</th>
+                  <th class="date-column">Data Assegnazione</th>
                   <th>Note</th>
                 </tr>
               </thead>
@@ -104,9 +101,8 @@
                 <tr>
                   <td>{{ $veicolo->id }}</td>
                   <td>{{ $veicolo->plate_number }}</td>
-                  <td>{{ $veicolo->brand }}</td>
-                  <td>{{ $veicolo->model }}</td>
-                  <td>{{ $veicolo->pivot ? $veicolo->pivot->data_assegnazione : 'N/D' }}</td>
+                  <td>{{ $veicolo->brand }}</td>                  <td>{{ $veicolo->model }}</td>
+                  <td class="date-column">{{ $veicolo->pivot ? @formatDate($veicolo->pivot->data_assegnazione) : 'N/D' }}</td>
                   <td>{{ $veicolo->pivot ? $veicolo->pivot->note : '' }}</td>
                 </tr>
                 @endforeach

@@ -193,7 +193,7 @@
                     <div class="auth-left h-100">
                         <div>
                             <img src="{{ asset('img/logo/logo.jpg') }}" alt="PBM Group Logo" class="auth-logo">
-                            <h1 class="auth-title">PBM Group</h1>
+                            <h1 class="auth-title">TEP SRL Group</h1>
                             <p class="auth-subtitle">Gestionale Trasporto e Smaltimento Rifiuti</p>
                         </div>
                     </div>

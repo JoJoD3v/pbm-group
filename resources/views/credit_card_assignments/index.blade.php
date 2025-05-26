@@ -19,17 +19,15 @@
                         <a href="{{ route('credit-card-assignments.create') }}" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Nuova Assegnazione
                         </a>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
+                    </div>                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped dataTable">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Carta</th>
                                     <th>Lavoratore</th>
-                                    <th>Data Assegnazione</th>
-                                    <th>Data Restituzione</th>
+                                    <th class="date-column">Data Assegnazione</th>
+                                    <th class="date-column">Data Restituzione</th>
                                     <th>Azioni</th>
                                 </tr>
                             </thead>

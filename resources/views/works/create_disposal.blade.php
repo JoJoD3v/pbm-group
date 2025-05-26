@@ -40,12 +40,12 @@
               </option>
             @endforeach
           </select>
-        </div>
-
-        <!-- Data Esecuzione Lavoro -->
+        </div>        <!-- Data Esecuzione Lavoro -->
         <div class="mb-3">
           <label for="data_esecuzione" class="form-label">Data Esecuzione Lavoro</label>
-          <input type="date" name="data_esecuzione" id="data_esecuzione" class="form-control">
+          <div class="italian-date-input">
+            <input type="date" name="data_esecuzione" id="data_esecuzione" class="form-control">
+          </div>
         </div>
 
         <!-- Costo Lavoro -->

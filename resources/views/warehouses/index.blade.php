@@ -17,10 +17,8 @@
         <a href="{{ route('warehouses.create') }}" class="btn btn-primary">
           <i class="fas fa-plus"></i> Aggiungi Cantiere
         </a>
-      </div>
-
-      <div class="table-responsive">
-        <table id="warehousesTable" class="table table-bordered datatable" width="100%" cellspacing="0">
+      </div>      <div class="table-responsive">
+        <table id="warehousesTable" class="table table-bordered dataTable" width="100%" cellspacing="0">
           <thead class="thead-light">
             <tr>
               <th width="20">ID</th>

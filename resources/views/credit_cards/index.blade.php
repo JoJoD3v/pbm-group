@@ -19,15 +19,13 @@
                         <a href="{{ route('credit-cards.create') }}" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Nuova Carta
                         </a>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped">
+                    </div>                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped dataTable">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Numero Carta</th>
-                                    <th>Scadenza</th>
+                                    <th class="date-column">Scadenza</th>
                                     <th>Fondo</th>
                                     <th>Assegnato</th>
                                     <th>Azioni</th>

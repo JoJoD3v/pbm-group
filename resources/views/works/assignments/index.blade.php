@@ -19,11 +19,7 @@
         </div>
       @endif
 
-      <!-- Tabella delle assegnazioni esistenti -->
-      <div class="card">
-        <div class="card-header">
-          <h6 class="m-0 font-weight-bold text-primary">Assegnazioni Esistenti</h6>
-        </div>
+
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-bordered datatable" width="100%" cellspacing="0">
@@ -70,8 +66,7 @@
             </table>
           </div>
         </div>
-      </div>
-    </div>
+
   </div>
 </div>
 @endsection
