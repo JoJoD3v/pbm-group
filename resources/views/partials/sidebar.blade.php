@@ -2,19 +2,11 @@
     <!-- Logo e titolo -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
       <img src="{{ asset('img/logo/logo.jpg') }}" alt="PBM Group Logo" class="sidebar-brand-logo">
-      <div class="sidebar-brand-text mx-2">PBM Group</div>
+      <div class="sidebar-brand-text mx-2">TEP SRL</div>
     </a>
 
     <!-- Divider -->
     <hr class="sidebar-divider my-0">
-
-    <!-- Esempio di voce di menu -->
-    <li class="nav-item">
-      <a class="nav-link" href="#">
-        <i class="bi bi-card-list"></i>
-        <span>Dashboard</span>
-      </a>
-    </li>
 
     <li class="nav-item">
         <a class="nav-link" href="{{ route('materials.index') }}">

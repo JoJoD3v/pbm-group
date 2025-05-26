@@ -1,3 +1,4 @@
+{{-- filepath: e:\wamp64\www\pbm_group_cline\resources\views\layouts\dashboard.blade.php --}}
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -107,6 +108,9 @@
         });
       });
     </script>
+    
+    <!-- Sezione per gli script aggiuntivi definiti nelle viste -->
+    @yield('scripts')
 
 </body>
 </html>

@@ -17,7 +17,16 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', function(){
-    return view('dashboard');
+    $todayWorks = collect([]);
+    
+    // Se l'utente è amministratore o sviluppatore, carica i lavori di oggi
+    if(in_array(auth()->user()->role, ['Amministratore', 'Sviluppatore'])) {
+        $todayWorks = \App\Models\Work::whereDate('data_esecuzione', today())
+            ->with('customer')
+            ->get();
+    }
+    
+    return view('dashboard', compact('todayWorks'));
 })->middleware('auth')->name('dashboard');
 
 

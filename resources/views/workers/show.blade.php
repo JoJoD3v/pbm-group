@@ -1,3 +1,4 @@
+{{-- filepath: e:\wamp64\www\pbm_group_cline\resources\views\workers\show.blade.php --}}
 @extends('layouts.dashboard')
 
 @section('content')
@@ -63,12 +64,10 @@
               </thead>
               <tbody>
                 @foreach($worker->assignedCreditCards as $carta)
-                <tr>
-                  <td>{{ $carta->id }}</td>
-                  <td>{{ substr($carta->numero_carta, 0, 4) . ' **** **** ' . substr($carta->numero_carta, -4) }}</td>
+                <tr>                  <td>{{ $carta->id }}</td>                  <td>{{ substr($carta->numero_carta, 0, 4) . ' **** **** ' . substr($carta->numero_carta, -4) }}</td>
                   <td class="date-column">@formatDate($carta->scadenza_carta)</td>
                   <td class="font-weight-bold">€ {{ number_format($carta->fondo_carta, 2, ',', '.') }}</td>
-                  <td class="date-column">{{ $carta->pivot ? @formatDate($carta->pivot->created_at) : 'N/D' }}</td>
+                  <td class="date-column">@if($carta->pivot) @formatDate($carta->pivot->created_at) @else N/D @endif</td>
                 </tr>
                 @endforeach
               </tbody>
@@ -90,8 +89,7 @@
                 <tr>
                   <th>ID Veicolo</th>
                   <th>Targa</th>
-                  <th>Marca</th>
-                  <th>Modello</th>
+                  <th>Nome</th>
                   <th class="date-column">Data Assegnazione</th>
                   <th>Note</th>
                 </tr>
@@ -99,10 +97,10 @@
               <tbody>
                 @foreach($worker->vehicles as $veicolo)
                 <tr>
-                  <td>{{ $veicolo->id }}</td>
-                  <td>{{ $veicolo->plate_number }}</td>
-                  <td>{{ $veicolo->brand }}</td>                  <td>{{ $veicolo->model }}</td>
-                  <td class="date-column">{{ $veicolo->pivot ? @formatDate($veicolo->pivot->data_assegnazione) : 'N/D' }}</td>
+                  <td>{{ $veicolo->id }}</td>                  
+                  <td>{{ $veicolo->targa }}</td>                
+                  <td>{{ $veicolo->nome }}</td>                
+                  <td class="date-column">@if($veicolo->pivot) @formatDate($veicolo->pivot->data_assegnazione) @else N/D @endif</td>
                   <td>{{ $veicolo->pivot ? $veicolo->pivot->note : '' }}</td>
                 </tr>
                 @endforeach
