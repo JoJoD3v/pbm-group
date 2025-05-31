@@ -106,5 +106,21 @@
       </div>
     </li>
 
+    <!-- Menu Utenti - Solo per Sviluppatori -->
+    @if(Auth::check() && Auth::user()->role === 'sviluppatore')
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
+        <i class="bi bi-people"></i>
+        <span>Utenti</span>
+      </a>
+      <div id="collapseUsers" class="collapse" aria-labelledby="headingUsers" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+          <a class="collapse-item" href="{{ route('users.create') }}">Aggiungi Utente</a>
+          <a class="collapse-item" href="{{ route('users.index') }}">Utenti Registrati</a>
+        </div>
+      </div>
+    </li>
+    @endif
+
     <!-- Aggiungi qui altre voci di menu -->
   </ul>

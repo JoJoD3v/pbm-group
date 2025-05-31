@@ -18,14 +18,14 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', function(){
     $todayWorks = collect([]);
-    
+
     // Se l'utente è amministratore o sviluppatore, carica i lavori di oggi
     if(in_array(auth()->user()->role, ['Amministratore', 'Sviluppatore'])) {
         $todayWorks = \App\Models\Work::whereDate('data_esecuzione', today())
             ->with('customer')
             ->get();
     }
-    
+
     return view('dashboard', compact('todayWorks'));
 })->middleware('auth')->name('dashboard');
 
@@ -93,7 +93,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('reports.cashflow.index');
     Route::post('/reports/cashflow/generate', [CashMovementReportController::class, 'generate'])
         ->name('reports.cashflow.generate');
-        
+
     // Ricarica fondo cassa
     Route::get('/worker/cash/recharge', [WorkerCashRechargeController::class, 'index'])
         ->name('worker.cash.recharge');
@@ -113,24 +113,32 @@ Route::middleware(['auth', CheckWorkerRole::class])->group(function () {
     Route::get('/worker/jobs', [WorkerJobController::class, 'index'])->name('worker.jobs');
     Route::get('/worker/jobs/{id}', [WorkerJobController::class, 'show'])->name('worker.jobs.show');
     Route::post('/worker/jobs/{id}/assumi', [WorkerJobController::class, 'assumiLavoro'])->name('worker.jobs.assumi');
-    
+
     // Gestione ricevute
     Route::get('/worker/ricevute/create/{workId}', [RicevutaController::class, 'create'])->name('worker.ricevute.create');
     Route::post('/worker/ricevute', [RicevutaController::class, 'store'])->name('worker.ricevute.store');
     Route::get('/worker/ricevute/{ricevutaId}/pdf', [RicevutaController::class, 'downloadPDF'])->name('worker.ricevute.pdf');
-    
+
     // Gestione carte
     Route::get('/worker/cards', [WorkerCardController::class, 'index'])->name('worker.cards');
     Route::get('/worker/cards/{id}', [WorkerCardController::class, 'show'])->name('worker.cards.show');
-    
+
     // Gestione fondo cassa
     Route::get('/worker/cashflow', [WorkerCashFlowController::class, 'index'])->name('worker.cashflow');
-    
+
     // Spese
     Route::get('/worker/cashflow/spesa', [WorkerCashFlowController::class, 'createSpesa'])->name('worker.cashflow.spesa.create');
     Route::post('/worker/cashflow/spesa', [WorkerCashFlowController::class, 'storeSpesa'])->name('worker.cashflow.spesa.store');
-    
+
     // Incassi
     Route::get('/worker/cashflow/incasso', [WorkerCashFlowController::class, 'createIncasso'])->name('worker.cashflow.incasso.create');
     Route::post('/worker/cashflow/incasso', [WorkerCashFlowController::class, 'storeIncasso'])->name('worker.cashflow.incasso.store');
+});
+
+// Rotte per la gestione utenti (solo sviluppatori)
+use App\Http\Controllers\UserController;
+use App\Http\Middleware\CheckDeveloperRole;
+
+Route::middleware(['auth', CheckDeveloperRole::class])->group(function () {
+    Route::resource('users', UserController::class);
 });
