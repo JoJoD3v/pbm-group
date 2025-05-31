@@ -19,26 +19,26 @@
         </a>
       </div>      <div class="table-responsive">
         <table id="workersTable" class="table table-bordered dataTable" width="100%" cellspacing="0">
-          <thead class="thead-light">
-            <tr>
+          <thead class="thead-light">            <tr>
               <th>ID</th>
               <th>ID Lavoratore</th>
               <th>Nome</th>
               <th>Cognome</th>
               <th>Licenza</th>
               <th>Email</th>
+              <th>Telefono</th>
               <th>Azioni</th>
             </tr>
           </thead>
           <tbody>
-            @foreach($workers as $worker)
-            <tr>
+            @foreach($workers as $worker)            <tr>
               <td>{{ $worker->id }}</td>
               <td>{{ $worker->id_worker }}</td>
               <td>{{ $worker->name_worker }}</td>
               <td>{{ $worker->cognome_worker }}</td>
               <td>{{ $worker->license_worker }}</td>
               <td>{{ $worker->worker_email }}</td>
+              <td>{{ $worker->phone_worker ?? 'N/D' }}</td>
               <td>
                 <a href="{{ route('workers.show', $worker->id) }}" class="btn btn-info btn-sm">
                   <i class="bi bi-eye"></i>

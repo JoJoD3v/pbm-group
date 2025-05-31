@@ -20,6 +20,7 @@ class Worker extends Model
         'cognome_worker',
         'license_worker',
         'worker_email',
+        'phone_worker',
         'fondo_cassa',
     ];
     

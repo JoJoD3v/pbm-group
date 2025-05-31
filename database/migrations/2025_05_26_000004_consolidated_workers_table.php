@@ -14,14 +14,14 @@ return new class extends Migration
         // Eliminiamo la vecchia tabella se esiste
         Schema::dropIfExists('workers');
         
-        // Creiamo la tabella con tutti i campi consolidati
-        Schema::create('workers', function (Blueprint $table) {
+        // Creiamo la tabella con tutti i campi consolidati        Schema::create('workers', function (Blueprint $table) {
             $table->id();
             $table->string('id_worker')->unique();
             $table->string('name_worker');
             $table->string('cognome_worker');
             $table->string('license_worker');
             $table->string('worker_email')->unique();
+            $table->string('phone_worker')->nullable();
             $table->decimal('fondo_cassa', 10, 2)->default(0.00);
             $table->timestamps();
         });

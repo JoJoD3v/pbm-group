@@ -29,15 +29,18 @@
           <tr>
             <th>Licenza</th>
             <td>{{ $worker->license_worker }}</td>
-          </tr>
-          <tr>
+          </tr>          <tr>
             <th>Email</th>
             <td>{{ $worker->worker_email }}</td>
           </tr>
           <tr>
+            <th>Telefono</th>
+            <td>{{ $worker->phone_worker ?? 'N/D' }}</td>
+          </tr>
+          <tr>
             <th>Fondo Cassa</th>
             <td>€ {{ number_format($worker->fondo_cassa, 2, ',', '.') }}</td>
-          </tr>            <tr>
+          </tr><tr>
             <th>Data Creazione</th>
             <td>@formatDateTime($worker->created_at)</td>
           </tr>
