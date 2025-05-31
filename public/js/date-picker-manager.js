@@ -48,8 +48,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Trova tutti gli input di tipo date
         const dateInputs = document.querySelectorAll('input[type="date"]');
-        
-        dateInputs.forEach(function(input) {
+          dateInputs.forEach(function(input) {
+            // Verifica se questo input è già stato processato
+            if (input.hasAttribute('data-flatpickr-processed')) {
+                return;
+            }
+            
+            // Marca l'input come processato
+            input.setAttribute('data-flatpickr-processed', 'true');
+            
             // Nascondi l'input originale ma mantieni il valore
             const originalValue = input.value;
             
@@ -67,9 +74,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 wrapper.appendChild(input);
             } else {
                 wrapper = parent;
-            }
-              // Verifica se un input flatpickr esiste già in questo wrapper
-            const existingFlatpickrInput = wrapper.querySelector('input:not([type="date"])');
+            }            // Verifica se un input flatpickr esiste già in questo wrapper
+            const existingFlatpickrInput = wrapper.querySelector('input:not([type="date"]):not([data-flatpickr-processed])');
             
             // Utilizza l'input esistente o crea uno nuovo
             let flatpickrInput;
@@ -77,20 +83,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Usa quello esistente
                 flatpickrInput = existingFlatpickrInput;
             } else {
-                // Crea un nuovo input di testo per flatpickr
-                flatpickrInput = document.createElement('input');
-                flatpickrInput.type = 'text';
-                flatpickrInput.className = input.className;
-                flatpickrInput.placeholder = 'GG/MM/AAAA';
-                flatpickrInput.required = input.required;
-                flatpickrInput.id = input.id + '_display';
-                flatpickrInput.setAttribute('autocomplete', 'off');
-                
-                // Nascondi l'input originale ma mantieni il suo valore
-                input.style.display = 'none';
-                wrapper.insertBefore(flatpickrInput, input);
+                // Crea un nuovo input di testo per flatpickr solo se non esiste già
+                const existingDisplayInput = wrapper.querySelector('input[id$="_display"]');
+                if (existingDisplayInput) {
+                    flatpickrInput = existingDisplayInput;
+                } else {
+                    flatpickrInput = document.createElement('input');
+                    flatpickrInput.type = 'text';
+                    flatpickrInput.className = input.className;
+                    flatpickrInput.placeholder = 'GG/MM/AAAA';
+                    flatpickrInput.required = input.required;
+                    flatpickrInput.id = input.id + '_display';
+                    flatpickrInput.setAttribute('autocomplete', 'off');
+                    
+                    // Nascondi l'input originale ma mantieni il suo valore
+                    input.style.display = 'none';
+                    wrapper.insertBefore(flatpickrInput, input);
+                }
             }
-              // Inizializza flatpickr
+            // Verifica se flatpickr è già stato inizializzato su questo input
+            if (flatpickrInput._flatpickr) {
+                return;
+            }
+            
+            // Inizializza flatpickr
             const fp = flatpickr(flatpickrInput, {
                 dateFormat: 'd/m/Y',
                 altInput: true,
@@ -136,23 +152,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     fp.clear();
                 }
             });
-            
-            // Aggiungi un pulsante per cancellare la data
-            const clearButton = document.createElement('button');
-            clearButton.type = 'button';
-            clearButton.className = 'date-clear-button';
-            clearButton.innerHTML = '&times;';
-            clearButton.title = 'Cancella data';
-            clearButton.addEventListener('click', function() {
-                fp.clear();
-                input.value = '';
+              // Aggiungi un pulsante per cancellare la data solo se non esiste già
+            let clearButton = wrapper.querySelector('.date-clear-button');
+            if (!clearButton) {
+                clearButton = document.createElement('button');
+                clearButton.type = 'button';
+                clearButton.className = 'date-clear-button';
+                clearButton.innerHTML = '&times;';
+                clearButton.title = 'Cancella data';
+                clearButton.addEventListener('click', function() {
+                    fp.clear();
+                    input.value = '';
+                    
+                    // Attiva l'evento change
+                    const event = new Event('change', { bubbles: true });
+                    input.dispatchEvent(event);
+                });
                 
-                // Attiva l'evento change
-                const event = new Event('change', { bubbles: true });
-                input.dispatchEvent(event);
-            });
-            
-            wrapper.appendChild(clearButton);
+                wrapper.appendChild(clearButton);
+            }
         });
     }
     

@@ -161,8 +161,7 @@ use Illuminate\Support\Str;
             <div class="card-body">
               @if($work->ricevute && $work->ricevute->count() > 0)
                 <div class="table-responsive">
-                  <table class="table table-bordered table-hover dataTable">
-                    <thead class="thead-light">
+                  <table class="table table-bordered table-hover dataTable">                    <thead class="thead-light">
                       <tr>
                         <th>Numero Ricevuta</th>
                         <th>Nome Ricevente</th>
@@ -172,6 +171,7 @@ use Illuminate\Support\Str;
                         <th class="datetime-column">Data Creazione</th>
                         <th>Firma</th>
                         <th>Bolla</th>
+                        <th>Azioni</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -211,8 +211,7 @@ use Illuminate\Support\Str;
                             @else
                               {{ Str::limit($ricevuta->firma_base64, 30) }}
                             @endif
-                          </td>
-                          <td>
+                          </td>                          <td>
                             @if($ricevuta->foto_bolla)
                               <a href="{{ asset('storage/' . $ricevuta->foto_bolla) }}" target="_blank" class="btn btn-sm btn-info">
                                 Visualizza Bolla
@@ -220,6 +219,11 @@ use Illuminate\Support\Str;
                             @else
                               <span class="text-muted">Nessuna bolla</span>
                             @endif
+                          </td>
+                          <td>
+                            <a href="{{ route('worker.ricevute.pdf', $ricevuta->id) }}" class="btn btn-sm btn-danger" title="Scarica PDF">
+                              <i class="fas fa-file-pdf"></i> PDF
+                            </a>
                           </td>
                         </tr>
                       @endforeach

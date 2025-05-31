@@ -19,9 +19,8 @@
         <div class="card-body">
             <form action="{{ route('reports.cashflow.generate') }}" method="POST">
                 @csrf
-                
-                <div class="row mb-3">
-                    <div class="col-md-6">
+                  <div class="row mb-3">
+                    <div class="col-md-12">
                         <label for="worker_id" class="form-label">Dipendente*</label>
                         <select class="form-control" id="worker_id" name="worker_id" required>
                             <option value="">Seleziona dipendente...</option>
@@ -35,11 +34,21 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="data_inizio" class="form-label">Data Inizio*</label>
+                        <input type="date" class="form-control" id="data_inizio" name="data_inizio" value="{{ old('data_inizio', now()->startOfMonth()->toDateString()) }}" required>
+                        @error('data_inizio')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
                     
                     <div class="col-md-6">
-                        <label for="data" class="form-label">Data Report*</label>
-                        <input type="date" class="form-control" id="data" name="data" value="{{ old('data', now()->toDateString()) }}" required>
-                        @error('data')
+                        <label for="data_fine" class="form-label">Data Fine*</label>
+                        <input type="date" class="form-control" id="data_fine" name="data_fine" value="{{ old('data_fine', now()->toDateString()) }}" required>
+                        @error('data_fine')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>

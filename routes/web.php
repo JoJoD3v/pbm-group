@@ -117,6 +117,7 @@ Route::middleware(['auth', CheckWorkerRole::class])->group(function () {
     // Gestione ricevute
     Route::get('/worker/ricevute/create/{workId}', [RicevutaController::class, 'create'])->name('worker.ricevute.create');
     Route::post('/worker/ricevute', [RicevutaController::class, 'store'])->name('worker.ricevute.store');
+    Route::get('/worker/ricevute/{ricevutaId}/pdf', [RicevutaController::class, 'downloadPDF'])->name('worker.ricevute.pdf');
     
     // Gestione carte
     Route::get('/worker/cards', [WorkerCardController::class, 'index'])->name('worker.cards');

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class RicevutaController extends Controller
 {
@@ -131,6 +133,47 @@ class RicevutaController extends Controller
     }
     
     /**
+     * Genera il PDF della ricevuta
+     */
+    private function generateReceiptPDF(Ricevuta $ricevuta)
+    {
+        $work = $ricevuta->work;
+        $customer = $work->customer;
+        
+        // Genera l'HTML dalla view
+        $html = view('pdf.receipt', [
+            'ricevuta' => $ricevuta,
+            'work' => $work,
+            'customer' => $customer
+        ])->render();
+        
+        // Configura dompdf
+        $options = new Options();
+        $options->set('defaultFont', 'DejaVu Sans');
+        $options->set('isRemoteEnabled', false);
+        $options->set('isHtml5ParserEnabled', true);
+        
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        
+        // Crea il nome del file
+        $fileName = 'ricevuta_' . $ricevuta->numero_ricevuta . '.pdf';
+        $filePath = storage_path('app/temp/' . $fileName);
+        
+        // Assicurati che la directory temp esista
+        if (!file_exists(dirname($filePath))) {
+            mkdir(dirname($filePath), 0755, true);
+        }
+        
+        // Salva il file temporaneamente
+        file_put_contents($filePath, $dompdf->output());
+        
+        return $filePath;
+    }
+
+    /**
      * Invia l'email con la ricevuta al cliente
      */
     private function sendReceiptEmail(Ricevuta $ricevuta)
@@ -139,21 +182,87 @@ class RicevutaController extends Controller
         $customer = $work->customer;
         
         try {
+            // Genera il PDF
+            $pdfPath = $this->generateReceiptPDF($ricevuta);
+            
             Mail::send('emails.receipt', [
                 'ricevuta' => $ricevuta,
                 'work' => $work,
                 'customer' => $customer
-            ], function ($message) use ($customer, $ricevuta) {
+            ], function ($message) use ($customer, $ricevuta, $pdfPath) {
                 $message->to($customer->email)
-                        ->subject('Ricevuta lavoro TEP-' . $ricevuta->numero_ricevuta);
+                        ->subject('Ricevuta lavoro ' . $ricevuta->numero_ricevuta);
+                
+                // Allega il PDF della ricevuta
+                $message->attach($pdfPath, [
+                    'as' => 'ricevuta_' . $ricevuta->numero_ricevuta . '.pdf',
+                    'mime' => 'application/pdf'
+                ]);
                 
                 // Allega la foto della bolla se disponibile
                 if ($ricevuta->foto_bolla) {
                     $message->attach(storage_path('app/public/' . $ricevuta->foto_bolla));
                 }
             });
+            
+            // Rimuovi il file temporaneo
+            if (file_exists($pdfPath)) {
+                unlink($pdfPath);
+            }
+            
         } catch (\Exception $e) {
             Log::error('Errore invio email ricevuta: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+        }
+    }
+    
+    /**
+     * Scarica il PDF della ricevuta
+     */
+    public function downloadPDF($ricevutaId)
+    {
+        try {
+            $ricevuta = Ricevuta::with(['work.customer'])->findOrFail($ricevutaId);
+            
+            // Verifica che l'utente sia autorizzato (proprietario del lavoro o admin)
+            $worker = Auth::user()->worker;
+            if (!$worker || !$ricevuta->work->workers->contains($worker->id)) {
+                return redirect()->back()->with('error', 'Non sei autorizzato ad accedere a questa ricevuta.');
+            }
+            
+            $work = $ricevuta->work;
+            $customer = $work->customer;
+            
+            // Genera l'HTML dalla view
+            $html = view('pdf.receipt', [
+                'ricevuta' => $ricevuta,
+                'work' => $work,
+                'customer' => $customer
+            ])->render();
+            
+            // Configura dompdf
+            $options = new Options();
+            $options->set('defaultFont', 'DejaVu Sans');
+            $options->set('isRemoteEnabled', false);
+            $options->set('isHtml5ParserEnabled', true);
+            
+            $dompdf = new Dompdf($options);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->render();
+            
+            // Nome del file
+            $fileName = 'ricevuta_' . $ricevuta->numero_ricevuta . '.pdf';
+            
+            // Restituisci il PDF per il download
+            return response($dompdf->output(), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $fileName . '"'
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Errore download PDF ricevuta: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Errore nel download del PDF.');
         }
     }
 }

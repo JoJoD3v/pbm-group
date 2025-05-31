@@ -92,10 +92,9 @@
     
     <!-- File JS con le opzioni di DataTables -->
     <script src="{{ asset('js/datatables-config.js') }}"></script>    
-    
-    <!-- File JS per la gestione e validazione del formato date italiano -->
+      <!-- File JS per la gestione e validazione del formato date italiano -->
     <script src="{{ asset('js/italian-date-validation.js') }}"></script>
-    <script src="{{ asset('js/date-format-handler.js') }}"></script>
+    <!-- <script src="{{ asset('js/date-format-handler.js') }}"></script> -->
     
     <!-- File JS per il selettore di date con calendario -->
     <script src="{{ asset('js/date-picker-manager.js') }}"></script>
