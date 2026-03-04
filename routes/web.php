@@ -166,6 +166,11 @@ Route::middleware(['auth', CheckWorkerRole::class])->group(function () {
     Route::post('/worker/cashflow/incasso', [WorkerCashFlowController::class, 'storeIncasso'])->name('worker.cashflow.incasso.store');
 });
 
+// Visualizzazione bolla per admin/sviluppatore o dipendente assegnato
+Route::get('/ricevute/bolle/{ricevutaId}', [RicevutaController::class, 'viewBolla'])
+    ->middleware('auth')
+    ->name('ricevute.bolle.view');
+
 // Rotte per la gestione utenti (solo sviluppatori)
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckDeveloperRole;

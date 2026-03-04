@@ -265,4 +265,39 @@ class RicevutaController extends Controller
             return redirect()->back()->with('error', 'Errore nel download del PDF.');
         }
     }
+
+    /**
+     * Visualizza la foto bolla in modo sicuro
+     */
+    public function viewBolla($ricevutaId)
+    {
+        try {
+            $ricevuta = Ricevuta::with(['work.workers'])->findOrFail($ricevutaId);
+
+            if (!$ricevuta->foto_bolla) {
+                return redirect()->back()->with('error', 'Bolla non disponibile.');
+            }
+
+            $user = Auth::user();
+            $role = strtolower($user->role ?? '');
+            $isAdmin = in_array($role, ['amministratore', 'sviluppatore']);
+
+            $worker = $user->worker;
+            $isAssignedWorker = $worker && $ricevuta->work && $ricevuta->work->workers->contains($worker->id);
+
+            if (!$isAdmin && !$isAssignedWorker) {
+                return redirect()->back()->with('error', 'Non sei autorizzato ad accedere a questa bolla.');
+            }
+
+            if (!Storage::disk('public')->exists($ricevuta->foto_bolla)) {
+                return redirect()->back()->with('error', 'File bolla non trovato.');
+            }
+
+            $filePath = Storage::disk('public')->path($ricevuta->foto_bolla);
+            return response()->file($filePath);
+        } catch (\Exception $e) {
+            Log::error('Errore visualizzazione bolla: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Errore nella visualizzazione della bolla.');
+        }
+    }
 }

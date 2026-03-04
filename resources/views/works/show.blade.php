@@ -213,7 +213,7 @@ use Illuminate\Support\Str;
                             @endif
                           </td>                          <td>
                             @if($ricevuta->foto_bolla)
-                              <a href="{{ asset('storage/' . $ricevuta->foto_bolla) }}" target="_blank" class="btn btn-sm btn-info">
+                              <a href="{{ route('ricevute.bolle.view', $ricevuta->id) }}" target="_blank" class="btn btn-sm btn-info">
                                 Visualizza Bolla
                               </a>
                             @else
