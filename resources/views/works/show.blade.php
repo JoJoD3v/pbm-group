@@ -161,7 +161,7 @@ use Illuminate\Support\Str;
             <div class="card-body">
               @if($work->ricevute && $work->ricevute->count() > 0)
                 <div class="table-responsive">
-                  <table class="table table-bordered table-hover dataTable">                    <thead class="thead-light">
+                  <table id="workReceiptsTable" class="table table-bordered table-hover">                    <thead class="thead-light">
                       <tr>
                         <th>Numero Ricevuta</th>
                         <th>Nome Ricevente</th>
@@ -221,7 +221,7 @@ use Illuminate\Support\Str;
                             @endif
                           </td>
                           <td>
-                            <a href="{{ route('worker.ricevute.pdf', $ricevuta->id) }}" class="btn btn-sm btn-danger" title="Scarica PDF">
+                            <a href="{{ route('worker.ricevute.pdf', $ricevuta->id) }}" class="btn btn-sm btn-danger" target="_blank" title="Scarica PDF">
                               <i class="fas fa-file-pdf"></i> PDF
                             </a>
                           </td>
@@ -253,15 +253,17 @@ use Illuminate\Support\Str;
     });
     
     // Inizializza DataTable con ordinamento per data
-    $('.dataTable').DataTable({
-      order: [[5, 'desc']], // Ordina per data creazione decrescente
-      columnDefs: [
-        {
-          targets: 5, // Colonna datetime (0-based index)
-          type: 'date-eu-time' // Usa il tipo date-eu-time per l'ordinamento con ora e minuti
-        }
-      ]
-    });
+    if ($('#workReceiptsTable').length && !$.fn.dataTable.isDataTable('#workReceiptsTable')) {
+      $('#workReceiptsTable').DataTable({
+        order: [[5, 'desc']], // Ordina per data creazione decrescente
+        columnDefs: [
+          {
+            targets: 5, // Colonna datetime (0-based index)
+            type: 'date-eu-time' // Usa il tipo date-eu-time per l'ordinamento con ora e minuti
+          }
+        ]
+      });
+    }
   });
 </script>
 @endsection

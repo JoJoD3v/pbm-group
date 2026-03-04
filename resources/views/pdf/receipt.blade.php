@@ -8,333 +8,281 @@
         body {
             font-family: 'DejaVu Sans', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 24px;
             font-size: 12px;
-            line-height: 1.4;
-            color: #333;
+            line-height: 1.5;
+            color: #2b2b2b;
         }
-        
         .header {
             display: table;
             width: 100%;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #0056b3;
-            padding-bottom: 20px;
+            border-bottom: 2px solid #1f4e79;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
         }
-        
-        .logo-section {
+        .header-left {
             display: table-cell;
             width: 40%;
             vertical-align: top;
         }
-        
-        .logo {
-            max-width: 150px;
-            height: auto;
-        }
-        
-        .company-section {
+        .header-right {
             display: table-cell;
             width: 60%;
             vertical-align: top;
             text-align: right;
-            padding-left: 20px;
         }
-        
+        .logo {
+            max-width: 160px;
+            height: auto;
+        }
         .company-name {
             font-size: 18px;
             font-weight: bold;
-            color: #0056b3;
-            margin-bottom: 10px;
+            color: #1f4e79;
         }
-        
         .company-details {
             font-size: 11px;
-            line-height: 1.5;
+            margin-top: 4px;
         }
-        
-        .receipt-title {
+        .title {
             text-align: center;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
-            color: #0056b3;
-            margin: 30px 0 20px 0;
+            color: #1f4e79;
+            margin: 14px 0 10px;
             text-transform: uppercase;
         }
-        
-        .receipt-info {
+        .section {
+            margin-top: 14px;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #1f4e79;
+            margin-bottom: 6px;
+        }
+        .meta {
             display: table;
             width: 100%;
-            margin-bottom: 20px;
+            margin-top: 6px;
         }
-        
-        .receipt-info-left {
+        .meta-left,
+        .meta-right {
             display: table-cell;
             width: 50%;
             vertical-align: top;
         }
-        
-        .receipt-info-right {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
+        .meta-right {
             text-align: right;
         }
-        
-        .customer-info {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-left: 4px solid #0056b3;
-            margin-bottom: 20px;
+        .box {
+            background: #f7f9fc;
+            border: 1px solid #e3e7ef;
+            padding: 10px 12px;
         }
-        
-        .customer-title {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 10px;
-            color: #0056b3;
-        }
-        
-        .work-details {
-            margin-bottom: 20px;
-        }
-        
-        .work-table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-top: 8px;
         }
-        
-        .work-table th {
-            background-color: #0056b3;
-            color: white;
-            padding: 12px 8px;
-            text-align: left;
-            border: 1px solid #ddd;
+        th, td {
+            border: 1px solid #d9dfe9;
+            padding: 8px;
+            vertical-align: top;
+        }
+        th {
+            background: #1f4e79;
+            color: #ffffff;
             font-weight: bold;
+            text-align: left;
         }
-        
-        .work-table td {
-            padding: 10px 8px;
-            border: 1px solid #ddd;
-            vertical-align: top;
-        }
-        
-        .work-table tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-        
-        .total-section {
-            display: table;
-            width: 100%;
-            margin-top: 20px;
-            border-top: 2px solid #0056b3;
-            padding-top: 15px;
-        }
-        
-        .payment-info {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
-        }
-        
-        .total-info {
-            display: table-cell;
-            width: 50%;
-            vertical-align: top;
+        .text-right {
             text-align: right;
         }
-        
-        .total-amount {
-            font-size: 16px;
-            font-weight: bold;
-            color: #0056b3;
-            margin-top: 10px;
-        }
-        
-        .payment-status {
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-weight: bold;
+        .badge {
             display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            color: #ffffff;
+            background: #6c757d;
         }
-        
-        .payment-paid {
-            background-color: #28a745;
-            color: white;
+        .badge-success {
+            background: #28a745;
         }
-        
-        .payment-unpaid {
-            background-color: #dc3545;
-            color: white;
+        .badge-danger {
+            background: #dc3545;
         }
-        
-        .signature-section {
-            margin-top: 40px;
+        .total {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1f4e79;
+        }
+        .signature {
+            margin-top: 22px;
             text-align: center;
         }
-        
-        .signature-title {
-            font-weight: bold;
-            margin-bottom: 10px;
+        .signature img {
+            max-width: 260px;
+            max-height: 120px;
+            border: 1px solid #d9dfe9;
         }
-        
         .signature-line {
             border-top: 1px solid #333;
-            width: 200px;
-            margin: 30px auto 5px auto;
+            width: 220px;
+            margin: 18px auto 6px;
         }
-        
         .footer {
-            margin-top: 40px;
-            text-align: center;
+            margin-top: 18px;
             font-size: 10px;
             color: #666;
-            border-top: 1px solid #ddd;
-            padding-top: 15px;
-        }
-        
-        .notes {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 4px;
-        }
-        
-        .notes-title {
-            font-weight: bold;
-            color: #856404;
-            margin-bottom: 5px;
+            text-align: center;
+            border-top: 1px solid #e3e7ef;
+            padding-top: 8px;
         }
     </style>
 </head>
-<body>    <!-- Header con logo e dati azienda -->
+<body>
     <div class="header">
-        <div class="logo-section">
+        <div class="header-left">
             @if(file_exists(public_path('img/logo/logo.jpg')))
-                <img src="data:image/jpeg;base64,{{ base64_encode(file_get_contents(public_path('img/logo/logo.jpg'))) }}" alt="Logo Azienda" class="logo">
+                <img src="data:image/jpeg;base64,{{ base64_encode(file_get_contents(public_path('img/logo/logo.jpg'))) }}" alt="Logo" class="logo">
             @endif
         </div>
-        <div class="company-section">
-            <div class="company-name">{{ env('NOME_AZIENDA') }}</div>
+        <div class="header-right">
+            <div class="company-name">{{ env('NOME_AZIENDA', config('app.name')) }}</div>
             <div class="company-details">
-                {{ env('INDIRIZZO_AZIENDA') }}<br>
-                P.IVA: {{ env('PARTITA_IVA_AZIENDA') }}<br>
-                Tel: {{ env('TELEFONO_AZIENDA') }}<br>
-                Email: {{ env('EMAIL_AZIENDA') }}
+                {{ env('INDIRIZZO_AZIENDA', '-') }}<br>
+                P.IVA: {{ env('PARTITA_IVA_AZIENDA', '-') }}<br>
+                Tel: {{ env('TELEFONO_AZIENDA', '-') }}<br>
+                Email: {{ env('EMAIL_AZIENDA', '-') }}
             </div>
         </div>
     </div>
 
-    <!-- Titolo ricevuta -->
-    <div class="receipt-title">
-        Ricevuta di Lavoro N. {{ $ricevuta->numero_ricevuta }}
-    </div>
+    <div class="title">Ricevuta Lavoro N. {{ $ricevuta->numero_ricevuta }}</div>
 
-    <!-- Informazioni ricevuta -->
-    <div class="receipt-info">
-        <div class="receipt-info-left">
-            <strong>Data emissione:</strong> {{ $ricevuta->created_at->format('d/m/Y') }}<br>
+    <div class="meta">
+        <div class="meta-left">
+            <strong>Data emissione:</strong> {{ $ricevuta->created_at->format('d/m/Y H:i') }}<br>
             <strong>Ricevente:</strong> {{ $ricevuta->nome_ricevente }}
         </div>
-        <div class="receipt-info-right">
-            <strong>Fattura richiesta:</strong> {{ $ricevuta->fattura ? 'Sì' : 'No' }}<br>
-            @if($ricevuta->riserva_controlli)
-                <strong>Riserva controlli:</strong> Sì
-            @endif
+        <div class="meta-right">
+            <strong>Fattura richiesta:</strong> {{ $ricevuta->fattura ? 'Si' : 'No' }}<br>
+            <strong>Riserva controlli:</strong> {{ $ricevuta->riserva_controlli ? 'Si' : 'No' }}
         </div>
-    </div>    <!-- Informazioni cliente -->
-    <div class="customer-info">
-        <div class="customer-title">Dati Cliente</div>
-        <strong>{{ $customer->customer_type == 'fisica' ? $customer->full_name : $customer->ragione_sociale }}</strong><br>
-        @if($customer->email)
-            Email: {{ $customer->email }}<br>
-        @endif
-        @if($customer->phone)
-            Telefono: {{ $customer->phone }}<br>
-        @endif
-        @if($customer->address)
-            Indirizzo: {{ $customer->address }}
-        @endif
     </div>
 
-    <!-- Dettagli del lavoro -->
-    <div class="work-details">
-        <table class="work-table">            <thead>
+    <div class="section">
+        <div class="section-title">Dati Cliente</div>
+        <div class="box">
+            <strong>{{ $customer->customer_type == 'fisica' ? $customer->full_name : $customer->ragione_sociale }}</strong><br>
+            @if($customer->address)
+                Indirizzo: {{ $customer->address }}<br>
+            @endif
+            @if($customer->phone)
+                Telefono: {{ $customer->phone }}<br>
+            @endif
+            @if($customer->email)
+                Email: {{ $customer->email }}<br>
+            @endif
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Dettagli Lavoro</div>
+        <table>
+            <thead>
                 <tr>
-                    <th style="width: 40%">Descrizione Lavoro</th>
-                    <th style="width: 20%">Data Esecuzione</th>
-                    <th style="width: 20%">Destinazione</th>
-                    <th style="width: 20%">Importo</th>
+                    <th style="width: 26%;">Lavoro</th>
+                    <th style="width: 18%;">Data/Ora</th>
+                    <th style="width: 28%;">Partenza</th>
+                    <th style="width: 28%;">Destinazione</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        <strong>{{ $work->tipo_lavoro }}</strong>
+                        <strong>{{ $work->tipo_lavoro }}</strong><br>
+                        ID: {{ $work->id }}<br>
                         @if($work->materiale)
-                            <br><small><strong>Materiale:</strong> {{ $work->materiale }}</small>
+                            Materiale: {{ $work->materiale }}<br>
                         @endif
                         @if($work->codice_eer)
-                            <br><small><strong>Codice EER:</strong> {{ $work->codice_eer }}</small>
+                            Codice EER: {{ $work->codice_eer }}<br>
+                        @endif
+                        @if($work->modalita_pagamento)
+                            Pagamento: {{ $work->modalita_pagamento }}
                         @endif
                     </td>
-                    <td>{{ $work->data_esecuzione ? \Carbon\Carbon::parse($work->data_esecuzione)->format('d/m/Y') : 'Non specificata' }}</td>
                     <td>
-                        {{ $work->nome_destinazione }}<br>
-                        <small>{{ $work->indirizzo_destinazione }}</small>
+                        {{ $work->data_esecuzione ? \Carbon\Carbon::parse($work->data_esecuzione)->format('d/m/Y H:i') : 'Non specificata' }}
                     </td>
-                    <td style="text-align: right;">
-                        @if($work->costo_lavoro)
-                            € {{ number_format($work->costo_lavoro, 2, ',', '.') }}
-                        @else
-                            Da definire
-                        @endif
+                    <td>
+                        {{ $work->nome_partenza ?? 'N/D' }}<br>
+                        <small>{{ $work->indirizzo_partenza ?? 'N/D' }}</small>
+                    </td>
+                    <td>
+                        {{ $work->nome_destinazione ?? 'N/D' }}<br>
+                        <small>{{ $work->indirizzo_destinazione ?? 'N/D' }}</small>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- Sezione totali e pagamento -->
-    <div class="total-section">
-        <div class="payment-info">
-            <strong>Stato Pagamento:</strong><br>
-            <span class="payment-status {{ $ricevuta->pagamento_effettuato ? 'payment-paid' : 'payment-unpaid' }}">
-                {{ $ricevuta->pagamento_effettuato ? 'PAGATO' : 'NON PAGATO' }}
-            </span>
-            @if($ricevuta->pagamento_effettuato && $ricevuta->somma_pagamento)
-                <br><br><strong>Importo pagato:</strong> € {{ number_format($ricevuta->somma_pagamento, 2, ',', '.') }}
-            @endif        </div>
-        <div class="total-info">
-            @if($work->costo_lavoro)
-                <div class="total-amount">
-                    TOTALE: € {{ number_format($work->costo_lavoro, 2, ',', '.') }}
-                </div>
-            @endif
-        </div>
+    <div class="section">
+        <div class="section-title">Pagamento</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40%;">Stato pagamento</th>
+                    <th style="width: 30%;">Importo dovuto</th>
+                    <th style="width: 30%;">Importo pagato</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <span class="badge {{ $ricevuta->pagamento_effettuato ? 'badge-success' : 'badge-danger' }}">
+                            {{ $ricevuta->pagamento_effettuato ? 'PAGATO' : 'NON PAGATO' }}
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        @if($work->costo_lavoro)
+                            € {{ number_format($work->costo_lavoro, 2, ',', '.') }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td class="text-right">
+                        @if($ricevuta->pagamento_effettuato && $ricevuta->somma_pagamento)
+                            € {{ number_format($ricevuta->somma_pagamento, 2, ',', '.') }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        @if($work->costo_lavoro)
+            <div class="text-right" style="margin-top: 6px;">
+                <span class="total">TOTALE: € {{ number_format($work->costo_lavoro, 2, ',', '.') }}</span>
+            </div>
+        @endif
     </div>
 
-    <!-- Note aggiuntive -->
-    @if($ricevuta->riserva_controlli)
-    <div class="notes">
-        <div class="notes-title">Nota Importante:</div>
-        Questo lavoro è soggetto a riserva controlli.
-    </div>
-    @endif
-
-    <!-- Sezione firma -->
-    <div class="signature-section">
-        <div class="signature-title">Firma del ricevente</div>
-        <div class="signature-line"></div>
-        <div>{{ $ricevuta->nome_ricevente }}</div>
+    <div class="signature">
+        <div class="section-title">Firma del ricevente</div>
+        @if(\Illuminate\Support\Str::startsWith($ricevuta->firma_base64, 'data:image'))
+            <img src="{{ $ricevuta->firma_base64 }}" alt="Firma">
+        @else
+            <div class="signature-line"></div>
+            <div>{{ $ricevuta->nome_ricevente }}</div>
+        @endif
     </div>
 
-    <!-- Footer -->
     <div class="footer">
-        Ricevuta generata il {{ now()->format('d/m/Y H:i') }} - {{ env('NOME_AZIENDA') }}<br>
-        Questo documento costituisce ricevuta del lavoro svolto
+        Documento generato il {{ now()->format('d/m/Y H:i') }} - {{ env('NOME_AZIENDA', config('app.name')) }}.
     </div>
 </body>
 </html>
