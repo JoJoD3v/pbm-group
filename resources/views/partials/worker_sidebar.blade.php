@@ -12,7 +12,7 @@
   <li class="nav-item">
     <a class="nav-link" href="{{ route('dashboard') }}">
       <i class="bi bi-speedometer2"></i>
-      <span>Dashboard</span>
+      <span>Lavori Assegnati</span>
     </a>
   </li>
 
@@ -20,7 +20,7 @@
   <li class="nav-item">
     <a class="nav-link" href="{{ route('worker.jobs') }}">
       <i class="bi bi-clipboard-check"></i>
-      <span>I Miei Lavori</span>
+      <span>Lavori Disponibili</span>
     </a>
   </li>
 
