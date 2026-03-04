@@ -52,25 +52,18 @@ class WorkerJobController extends Controller
         Log::info("WorkerJobController: worker trovato ID: " . $worker->id . ", Nome: " . $worker->getFullNameAttribute());
         
         try {
-            // Data odierna
-            $today = Carbon::today()->format('Y-m-d');
-            
-            // Recupera i lavori assegnati al dipendente con data di esecuzione odierna
-            $assignedWorks = $worker->works()
-                ->where('data_esecuzione', $today)
+            $todayStart = Carbon::today()->startOfDay();
+            $todayEnd = Carbon::today()->endOfDay();
+
+            // Recupera i lavori non assegnati con data di esecuzione odierna
+            $works = Work::whereDoesntHave('workers')
+                ->with('customer')
+                ->whereBetween('data_esecuzione', [$todayStart, $todayEnd])
+                ->orderBy('data_esecuzione')
                 ->orderBy('created_at', 'desc')
                 ->get();
             
-            // Recupera i lavori non assegnati a nessuno con data di esecuzione odierna
-            $unassignedWorks = Work::whereDoesntHave('workers')
-                ->where('data_esecuzione', $today)
-                ->orderBy('created_at', 'desc')
-                ->get();
-            
-            // Unisce le due collezioni
-            $works = $assignedWorks->concat($unassignedWorks);
-            
-            Log::info("WorkerJobController: trovati " . $works->count() . " lavori per oggi");
+            Log::info("WorkerJobController: trovati " . $works->count() . " lavori non assegnati per oggi");
             
             return view('worker.jobs.index', compact('works', 'worker'));
         } catch (\Exception $e) {
@@ -137,19 +130,20 @@ class WorkerJobController extends Controller
             // Recupera il lavoro
             $work = Work::findOrFail($id);
             
-            // Verifica che il lavoro non sia già assegnato a qualcuno
+            // Verifica che il lavoro non sia gia' assegnato a qualcuno
             if ($work->workers->count() > 0) {
                 return redirect()->route('worker.jobs')
-                    ->with('error', 'Questo lavoro è già stato assegnato.');
+                    ->with('error', 'Questo lavoro e' gia' stato assegnato.');
             }
-            
+
             // Verifica che il lavoro abbia data di esecuzione odierna
-            $today = Carbon::today()->format('Y-m-d');
-            if ($work->data_esecuzione != $today) {
+            $todayStart = Carbon::today()->startOfDay();
+            $todayEnd = Carbon::today()->endOfDay();
+            if (!$work->data_esecuzione || $work->data_esecuzione < $todayStart || $work->data_esecuzione > $todayEnd) {
                 return redirect()->route('worker.jobs')
                     ->with('error', 'Puoi assumere solo lavori con data di esecuzione odierna.');
             }
-            
+
             // Assegna il lavoro al worker
             $work->workers()->attach($worker->id);
             
@@ -163,3 +157,4 @@ class WorkerJobController extends Controller
         }
     }
 } 
+
