@@ -56,6 +56,9 @@
                     <th class="datetime-column">Data</th>
                     <th>Tipo Lavoro</th>
                     <th>Cliente</th>
+                    @if(!empty($showAssignedWorkerColumn))
+                    <th>Lavoratore</th>
+                    @endif
                     <th>Status</th>
                     <th>Materiali</th>
                     <th>Indirizzo Partenza</th>
@@ -75,6 +78,15 @@
                       N/D
                     @endif
                   </td>
+                  @if(!empty($showAssignedWorkerColumn))
+                  <td>
+                    @if($work->workers && $work->workers->count())
+                      {{ $work->workers->pluck('full_name')->join(', ') }}
+                    @else
+                      N/D
+                    @endif
+                  </td>
+                  @endif
                   <td>{{ $work->status_lavoro }}</td>
                   <td>
                     @if($work->materiale)

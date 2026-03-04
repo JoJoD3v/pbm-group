@@ -14,7 +14,7 @@ class WorkController extends Controller
 {
     private function buildFilteredQuery(Request $request)
     {
-        $query = Work::with('customer');
+        $query = Work::with(['customer', 'workers']);
 
         // Filtro per data inizio
         if ($request->filled('data_inizio')) {
@@ -55,6 +55,7 @@ class WorkController extends Controller
             'works' => $works,
             'pageTitle' => 'Elenco Lavori Assegnati',
             'indexRoute' => 'works.assigned',
+            'showAssignedWorkerColumn' => true,
         ]);
     }
 

@@ -13,7 +13,9 @@ class WorkAssignmentController extends Controller
      */
     public function index()
     {
-        $works = Work::all();
+        $works = Work::whereDoesntHave('workers')
+            ->with('customer')
+            ->get();
         
         // Ottieni tutte le assegnazioni esistenti
         $assignments = [];
@@ -60,17 +62,17 @@ class WorkAssignmentController extends Controller
         $work = Work::findOrFail($request->work_id);
         $worker = Worker::findOrFail($request->worker_id);
         
-        // Verifica se l'assegnazione esiste già
-        if (!$work->workers->contains($worker->id)) {
-            $work->workers()->attach($worker->id);
+        // Verifica se il lavoro e' gia' assegnato
+        if ($work->workers()->exists()) {
             return redirect()->route('work.assignments.create')
-                             ->with('success', 'Lavoro assegnato con successo.');
+                             ->with('error', 'Questo lavoro e' gia' assegnato a un lavoratore.');
         }
-        
+
+        $work->workers()->attach($worker->id);
         return redirect()->route('work.assignments.create')
-                         ->with('error', 'Questo lavoro è già assegnato a questo lavoratore.');
+                         ->with('success', 'Lavoro assegnato con successo.');
     }
-    
+
     /**
      * Rimuovi un'assegnazione
      */
@@ -88,3 +90,4 @@ class WorkAssignmentController extends Controller
                          ->with('success', 'Assegnazione rimossa con successo.');
     }
 }
+
