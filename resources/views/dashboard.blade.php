@@ -146,6 +146,9 @@
                           <a href="{{ route('worker.jobs.show', $work->id) }}" class="btn btn-info btn-sm">
                             <i class="bi bi-eye"></i>
                           </a>
+                          <a href="{{ route('worker.ricevute.create', $work->id) }}" class="btn btn-success btn-sm">
+                            <i class="bi bi-receipt"></i>
+                          </a>
                         </td>
                       </tr>
                     @endforeach

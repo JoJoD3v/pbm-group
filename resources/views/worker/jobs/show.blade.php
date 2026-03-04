@@ -4,9 +4,16 @@
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3 mb-0 text-gray-800">Dettagli Lavoro #{{ $work->id }}</h1>
-            <a href="{{ route('worker.jobs') }}" class="btn btn-primary">
-                <i class="bi bi-arrow-left"></i> Torna all'elenco
-            </a>
+            <div class="d-flex gap-2">
+                @if($work->workers->contains($worker->id))
+                    <a href="{{ route('worker.ricevute.create', $work->id) }}" class="btn btn-success">
+                        <i class="bi bi-receipt"></i> Crea Ricevuta
+                    </a>
+                @endif
+                <a href="{{ route('worker.jobs') }}" class="btn btn-primary">
+                    <i class="bi bi-arrow-left"></i> Torna all'elenco
+                </a>
+            </div>
         </div>
         
         @if(session('error'))
