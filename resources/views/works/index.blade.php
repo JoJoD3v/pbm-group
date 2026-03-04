@@ -3,9 +3,8 @@
 @section('content')
 <div class="container-fluid mt-4">
   <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <div class="card-header py-3">
       <h6 class="m-0 font-weight-bold text-primary">{{ $pageTitle ?? 'Elenco Lavori' }}</h6>
-      <span id="pollingStatus" class="badge bg-secondary">Polling: In attesa...</span>
     </div>
     <div class="card-body">
       @if(session('success'))
@@ -143,18 +142,11 @@
 @section('scripts')
 <script>
   $(document).ready(function() {
-    console.log('=== INIZIO INIZIALIZZAZIONE PAGINA LAVORI ===');
-    console.log('jQuery version:', $.fn.jquery);
-    console.log('CSRF Token:', '{{ csrf_token() }}');
-    console.log('Route works.statuses:', '{{ route('works.statuses') }}');
-
     // Verifica se DataTable è già inizializzata, altrimenti inizializzala
     let table;
     if ($.fn.DataTable.isDataTable('#worksTable')) {
-      console.log('DataTable già inizializzata, recupero istanza esistente');
       table = $('#worksTable').DataTable();
     } else {
-      console.log('Inizializzo DataTable');
       table = $('#worksTable').DataTable({
         order: [[0, 'desc']], // Ordina per data decrescente (colonna 0)
         columnDefs: [
@@ -166,8 +158,6 @@
       });
     }
 
-    console.log('DataTable pronta, avvio polling per aggiornamento stati...');
-
     // Sistema di polling per aggiornamento automatico degli stati
     const updateStatusBadge = (cell, status) => {
       let badgeClass = 'secondary';
@@ -177,25 +167,13 @@
       if (status === 'Lavoro Annullato') badgeClass = 'danger';
       const label = status || 'In Sospeso';
       cell.html('<span class="badge bg-' + badgeClass + '">' + label + '</span>');
-      console.log('Stato aggiornato per ID:', cell.data('work-id'), 'Nuovo stato:', status);
     };
 
     let polling = null;
     let inFlight = false;
-    let pollCount = 0;
-
-    const updatePollingStatus = (message, type = 'secondary') => {
-      const badge = $('#pollingStatus');
-      badge.removeClass('bg-secondary bg-success bg-warning bg-danger bg-info');
-      badge.addClass('bg-' + type);
-      badge.text('Polling: ' + message);
-    };
 
     const fetchStatuses = () => {
-      if (document.hidden || inFlight) {
-        console.log('Polling saltato - documento nascosto o richiesta in corso');
-        return;
-      }
+      if (document.hidden || inFlight) return;
 
       // Usa il DOM diretto poiché DataTables potrebbe aver riorganizzato le righe
       const ids = [];
@@ -206,18 +184,11 @@
         }
       });
 
-      console.log('IDs raccolti per polling:', ids);
-
       if (!ids.length) {
-        console.log('Nessun ID trovato, polling saltato');
-        updatePollingStatus('Nessun lavoro da monitorare', 'warning');
         return;
       }
 
       inFlight = true;
-      pollCount++;
-      updatePollingStatus('Controllo in corso... (' + pollCount + ')', 'info');
-      console.log('Inizio richiesta AJAX per stati lavori...');
 
       $.ajax({
         url: '{{ route('works.statuses') }}',
@@ -227,7 +198,6 @@
           ids: ids
         },
         success: function(data) {
-          console.log('Risposta ricevuta dal server:', data);
           if (data && data.statuses) {
             let updates = 0;
             $('#worksTable tbody .status-cell').each(function() {
@@ -241,40 +211,20 @@
                 }
               }
             });
-            if (updates > 0) {
-              updatePollingStatus('Aggiornati ' + updates + ' stati ✓', 'success');
-            } else {
-              updatePollingStatus('Attivo ✓ (Check #' + pollCount + ')', 'success');
-            }
-            console.log('Stati aggiornati:', updates);
           }
-        },
-        error: function(xhr, status, error) {
-          updatePollingStatus('Errore connessione ✗', 'danger');
-          console.error('Errore AJAX:', {
-            status: status,
-            error: error,
-            responseText: xhr.responseText,
-            statusCode: xhr.status
-          });
         }
       }).always(function() {
         inFlight = false;
-        console.log('Richiesta AJAX completata');
       });
     };
 
     // Avvia il polling
-    console.log('Eseguo prima richiesta di polling...');
-    updatePollingStatus('Inizializzazione...', 'info');
     fetchStatuses();
     polling = setInterval(fetchStatuses, 20000);
-    console.log('Polling configurato ogni 20 secondi');
 
     // Riprendi il polling quando la pagina torna visibile
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) {
-        console.log('Pagina tornata visibile, eseguo polling...');
         fetchStatuses();
       }
     });
@@ -283,18 +233,8 @@
     window.addEventListener('beforeunload', function() {
       if (polling) {
         clearInterval(polling);
-        console.log('Polling fermato');
       }
     });
-
-    // Funzione di test manuale (eseguibile da console)
-    window.testPolling = function() {
-      console.log('=== TEST MANUALE POLLING ===');
-      fetchStatuses();
-    };
-
-    console.log('=== INIZIALIZZAZIONE COMPLETATA ===');
-    console.log('Per testare manualmente il polling, esegui: testPolling()');
   });
 </script>
 @endsection

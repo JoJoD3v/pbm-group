@@ -74,16 +74,10 @@ class WorkController extends Controller
 
     public function statuses(Request $request)
     {
-        \Log::info('WorkController::statuses - Richiesta ricevuta', [
-            'ids' => $request->input('ids'),
-            'user' => auth()->id(),
-        ]);
-
         $ids = $request->input('ids', []);
         $ids = is_array($ids) ? $ids : [];
         
         if (empty($ids)) {
-            \Log::warning('WorkController::statuses - Nessun ID fornito');
             return response()->json([
                 'server_time' => now()->toIso8601String(),
                 'statuses' => [],
@@ -95,11 +89,6 @@ class WorkController extends Controller
             ->mapWithKeys(function ($work) {
                 return [$work->id => $work->status_lavoro];
             });
-
-        \Log::info('WorkController::statuses - Risposta preparata', [
-            'count' => $statuses->count(),
-            'statuses' => $statuses->toArray(),
-        ]);
 
         return response()->json([
             'server_time' => now()->toIso8601String(),
