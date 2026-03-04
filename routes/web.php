@@ -18,15 +18,44 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', function(){
     $todayWorks = collect([]);
+    $workerTodayWorks = collect([]);
+    $tomorrowFirstWork = null;
 
-    // Se l'utente è amministratore o sviluppatore, carica i lavori di oggi
-    if(in_array(auth()->user()->role, ['Amministratore', 'Sviluppatore'])) {
+    $user = auth()->user();
+    $role = strtolower($user->role ?? '');
+
+    // Se l'utente e' amministratore o sviluppatore, carica i lavori di oggi
+    if (in_array($role, ['amministratore', 'sviluppatore'])) {
         $todayWorks = \App\Models\Work::whereDate('data_esecuzione', today())
             ->with('customer')
             ->get();
     }
 
-    return view('dashboard', compact('todayWorks'));
+    // Se l'utente e' dipendente, carica i lavori assegnati di oggi e il primo lavoro di domani
+    if ($role === 'dipendente') {
+        $worker = $user->worker;
+
+        if ($worker) {
+            $todayStart = \Carbon\Carbon::today()->startOfDay();
+            $todayEnd = \Carbon\Carbon::today()->endOfDay();
+            $tomorrowStart = \Carbon\Carbon::tomorrow()->startOfDay();
+            $tomorrowEnd = \Carbon\Carbon::tomorrow()->endOfDay();
+
+            $workerTodayWorks = $worker->works()
+                ->with('customer')
+                ->whereBetween('data_esecuzione', [$todayStart, $todayEnd])
+                ->orderBy('data_esecuzione')
+                ->get();
+
+            $tomorrowFirstWork = $worker->works()
+                ->with('customer')
+                ->whereBetween('data_esecuzione', [$tomorrowStart, $tomorrowEnd])
+                ->orderBy('data_esecuzione')
+                ->first();
+        }
+    }
+
+    return view('dashboard', compact('todayWorks', 'workerTodayWorks', 'tomorrowFirstWork'));
 })->middleware('auth')->name('dashboard');
 
 
@@ -144,3 +173,4 @@ use App\Http\Middleware\CheckDeveloperRole;
 Route::middleware(['auth', CheckDeveloperRole::class])->group(function () {
     Route::resource('users', UserController::class);
 });
+
