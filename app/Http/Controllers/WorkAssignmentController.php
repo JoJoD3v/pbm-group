@@ -65,7 +65,7 @@ class WorkAssignmentController extends Controller
         // Verifica se il lavoro e' gia' assegnato
         if ($work->workers()->exists()) {
             return redirect()->route('work.assignments.create')
-                             ->with('error', 'Questo lavoro e' gia' assegnato a un lavoratore.');
+                             ->with('error', 'Questo lavoro è già assegnato a un lavoratore.');
         }
 
         $work->workers()->attach($worker->id);
