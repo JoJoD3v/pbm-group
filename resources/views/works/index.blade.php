@@ -91,7 +91,7 @@
                     $status = $work->status_lavoro;
                     $statusBadge = 'secondary';
                     if ($status === 'Preso in Carico') $statusBadge = 'info';
-                    if ($status === 'Lavoro Iniziato') $statusBadge = 'warning';
+                    if ($status === 'Lavoro Iniziato') $statusBadge = 'primary';
                     if ($status === 'Lavoro Completato' || $status === 'Concluso') $statusBadge = 'success';
                     if ($status === 'Lavoro Annullato') $statusBadge = 'danger';
                   @endphp
@@ -162,7 +162,7 @@
     const updateStatusBadge = (cell, status) => {
       let badgeClass = 'secondary';
       if (status === 'Preso in Carico') badgeClass = 'info';
-      if (status === 'Lavoro Iniziato') badgeClass = 'warning';
+      if (status === 'Lavoro Iniziato') badgeClass = 'primary';
       if (status === 'Lavoro Completato' || status === 'Concluso') badgeClass = 'success';
       if (status === 'Lavoro Annullato') badgeClass = 'danger';
       const label = status || 'In Sospeso';

@@ -68,7 +68,7 @@
                             $status = $work->status_lavoro;
                             $statusBadge = 'secondary';
                             if ($status === 'Preso in Carico') $statusBadge = 'info';
-                            if ($status === 'Lavoro Iniziato') $statusBadge = 'warning';
+                            if ($status === 'Lavoro Iniziato') $statusBadge = 'primary';
                             if ($status === 'Lavoro Completato' || $status === 'Concluso') $statusBadge = 'success';
                             if ($status === 'Lavoro Annullato') $statusBadge = 'danger';
                           @endphp
