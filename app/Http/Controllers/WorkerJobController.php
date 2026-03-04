@@ -133,7 +133,7 @@ class WorkerJobController extends Controller
             // Verifica che il lavoro non sia gia' assegnato a qualcuno
             if ($work->workers->count() > 0) {
                 return redirect()->route('worker.jobs')
-                    ->with('error', 'Questo lavoro e' gia' stato assegnato.');
+                    ->with('error', 'Questo lavoro è già stato assegnato.');
             }
 
             // Verifica che il lavoro abbia data di esecuzione odierna
