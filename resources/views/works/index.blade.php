@@ -150,63 +150,74 @@
       ]
     });
 
-    @if(!empty($showAssignedWorkerColumn))
-      const updateStatusBadge = (cell, status) => {
-        let badgeClass = 'secondary';
-        if (status === 'Preso in Carico') badgeClass = 'info';
-        if (status === 'Lavoro Iniziato') badgeClass = 'warning';
-        if (status === 'Lavoro Completato' || status === 'Concluso') badgeClass = 'success';
-        if (status === 'Lavoro Annullato') badgeClass = 'danger';
-        const label = status || 'In Sospeso';
-        cell.html('<span class="badge bg-' + badgeClass + '">' + label + '</span>');
-      };
+    // Sistema di polling per aggiornamento automatico degli stati
+    const updateStatusBadge = (cell, status) => {
+      let badgeClass = 'secondary';
+      if (status === 'Preso in Carico') badgeClass = 'info';
+      if (status === 'Lavoro Iniziato') badgeClass = 'warning';
+      if (status === 'Lavoro Completato' || status === 'Concluso') badgeClass = 'success';
+      if (status === 'Lavoro Annullato') badgeClass = 'danger';
+      const label = status || 'In Sospeso';
+      cell.html('<span class="badge bg-' + badgeClass + '">' + label + '</span>');
+    };
 
-      let polling = null;
-      let inFlight = false;
+    let polling = null;
+    let inFlight = false;
 
-      const fetchStatuses = () => {
-        if (document.hidden || inFlight) return;
-        const ids = $('.status-cell').map(function() {
-          return $(this).data('work-id');
-        }).get();
+    const fetchStatuses = () => {
+      if (document.hidden || inFlight) return;
+      const ids = $('.status-cell').map(function() {
+        return $(this).data('work-id');
+      }).get();
 
-        if (!ids.length) return;
+      if (!ids.length) return;
 
-        inFlight = true;
-        $.ajax({
-          url: '{{ route('works.statuses') }}',
-          method: 'POST',
-          data: {
-            _token: '{{ csrf_token() }}',
-            ids: ids
-          },
-          success: function(data) {
-            if (data && data.statuses) {
-              $('.status-cell').each(function() {
-                const id = $(this).data('work-id');
-                if (data.statuses[id] !== undefined) {
-                  const current = $(this).find('.badge').text().trim();
-                  if (current !== (data.statuses[id] || 'In Sospeso')) {
-                    updateStatusBadge($(this), data.statuses[id]);
-                  }
+      inFlight = true;
+      $.ajax({
+        url: '{{ route('works.statuses') }}',
+        method: 'POST',
+        data: {
+          _token: '{{ csrf_token() }}',
+          ids: ids
+        },
+        success: function(data) {
+          if (data && data.statuses) {
+            $('.status-cell').each(function() {
+              const id = $(this).data('work-id');
+              if (data.statuses[id] !== undefined) {
+                const current = $(this).find('.badge').text().trim();
+                if (current !== (data.statuses[id] || 'In Sospeso')) {
+                  updateStatusBadge($(this), data.statuses[id]);
                 }
-              });
-            }
+              }
+            });
           }
-        }).always(function() {
-          inFlight = false;
-        });
-      };
-
-      fetchStatuses();
-      polling = setInterval(fetchStatuses, 20000);
-
-      document.addEventListener('visibilitychange', function() {
-        if (!document.hidden) {
-          fetchStatuses();
+        },
+        error: function(xhr, status, error) {
+          console.error('Errore durante l\'aggiornamento degli stati:', error);
         }
+      }).always(function() {
+        inFlight = false;
       });
-    @endif
+    };
+
+    // Avvia il polling
+    fetchStatuses();
+    polling = setInterval(fetchStatuses, 20000);
+
+    // Riprendi il polling quando la pagina torna visibile
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        fetchStatuses();
+      }
+    });
+
+    // Pulisci l'intervallo quando la pagina viene abbandonata
+    window.addEventListener('beforeunload', function() {
+      if (polling) {
+        clearInterval(polling);
+      }
+    });
   });
 </script>
 @endsection
