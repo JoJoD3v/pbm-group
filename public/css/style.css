@@ -153,6 +153,7 @@ body {
 .table {
   color: var(--grigio-carbone);
   font-family: var(--font-family);
+  font-size: 0.9rem;
 }
 
 .table th {
@@ -160,10 +161,35 @@ body {
   color: var(--marrone-scuro);
   font-weight: 500;
   border-bottom: 2px solid var(--grigio-roccia);
+  font-size: 0.9rem;
 }
 
 .table td {
   border-bottom: 1px solid var(--grigio-roccia);
+  font-size: 0.9rem;
+}
+
+/* Colonna Azioni più larga */
+.table th:last-child,
+.table td:last-child {
+  min-width: 120px;
+  width: 120px;
+  white-space: nowrap;
+}
+
+/* Spaziatura tra i bottoni nelle tabelle */
+.table .btn {
+  margin: 0 2px;
+}
+
+/* Stili specifici per DataTables */
+.dataTable {
+  font-size: 0.9rem !important;
+}
+
+.dataTable thead th,
+.dataTable tbody td {
+  font-size: 0.9rem !important;
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
