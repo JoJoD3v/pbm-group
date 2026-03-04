@@ -187,7 +187,7 @@
               $('.status-cell').each(function() {
                 const id = $(this).data('work-id');
                 if (data.statuses[id] !== undefined) {
-                  const current = $(this).text().trim();
+                  const current = $(this).find('.badge').text().trim();
                   if (current !== (data.statuses[id] || 'In Sospeso')) {
                     updateStatusBadge($(this), data.statuses[id]);
                   }
