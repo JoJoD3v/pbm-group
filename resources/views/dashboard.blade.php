@@ -6,26 +6,28 @@
   @endphp
 
   <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
-  <div class="row mb-4">
-    <div class="col-lg-12">
-      <div class="card shadow mb-4">
-        <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold text-primary">Informazioni Personali</h6>
-        </div>        <div class="card-body">
-          <p>Benvenuto, {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}.</p>
-          <p>Il tuo ruolo: 
-            @if($role === 'amministratore')
-              <span class="badge bg-primary">{{ ucfirst($role) }}</span>
-            @elseif($role === 'sviluppatore')
-              <span class="badge bg-info">{{ ucfirst($role) }}</span>
-            @else
-              <span class="badge bg-secondary">{{ ucfirst($role) }}</span>
-            @endif
-          </p>
+  @if($role !== 'dipendente')
+    <div class="row mb-4">
+      <div class="col-lg-12">
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Informazioni Personali</h6>
+          </div>        <div class="card-body">
+            <p>Benvenuto, {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}.</p>
+            <p>Il tuo ruolo: 
+              @if($role === 'amministratore')
+                <span class="badge bg-primary">{{ ucfirst($role) }}</span>
+              @elseif($role === 'sviluppatore')
+                <span class="badge bg-info">{{ ucfirst($role) }}</span>
+              @else
+                <span class="badge bg-secondary">{{ ucfirst($role) }}</span>
+              @endif
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  @endif
   @if(in_array($role, ['amministratore', 'sviluppatore']))
     <div class="row">
       <div class="col-lg-12">
@@ -36,7 +38,7 @@
           <div class="card-body">
             @if($todayWorks->count() > 0)
               <div class="table-responsive">
-                <table class="table table-bordered dataTable" id="todayWorksTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="todayWorksTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
                       <th>ID</th>
@@ -111,7 +113,7 @@
           <div class="card-body">
             @if($workerTodayWorks->count() > 0)
               <div class="table-responsive">
-                <table class="table table-bordered dataTable" id="workerTodayWorksTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="workerTodayWorksTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
                       <th>Ora</th>
@@ -205,26 +207,30 @@
   @if(in_array($role, ['amministratore', 'sviluppatore']))
     <script>
       $(document).ready(function() {
-        $('#todayWorksTable').DataTable({
-          "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Italian.json"
-          },
-          "pageLength": 10,
-          "order": [[ 0, "desc" ]]
-        });
+        if ($('#todayWorksTable').length && !$.fn.dataTable.isDataTable('#todayWorksTable')) {
+          $('#todayWorksTable').DataTable({
+            "language": {
+              "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Italian.json"
+            },
+            "pageLength": 10,
+            "order": [[ 0, "desc" ]]
+          });
+        }
       });
     </script>
   @endif
   @if($role === 'dipendente' && $workerTodayWorks->count() > 0)
     <script>
       $(document).ready(function() {
-        $('#workerTodayWorksTable').DataTable({
-          "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Italian.json"
-          },
-          "pageLength": 10,
-          "order": [[ 0, "asc" ]]
-        });
+        if ($('#workerTodayWorksTable').length && !$.fn.dataTable.isDataTable('#workerTodayWorksTable')) {
+          $('#workerTodayWorksTable').DataTable({
+            "language": {
+              "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Italian.json"
+            },
+            "pageLength": 10,
+            "order": [[ 0, "asc" ]]
+          });
+        }
       });
     </script>
   @endif
