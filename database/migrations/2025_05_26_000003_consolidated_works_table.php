@@ -35,7 +35,6 @@ return new class extends Migration
             $table->decimal('longitude_destinazione', 10, 7)->nullable();
             $table->timestamps();
             
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 
