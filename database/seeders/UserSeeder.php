@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             'last_name' => 'Developer',
             'name' => 'JoJo Developer',
             'email' => 'giovannicastaldodev@gmail.com',
-            'role' => 'Sviluppatore',
+            'role' => 'sviluppatore',
             'password' => Hash::make('K1t4mmu0rt!'),
         ]);
     }

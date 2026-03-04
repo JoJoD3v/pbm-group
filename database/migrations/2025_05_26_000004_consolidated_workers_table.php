@@ -14,7 +14,8 @@ return new class extends Migration
         // Eliminiamo la vecchia tabella se esiste
         Schema::dropIfExists('workers');
         
-        // Creiamo la tabella con tutti i campi consolidati        Schema::create('workers', function (Blueprint $table) {
+        // Creiamo la tabella con tutti i campi consolidati
+        Schema::create('workers', function (Blueprint $table) {
             $table->id();
             $table->string('id_worker')->unique();
             $table->string('name_worker');
