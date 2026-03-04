@@ -76,8 +76,6 @@ class WorkController extends Controller
     {
         $ids = $request->input('ids', []);
         $ids = is_array($ids) ? $ids : [];
-        $since = $request->input('since');
-
         if (empty($ids)) {
             return response()->json([
                 'server_time' => now()->toIso8601String(),
@@ -85,16 +83,8 @@ class WorkController extends Controller
             ]);
         }
 
-        $query = Work::whereIn('id', $ids);
-        if ($since) {
-            try {
-                $query->where('updated_at', '>', \Carbon\Carbon::parse($since));
-            } catch (\Exception $e) {
-                // Ignore invalid since value
-            }
-        }
-
-        $statuses = $query->get(['id', 'status_lavoro'])
+        $statuses = Work::whereIn('id', $ids)
+            ->get(['id', 'status_lavoro'])
             ->mapWithKeys(function ($work) {
                 return [$work->id => $work->status_lavoro];
             });

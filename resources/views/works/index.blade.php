@@ -161,7 +161,6 @@
         cell.html('<span class="badge bg-' + badgeClass + '">' + label + '</span>');
       };
 
-      let lastSync = null;
       let polling = null;
       let inFlight = false;
 
@@ -179,8 +178,7 @@
           method: 'POST',
           data: {
             _token: '{{ csrf_token() }}',
-            ids: ids,
-            since: lastSync
+            ids: ids
           },
           success: function(data) {
             if (data && data.statuses) {
@@ -193,9 +191,6 @@
                   }
                 }
               });
-            }
-            if (data && data.server_time) {
-              lastSync = data.server_time;
             }
           }
         }).always(function() {
