@@ -224,9 +224,14 @@ class RicevutaController extends Controller
         try {
             $ricevuta = Ricevuta::with(['work.customer'])->findOrFail($ricevutaId);
             
-            // Verifica che l'utente sia autorizzato (proprietario del lavoro o admin)
-            $worker = Auth::user()->worker;
-            if (!$worker || !$ricevuta->work->workers->contains($worker->id)) {
+            // Verifica che l'utente sia autorizzato (dipendente assegnato o admin/sviluppatore)
+            $user = Auth::user();
+            $role = strtolower($user->role ?? '');
+            $isAdmin = in_array($role, ['amministratore', 'sviluppatore']);
+            $worker = $user->worker;
+            $isAssignedWorker = $worker && $ricevuta->work->workers->contains($worker->id);
+
+            if (!$isAdmin && !$isAssignedWorker) {
                 return redirect()->back()->with('error', 'Non sei autorizzato ad accedere a questa ricevuta.');
             }
             

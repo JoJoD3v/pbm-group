@@ -221,7 +221,7 @@ use Illuminate\Support\Str;
                             @endif
                           </td>
                           <td>
-                            <a href="{{ route('worker.ricevute.pdf', $ricevuta->id) }}" class="btn btn-sm btn-danger" target="_blank" title="Scarica PDF">
+                            <a href="{{ route('ricevute.pdf', $ricevuta->id) }}" class="btn btn-sm btn-danger" target="_blank" title="Scarica PDF">
                               <i class="fas fa-file-pdf"></i> PDF
                             </a>
                           </td>

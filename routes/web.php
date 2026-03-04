@@ -171,6 +171,11 @@ Route::get('/ricevute/bolle/{ricevutaId}', [RicevutaController::class, 'viewBoll
     ->middleware('auth')
     ->name('ricevute.bolle.view');
 
+// PDF ricevuta per admin/sviluppatore o dipendente assegnato
+Route::get('/ricevute/{ricevutaId}/pdf', [RicevutaController::class, 'downloadPDF'])
+    ->middleware('auth')
+    ->name('ricevute.pdf');
+
 // Rotte per la gestione utenti (solo sviluppatori)
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckDeveloperRole;
