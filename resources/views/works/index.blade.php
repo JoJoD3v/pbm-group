@@ -138,7 +138,9 @@
     </div>
   </div>
 </div>
+@endsection
 
+@section('scripts')
 <script>
   $(document).ready(function() {
     console.log('=== INIZIO INIZIALIZZAZIONE PAGINA LAVORI ===');
