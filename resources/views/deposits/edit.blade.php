@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-  <h1 class="h3 mb-4 text-gray-800">Modifica Deposito</h1>
+  <h1 class="h3 mb-4 text-gray-800">Modifica Discarica</h1>
 
   @if($errors->any())
       <div class="alert alert-danger">
@@ -19,12 +19,12 @@
       @method('PUT')
       
       <div class="mb-3">
-          <label for="name" class="form-label">Nome Deposito</label>
+          <label for="name" class="form-label">Nome Discarica</label>
           <input type="text" name="name" id="name" class="form-control" value="{{ $deposit->name }}" required>
       </div>
       
       <div class="mb-3">
-          <label for="address" class="form-label">Indirizzo Deposito</label>
+          <label for="address" class="form-label">Indirizzo Discarica</label>
           <input type="text" name="address" id="address" class="form-control" value="{{ $deposit->address }}" required>
       </div>
       

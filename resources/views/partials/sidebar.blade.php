@@ -18,7 +18,7 @@
     <li class="nav-item">
       <a class="nav-link" href="{{ route('deposits.index') }}">
         <i class="bi bi-buildings"></i>
-        <span>Depositi</span>
+        <span>Discariche</span>
       </a>
     </li>
 
@@ -43,7 +43,8 @@
       </a>
       <div id="collapseWorks" class="collapse" aria-labelledby="headingWorks" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-          <a class="collapse-item" href="{{ route('works.index') }}">Elenco Lavori</a>
+          <a class="collapse-item" href="{{ route('works.assigned') }}"> Lavori Assegnati</a>
+          <a class="collapse-item" href="{{ route('works.unassigned') }}"> Lavori Non Assegnati</a>
           <h6 class="collapse-header">Assegnazioni:</h6>
           <a class="collapse-item" href="{{ route('work.assignments.create') }}">Nuova Assegnazione</a>
           <a class="collapse-item" href="{{ route('work.assignments.index') }}">Elenco Assegnazioni</a>
@@ -123,4 +124,15 @@
     @endif
 
     <!-- Aggiungi qui altre voci di menu -->
+    <hr class="sidebar-divider my-0">
+
+    <li class="nav-item mt-3">
+      <form method="POST" action="{{ route('logout') }}" class="px-3">
+        @csrf
+        <button type="submit" class="btn btn-danger btn-block d-flex align-items-center justify-content-center">
+          <i class="bi bi-box-arrow-right mr-2"></i>
+          Logout
+        </button>
+      </form>
+    </li>
   </ul>

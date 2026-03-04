@@ -28,6 +28,10 @@ class Work extends Model
         'longitude_destinazione',
     ];
 
+    protected $casts = [
+        'data_esecuzione' => 'datetime',
+    ];
+
     // Relazione con il Customer
     public function customer()
     {

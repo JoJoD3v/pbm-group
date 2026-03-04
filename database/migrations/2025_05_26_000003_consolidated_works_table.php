@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('tipo_lavoro');
             $table->unsignedBigInteger('customer_id');
             $table->string('status_lavoro')->default('In Sospeso');
-            $table->date('data_esecuzione')->nullable();
+            $table->dateTime('data_esecuzione')->nullable();
             $table->decimal('costo_lavoro', 10, 2)->nullable();
             $table->string('modalita_pagamento')->nullable();
             $table->string('nome_partenza')->nullable();

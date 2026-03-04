@@ -46,7 +46,7 @@
         <div class="mb-3">
           <label for="data_esecuzione" class="form-label">Data Esecuzione Lavoro</label>
           <div class="italian-date-input">
-            <input type="date" name="data_esecuzione" id="data_esecuzione" class="form-control" value="{{ $work->data_esecuzione ? \Carbon\Carbon::parse($work->data_esecuzione)->format('Y-m-d') : '' }}">
+            <input type="datetime-local" name="data_esecuzione" id="data_esecuzione" class="form-control" step="60" value="{{ old('data_esecuzione', $work->data_esecuzione ? \Carbon\Carbon::parse($work->data_esecuzione)->format('Y-m-d\\TH:i') : '') }}">
           </div>
         </div>
 

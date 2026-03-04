@@ -8,30 +8,67 @@ use App\Models\Customer;
 use App\Models\Material;
 use App\Models\Warehouse;
 use App\Models\Deposit;
+use Carbon\Carbon;
 
 class WorkController extends Controller
 {
-    public function index(Request $request)
+    private function buildFilteredQuery(Request $request)
     {
         $query = Work::with('customer');
-        
+
         // Filtro per data inizio
         if ($request->filled('data_inizio')) {
-            $query->whereDate('created_at', '>=', $request->data_inizio);
+            $query->whereDate('data_esecuzione', '>=', $request->data_inizio);
         }
         
         // Filtro per data fine
         if ($request->filled('data_fine')) {
-            $query->whereDate('created_at', '<=', $request->data_fine);
+            $query->whereDate('data_esecuzione', '<=', $request->data_fine);
         }
-        
+
         // Filtro per tipo di lavoro
         if ($request->filled('tipo_lavoro')) {
             $query->where('tipo_lavoro', $request->tipo_lavoro);
         }
-        
-        $works = $query->get();
-        return view('works.index', compact('works'));
+
+        return $query->orderBy('data_esecuzione', 'desc')
+                     ->orderBy('created_at', 'desc');
+    }
+
+    public function index(Request $request)
+    {
+        $works = $this->buildFilteredQuery($request)->get();
+        return view('works.index', [
+            'works' => $works,
+            'pageTitle' => 'Elenco Lavori',
+            'indexRoute' => 'works.index',
+        ]);
+    }
+
+    public function assigned(Request $request)
+    {
+        $works = $this->buildFilteredQuery($request)
+            ->whereHas('workers')
+            ->get();
+
+        return view('works.index', [
+            'works' => $works,
+            'pageTitle' => 'Elenco Lavori Assegnati',
+            'indexRoute' => 'works.assigned',
+        ]);
+    }
+
+    public function unassigned(Request $request)
+    {
+        $works = $this->buildFilteredQuery($request)
+            ->whereDoesntHave('workers')
+            ->get();
+
+        return view('works.index', [
+            'works' => $works,
+            'pageTitle' => 'Elenco Lavori Non Assegnati',
+            'indexRoute' => 'works.unassigned',
+        ]);
     }
 
     public function create()
@@ -97,7 +134,15 @@ class WorkController extends Controller
         // Per il "nome destinazione" la logica viene gestita dal form (la select indica quale opzione è stata scelta)
         // e, in alcuni casi, i campi indirizzo, latitude e longitude vengono auto-riempiti.
 
-        $work = Work::create(array_merge($request->all(), $dataMateriale));
+        $dataEsecuzione = $request->filled('data_esecuzione')
+            ? Carbon::parse($request->data_esecuzione)->format('Y-m-d H:i:s')
+            : null;
+
+        $work = Work::create(array_merge(
+            $request->all(),
+            $dataMateriale,
+            ['data_esecuzione' => $dataEsecuzione]
+        ));
 
         return redirect()->route('works.index')
                          ->with('success', 'Work creato con successo.');
@@ -146,7 +191,15 @@ class WorkController extends Controller
             ];
         }
 
-        $work->update(array_merge($request->all(), $dataMateriale));
+        $dataEsecuzione = $request->filled('data_esecuzione')
+            ? Carbon::parse($request->data_esecuzione)->format('Y-m-d H:i:s')
+            : null;
+
+        $work->update(array_merge(
+            $request->all(),
+            $dataMateriale,
+            ['data_esecuzione' => $dataEsecuzione]
+        ));
 
         return redirect()->route('works.index')
                          ->with('success', 'Work aggiornato con successo.');

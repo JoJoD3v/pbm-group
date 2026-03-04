@@ -4,7 +4,7 @@
 <div class="container-fluid mt-4">
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">Elenco Lavori</h6>
+      <h6 class="m-0 font-weight-bold text-primary">{{ $pageTitle ?? 'Elenco Lavori' }}</h6>
     </div>
     <div class="card-body">
       @if(session('success'))
@@ -21,7 +21,7 @@
               <h6 class="m-0 font-weight-bold text-primary">Filtri</h6>
             </div>
             <div class="card-body">
-              <form action="{{ route('works.index') }}" method="GET" class="row">                <div class="col-md-4 mb-3">
+              <form action="{{ route($indexRoute ?? 'works.index') }}" method="GET" class="row">                <div class="col-md-4 mb-3">
                   <label for="data_inizio">Data inizio</label>
                   <div class="italian-date-input">
                     <input type="date" class="form-control" id="data_inizio" name="data_inizio" value="{{ request('data_inizio') }}">
@@ -43,7 +43,7 @@
                 </div>
                 <div class="col-md-12">
                   <button type="submit" class="btn btn-primary">Filtra</button>
-                  <a href="{{ route('works.index') }}" class="btn btn-secondary">Reset</a>
+                  <a href="{{ route($indexRoute ?? 'works.index') }}" class="btn btn-secondary">Reset</a>
                 </div>
               </form>
             </div>
@@ -66,7 +66,7 @@
             <tbody>
               @foreach($works as $work)
                 <tr>
-                    <td class="datetime-column">@formatDateTime($work->created_at)</td>
+                    <td class="datetime-column">@formatDateTime($work->data_esecuzione ?? $work->created_at)</td>
                     <td>{{ $work->tipo_lavoro }}</td>
                   <td>
                     @if($work->customer)
@@ -119,10 +119,10 @@
 <script>
   $(document).ready(function() {
     $('#worksTable').DataTable({
-      order: [[4, 'desc']], // Ordina per data decrescente (colonna 4)
+      order: [[0, 'desc']], // Ordina per data decrescente (colonna 0)
       columnDefs: [
         {
-          targets: 4, // Colonna data e ora (0-based index)
+          targets: 0, // Colonna data e ora (0-based index)
           type: 'date-eu-time' // Usa il tipo date-eu-time per ordinamento corretto
         }
       ]

@@ -4,7 +4,7 @@
 <div class="container-fluid mt-4">
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">Gestione Depositi</h6>
+      <h6 class="m-0 font-weight-bold text-primary">Gestione Discariche</h6>
     </div>
     <div class="card-body">
       @if(session('success'))
@@ -15,14 +15,14 @@
 
       <div class="mb-3">
         <a href="{{ route('deposits.create') }}" class="btn btn-primary">
-          <i class="fas fa-plus"></i> Aggiungi Deposito
+          <i class="fas fa-plus"></i> Aggiungi Discarica
         </a>
       </div>      <div class="table-responsive">
         <table id="depositsTable" class="table table-bordered dataTable" width="100%" cellspacing="0">
           <thead class="thead-light">
             <tr>
               <th width="20">ID</th>
-              <th>Nome Deposito</th>
+              <th>Nome Discarica</th>
               <th>Indirizzo</th>
               <th>Materiali Accettati</th>
               <th>EER Materiali</th>

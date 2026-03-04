@@ -44,7 +44,7 @@
         <div class="mb-3">
           <label for="data_esecuzione" class="form-label">Data Esecuzione Lavoro</label>
           <div class="italian-date-input">
-            <input type="date" name="data_esecuzione" id="data_esecuzione" class="form-control">
+            <input type="datetime-local" name="data_esecuzione" id="data_esecuzione" class="form-control" step="60" value="{{ old('data_esecuzione') }}">
           </div>
         </div>
 
@@ -150,7 +150,7 @@
             <option value="">Seleziona Opzione</option>
             <option value="cliente">Indirizzo Cliente</option>
             <option value="cantiere">Cantiere</option>
-            <option value="deposito">Deposito</option>
+            <option value="deposito">Discarica</option>
             <option value="libero">Indirizzo Libero</option>
           </select>
         </div>
@@ -186,9 +186,9 @@
         
         <!-- Sezione per la scelta del deposito (visibile solo se "deposito" è selezionato) -->
         <div id="deposito_section" class="mb-3" style="display: none;">
-          <label for="deposit_id" class="form-label">Deposito</label>
+          <label for="deposit_id" class="form-label">Discarica</label>
           <select name="deposit_id" id="deposit_id" class="form-select">
-            <option value="">Seleziona Deposito</option>
+            <option value="">Seleziona Discarica</option>
             <!-- Le opzioni verranno caricate dinamicamente in base al materiale selezionato -->
           </select>
         </div>
@@ -245,7 +245,7 @@ $(document).ready(function(){
         var materialId = $(this).val();
         if(materialId) {
             // Svuota la select dei depositi
-            $('#deposit_id').empty().append('<option value="">Seleziona Deposito</option>');
+            $('#deposit_id').empty().append('<option value="">Seleziona Discarica</option>');
             
             // Carica i depositi associati al materiale
             $.ajax({

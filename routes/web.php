@@ -43,6 +43,8 @@ use App\Http\Controllers\WarehouseController;
 Route::resource('warehouses', WarehouseController::class)->middleware('auth');
 
 use App\Http\Controllers\WorkController;
+Route::get('/works/assigned', [WorkController::class, 'assigned'])->middleware('auth')->name('works.assigned');
+Route::get('/works/unassigned', [WorkController::class, 'unassigned'])->middleware('auth')->name('works.unassigned');
 Route::resource('works', WorkController::class)->middleware('auth');
 Route::get('/works/create/disposal', [WorkController::class, 'createDisposal'])->middleware('auth')->name('works.create.disposal');
 Route::get('/works/deposits-by-material/{materialId}', [WorkController::class, 'getDepositsByMaterial'])->middleware('auth')->name('works.deposits-by-material');
