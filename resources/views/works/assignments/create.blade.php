@@ -35,7 +35,7 @@
                   <select name="work_id" id="work_id" class="form-control" required>
                     <option value="">-- Seleziona un lavoro --</option>
                     @foreach($works as $work)
-                      @if($work->status_lavoro === 'In Sospeso')
+                      @if($work->status_lavoro === 'In Sospeso' && $work->workers->isEmpty())
                         <option value="{{ $work->id }}">@formatDateTime($work->data_esecuzione ?? $work->created_at) - {{ $work->tipo_lavoro }} ({{ $work->status_lavoro }}) ({{ $work->customer->full_name ?? $work->customer->ragione_sociale ?? 'N/D' }})</option>
                       @endif
                     @endforeach

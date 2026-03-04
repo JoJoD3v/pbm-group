@@ -14,7 +14,7 @@ class WorkAssignmentController extends Controller
     public function index()
     {
         $works = Work::whereDoesntHave('workers')
-            ->with('customer')
+            ->with(['customer', 'workers'])
             ->get();
         
         // Ottieni tutte le assegnazioni esistenti
@@ -90,4 +90,3 @@ class WorkAssignmentController extends Controller
                          ->with('success', 'Assegnazione rimossa con successo.');
     }
 }
-
