@@ -148,18 +148,25 @@
     console.log('CSRF Token:', '{{ csrf_token() }}');
     console.log('Route works.statuses:', '{{ route('works.statuses') }}');
 
-    // Inizializza DataTable
-    const table = $('#worksTable').DataTable({
-      order: [[0, 'desc']], // Ordina per data decrescente (colonna 0)
-      columnDefs: [
-        {
-          targets: 0, // Colonna data e ora (0-based index)
-          type: 'date-eu-time' // Usa il tipo date-eu-time per ordinamento corretto
-        }
-      ]
-    });
+    // Verifica se DataTable è già inizializzata, altrimenti inizializzala
+    let table;
+    if ($.fn.DataTable.isDataTable('#worksTable')) {
+      console.log('DataTable già inizializzata, recupero istanza esistente');
+      table = $('#worksTable').DataTable();
+    } else {
+      console.log('Inizializzo DataTable');
+      table = $('#worksTable').DataTable({
+        order: [[0, 'desc']], // Ordina per data decrescente (colonna 0)
+        columnDefs: [
+          {
+            targets: 0, // Colonna data e ora (0-based index)
+            type: 'date-eu-time' // Usa il tipo date-eu-time per ordinamento corretto
+          }
+        ]
+      });
+    }
 
-    console.log('DataTable inizializzata, avvio polling per aggiornamento stati...');
+    console.log('DataTable pronta, avvio polling per aggiornamento stati...');
 
     // Sistema di polling per aggiornamento automatico degli stati
     const updateStatusBadge = (cell, status) => {
