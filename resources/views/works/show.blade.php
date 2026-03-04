@@ -91,7 +91,15 @@ use Illuminate\Support\Str;
                 </div>
                 <div class="col-md-6">
                   <strong>Status Lavoro:</strong>
-                  <p>{{ $work->status_lavoro }}</p>
+                  @php
+                    $status = $work->status_lavoro;
+                    $statusBadge = 'secondary';
+                    if ($status === 'Preso in Carico') $statusBadge = 'info';
+                    if ($status === 'Lavoro Iniziato') $statusBadge = 'warning';
+                    if ($status === 'Lavoro Completato' || $status === 'Concluso') $statusBadge = 'success';
+                    if ($status === 'Lavoro Annullato') $statusBadge = 'danger';
+                  @endphp
+                  <span class="badge bg-{{ $statusBadge }}">{{ $status ?? 'In Sospeso' }}</span>
                 </div>
               </div>
 

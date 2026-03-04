@@ -64,17 +64,15 @@
                           @endif
                         </td>
                         <td>
-                          @if($work->status_lavoro == 'programmato')
-                            <span class="badge bg-warning text-dark">Programmato</span>
-                          @elseif($work->status_lavoro == 'in_corso')
-                            <span class="badge bg-info">In Corso</span>
-                          @elseif($work->status_lavoro == 'completato')
-                            <span class="badge bg-success">Completato</span>
-                          @elseif($work->status_lavoro == 'annullato')
-                            <span class="badge bg-danger">Annullato</span>
-                          @else
-                            <span class="badge bg-secondary">{{ $work->status_lavoro }}</span>
-                          @endif
+                          @php
+                            $status = $work->status_lavoro;
+                            $statusBadge = 'secondary';
+                            if ($status === 'Preso in Carico') $statusBadge = 'info';
+                            if ($status === 'Lavoro Iniziato') $statusBadge = 'warning';
+                            if ($status === 'Lavoro Completato' || $status === 'Concluso') $statusBadge = 'success';
+                            if ($status === 'Lavoro Annullato') $statusBadge = 'danger';
+                          @endphp
+                          <span class="badge bg-{{ $statusBadge }}">{{ $status ?? 'In Sospeso' }}</span>
                         </td>
                         <td>{{ $work->indirizzo_partenza }}</td>
                         <td>{{ $work->indirizzo_destinazione }}</td>

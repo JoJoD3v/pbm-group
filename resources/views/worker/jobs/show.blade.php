@@ -42,13 +42,15 @@
                                 <tr>
                                     <th>Stato:</th>
                                     <td>
-                                        @if($work->status_lavoro)
-                                            <span class="badge bg-{{ $work->status_lavoro == 'Completato' ? 'success' : ($work->status_lavoro == 'In corso' ? 'warning' : 'info') }}">
-                                                {{ $work->status_lavoro }}
-                                            </span>
-                                        @else
-                                            <span class="badge bg-secondary">Non assegnato</span>
-                                        @endif
+                                        @php
+                                            $status = $work->status_lavoro;
+                                            $statusBadge = 'secondary';
+                                            if ($status === 'Preso in Carico') $statusBadge = 'info';
+                                            if ($status === 'Lavoro Iniziato') $statusBadge = 'warning';
+                                            if ($status === 'Lavoro Completato' || $status === 'Concluso') $statusBadge = 'success';
+                                            if ($status === 'Lavoro Annullato') $statusBadge = 'danger';
+                                        @endphp
+                                        <span class="badge bg-{{ $statusBadge }}">{{ $status ?? 'In Sospeso' }}</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -141,6 +143,41 @@
                 </div>
             </div>
         </div>
+
+        @if($work->workers->contains($worker->id))
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Azioni Stato Lavoro</h6>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ route('worker.jobs.status', $work->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            <input type="hidden" name="status_lavoro" value="Lavoro Iniziato">
+                            <button type="submit" class="btn btn-warning btn-sm">
+                                <i class="bi bi-play-fill"></i> Lavoro Iniziato
+                            </button>
+                        </form>
+                        <form action="{{ route('worker.jobs.status', $work->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            <input type="hidden" name="status_lavoro" value="Lavoro Completato">
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <i class="bi bi-check-circle"></i> Lavoro Completato
+                            </button>
+                        </form>
+                        <form action="{{ route('worker.jobs.status', $work->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            <input type="hidden" name="status_lavoro" value="Lavoro Annullato">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Sei sicuro di voler annullare questo lavoro?');">
+                                <i class="bi bi-x-circle"></i> Lavoro Annullato
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
 
     @if(($work->latitude_partenza && $work->longitude_partenza) || ($work->latitude_destinazione && $work->longitude_destinazione))

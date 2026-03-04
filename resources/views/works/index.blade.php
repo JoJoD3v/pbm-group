@@ -87,7 +87,17 @@
                     @endif
                   </td>
                   @endif
-                  <td>{{ $work->status_lavoro }}</td>
+                  @php
+                    $status = $work->status_lavoro;
+                    $statusBadge = 'secondary';
+                    if ($status === 'Preso in Carico') $statusBadge = 'info';
+                    if ($status === 'Lavoro Iniziato') $statusBadge = 'warning';
+                    if ($status === 'Lavoro Completato' || $status === 'Concluso') $statusBadge = 'success';
+                    if ($status === 'Lavoro Annullato') $statusBadge = 'danger';
+                  @endphp
+                  <td class="status-cell" data-work-id="{{ $work->id }}">
+                    <span class="badge bg-{{ $statusBadge }}">{{ $status ?? 'In Sospeso' }}</span>
+                  </td>
                   <td>
                     @if($work->materiale)
                       {{ $work->materiale }}
@@ -139,6 +149,69 @@
         }
       ]
     });
+
+    @if(!empty($showAssignedWorkerColumn))
+      const updateStatusBadge = (cell, status) => {
+        let badgeClass = 'secondary';
+        if (status === 'Preso in Carico') badgeClass = 'info';
+        if (status === 'Lavoro Iniziato') badgeClass = 'warning';
+        if (status === 'Lavoro Completato' || status === 'Concluso') badgeClass = 'success';
+        if (status === 'Lavoro Annullato') badgeClass = 'danger';
+        const label = status || 'In Sospeso';
+        cell.html('<span class="badge bg-' + badgeClass + '">' + label + '</span>');
+      };
+
+      let lastSync = null;
+      let polling = null;
+      let inFlight = false;
+
+      const fetchStatuses = () => {
+        if (document.hidden || inFlight) return;
+        const ids = $('.status-cell').map(function() {
+          return $(this).data('work-id');
+        }).get();
+
+        if (!ids.length) return;
+
+        inFlight = true;
+        $.ajax({
+          url: '{{ route('works.statuses') }}',
+          method: 'POST',
+          data: {
+            _token: '{{ csrf_token() }}',
+            ids: ids,
+            since: lastSync
+          },
+          success: function(data) {
+            if (data && data.statuses) {
+              $('.status-cell').each(function() {
+                const id = $(this).data('work-id');
+                if (data.statuses[id] !== undefined) {
+                  const current = $(this).text().trim();
+                  if (current !== (data.statuses[id] || 'In Sospeso')) {
+                    updateStatusBadge($(this), data.statuses[id]);
+                  }
+                }
+              });
+            }
+            if (data && data.server_time) {
+              lastSync = data.server_time;
+            }
+          }
+        }).always(function() {
+          inFlight = false;
+        });
+      };
+
+      fetchStatuses();
+      polling = setInterval(fetchStatuses, 20000);
+
+      document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+          fetchStatuses();
+        }
+      });
+    @endif
   });
 </script>
 @endsection

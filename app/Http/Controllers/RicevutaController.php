@@ -87,8 +87,8 @@ class RicevutaController extends Controller
             $ricevuta = Ricevuta::create($validatedData);
             Log::info('Ricevuta creata con ID: ' . $ricevuta->id);
             
-            // Aggiorna lo stato del lavoro a "Concluso"
-            $work->status_lavoro = 'Concluso';
+            // Aggiorna lo stato del lavoro a "Lavoro Completato"
+            $work->status_lavoro = 'Lavoro Completato';
             $work->save();
             Log::info('Stato lavoro aggiornato a Concluso');
             

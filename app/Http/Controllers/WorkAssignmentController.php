@@ -69,6 +69,8 @@ class WorkAssignmentController extends Controller
         }
 
         $work->workers()->attach($worker->id);
+        $work->status_lavoro = 'Preso in Carico';
+        $work->save();
         return redirect()->route('work.assignments.create')
                          ->with('success', 'Lavoro assegnato con successo.');
     }
@@ -85,6 +87,11 @@ class WorkAssignmentController extends Controller
         
         $work = Work::findOrFail($request->work_id);
         $work->workers()->detach($request->worker_id);
+
+        if ($work->workers()->count() === 0) {
+            $work->status_lavoro = 'In Sospeso';
+            $work->save();
+        }
         
         return redirect()->route('work.assignments.index')
                          ->with('success', 'Assegnazione rimossa con successo.');

@@ -62,13 +62,15 @@
                                             </a>
                                         </td>
                                         <td>
-                                            @if($work->status_lavoro)
-                                                <span class="badge bg-{{ $work->status_lavoro == 'Completato' ? 'success' : ($work->status_lavoro == 'In corso' ? 'warning' : 'info') }}">
-                                                    {{ $work->status_lavoro }}
-                                                </span>
-                                            @else
-                                                <span class="badge bg-secondary">Non assegnato</span>
-                                            @endif
+                                            @php
+                                                $status = $work->status_lavoro;
+                                                $statusBadge = 'secondary';
+                                                if ($status === 'Preso in Carico') $statusBadge = 'info';
+                                                if ($status === 'Lavoro Iniziato') $statusBadge = 'warning';
+                                                if ($status === 'Lavoro Completato' || $status === 'Concluso') $statusBadge = 'success';
+                                                if ($status === 'Lavoro Annullato') $statusBadge = 'danger';
+                                            @endphp
+                                            <span class="badge bg-{{ $statusBadge }}">{{ $status ?? 'In Sospeso' }}</span>
                                         </td>
                                         <td>
                                             <a href="{{ route('worker.jobs.show', $work->id) }}" class="btn btn-primary btn-sm">

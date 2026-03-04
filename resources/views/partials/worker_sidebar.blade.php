@@ -43,6 +43,16 @@
   <!-- Divider -->
   <hr class="sidebar-divider d-none d-md-block">
 
+  <li class="nav-item mt-3">
+    <form method="POST" action="{{ route('logout') }}" class="px-3">
+      @csrf
+      <button type="submit" class="btn btn-danger btn-block d-flex align-items-center justify-content-center">
+        <i class="bi bi-box-arrow-right mr-2"></i>
+        Logout
+      </button>
+    </form>
+  </li>
+
   <!-- Pulsante per comprimere la sidebar -->
   <div class="text-center d-none d-md-inline">
     <button class="rounded-circle border-0" id="sidebarToggle"></button>

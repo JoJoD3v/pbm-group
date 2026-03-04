@@ -146,6 +146,8 @@ class WorkerJobController extends Controller
 
             // Assegna il lavoro al worker
             $work->workers()->attach($worker->id);
+            $work->status_lavoro = 'Preso in Carico';
+            $work->save();
             
             return redirect()->route('worker.jobs')
                 ->with('success', 'Lavoro assegnato con successo.');
@@ -156,5 +158,41 @@ class WorkerJobController extends Controller
                 ->with('error', 'Errore nell\'assegnazione del lavoro. Contatta l\'amministratore.');
         }
     }
-} 
 
+    /**
+     * Aggiorna lo stato del lavoro assegnato al dipendente
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status_lavoro' => 'required|string|in:Lavoro Iniziato,Lavoro Completato,Lavoro Annullato',
+        ]);
+
+        $user = Auth::user();
+        $worker = $user->worker;
+
+        if (!$worker) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Profilo dipendente non trovato. Contatta l\'amministratore.');
+        }
+
+        try {
+            $work = Work::findOrFail($id);
+
+            if (!$work->workers->contains($worker->id)) {
+                return redirect()->route('worker.jobs')
+                    ->with('error', 'Non sei autorizzato ad aggiornare questo lavoro.');
+            }
+
+            $work->status_lavoro = $request->status_lavoro;
+            $work->save();
+
+            return redirect()->route('worker.jobs.show', $work->id)
+                ->with('success', 'Stato lavoro aggiornato con successo.');
+        } catch (\Exception $e) {
+            Log::error("WorkerJobController: errore aggiornamento stato lavoro " . $id . ": " . $e->getMessage());
+            return redirect()->route('worker.jobs.show', $id)
+                ->with('error', 'Errore nell\'aggiornamento dello stato. Contatta l\'amministratore.');
+        }
+    }
+}

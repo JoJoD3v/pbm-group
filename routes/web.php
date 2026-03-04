@@ -74,6 +74,7 @@ Route::resource('warehouses', WarehouseController::class)->middleware('auth');
 use App\Http\Controllers\WorkController;
 Route::get('/works/assigned', [WorkController::class, 'assigned'])->middleware('auth')->name('works.assigned');
 Route::get('/works/unassigned', [WorkController::class, 'unassigned'])->middleware('auth')->name('works.unassigned');
+Route::post('/works/statuses', [WorkController::class, 'statuses'])->middleware('auth')->name('works.statuses');
 Route::resource('works', WorkController::class)->middleware('auth');
 Route::get('/works/create/disposal', [WorkController::class, 'createDisposal'])->middleware('auth')->name('works.create.disposal');
 Route::get('/works/deposits-by-material/{materialId}', [WorkController::class, 'getDepositsByMaterial'])->middleware('auth')->name('works.deposits-by-material');
@@ -144,6 +145,7 @@ Route::middleware(['auth', CheckWorkerRole::class])->group(function () {
     Route::get('/worker/jobs', [WorkerJobController::class, 'index'])->name('worker.jobs');
     Route::get('/worker/jobs/{id}', [WorkerJobController::class, 'show'])->name('worker.jobs.show');
     Route::post('/worker/jobs/{id}/assumi', [WorkerJobController::class, 'assumiLavoro'])->name('worker.jobs.assumi');
+    Route::post('/worker/jobs/{id}/status', [WorkerJobController::class, 'updateStatus'])->name('worker.jobs.status');
 
     // Gestione ricevute
     Route::get('/worker/ricevute/create/{workId}', [RicevutaController::class, 'create'])->name('worker.ricevute.create');
