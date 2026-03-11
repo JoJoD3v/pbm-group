@@ -24,7 +24,6 @@
               <th>ID Lavoratore</th>
               <th>Nome</th>
               <th>Cognome</th>
-              <th>Licenza</th>
               <th>Email</th>
               <th>Telefono</th>
               <th>Azioni</th>
@@ -36,7 +35,6 @@
               <td>{{ $worker->id_worker }}</td>
               <td>{{ $worker->name_worker }}</td>
               <td>{{ $worker->cognome_worker }}</td>
-              <td>{{ $worker->license_worker }}</td>
               <td>{{ $worker->worker_email }}</td>
               <td>{{ $worker->phone_worker ?? 'N/D' }}</td>
               <td>

@@ -36,7 +36,6 @@ class WorkerController extends Controller
         $request->validate([
             'name_worker' => 'required|string|max:255',
             'cognome_worker' => 'required|string|max:255',
-            'license_worker' => 'required|string|max:255',
             'worker_email' => 'required|email|max:255|unique:workers,worker_email|unique:users,email',
             'phone_worker' => 'nullable|string|max:20',
             'password' => 'required|string|min:8',
@@ -52,7 +51,6 @@ class WorkerController extends Controller
             'id_worker' => $id_worker,
             'name_worker' => $request->name_worker,
             'cognome_worker' => $request->cognome_worker,
-            'license_worker' => $request->license_worker,
             'worker_email' => $request->worker_email,
             'phone_worker' => $request->phone_worker,
         ]);
@@ -132,7 +130,6 @@ class WorkerController extends Controller
         $request->validate([
             'name_worker' => 'required|string|max:255',
             'cognome_worker' => 'required|string|max:255',
-            'license_worker' => 'required|string|max:255',
             'worker_email' => 'required|email|max:255|unique:workers,worker_email,' . $worker->id . '|unique:users,email,' . User::where('email', $worker->worker_email)->first()?->id,
             'phone_worker' => 'nullable|string|max:20',
             'password' => 'nullable|string|min:8',

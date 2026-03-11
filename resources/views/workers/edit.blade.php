@@ -40,18 +40,9 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label for="license_worker" class="form-label">Licenza</label>
-              <input type="text" name="license_worker" id="license_worker" class="form-control" value="{{ $worker->license_worker }}" required>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-3">
-              <label for="phone_worker" class="form-label">Numero di Telefono</label>
-              <input type="tel" name="phone_worker" id="phone_worker" class="form-control" value="{{ $worker->phone_worker }}" placeholder="Es. +39 123 456 7890">
-            </div>          </div>
+        <div class="mb-3">
+          <label for="phone_worker" class="form-label">Numero di Telefono</label>
+          <input type="tel" name="phone_worker" id="phone_worker" class="form-control" value="{{ $worker->phone_worker }}" placeholder="Es. +39 123 456 7890">
         </div>
 
         <div class="mb-3">

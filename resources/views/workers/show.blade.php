@@ -27,9 +27,6 @@
             <td>{{ $worker->cognome_worker }}</td>
           </tr>
           <tr>
-            <th>Licenza</th>
-            <td>{{ $worker->license_worker }}</td>
-          </tr>          <tr>
             <th>Email</th>
             <td>{{ $worker->worker_email }}</td>
           </tr>
