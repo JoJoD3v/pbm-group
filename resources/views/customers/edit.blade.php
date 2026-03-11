@@ -66,11 +66,11 @@
         </div>
         <div class="mb-3">
           <label for="phone" class="form-label">Numero di Telefono</label>
-          <input type="text" name="phone" id="phone" class="form-control" value="{{ $customer->phone }}" required>
+          <input type="text" name="phone" id="phone" class="form-control" value="{{ $customer->phone }}">
         </div>
         <div class="mb-3">
           <label for="email" class="form-label">Email</label>
-          <input type="email" name="email" id="email" class="form-control" value="{{ $customer->email }}" required>
+          <input type="email" name="email" id="email" class="form-control" value="{{ $customer->email }}">
         </div>
         <div class="mb-3">
           <input type="hidden" name="longitude_customer" id="longitude" value="{{ $customer->longitude_customer }}" class="form-control" placeholder="Longitudine" >

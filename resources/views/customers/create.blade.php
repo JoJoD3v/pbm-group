@@ -67,11 +67,11 @@
         </div>
         <div class="mb-3">
           <label for="phone" class="form-label">Numero di Telefono</label>
-          <input type="text" name="phone" id="phone" class="form-control" required>
+          <input type="text" name="phone" id="phone" class="form-control">
         </div>
         <div class="mb-3">
           <label for="email" class="form-label">Email</label>
-          <input type="email" name="email" id="email" class="form-control" required>
+          <input type="email" name="email" id="email" class="form-control">
         </div>
         <div class="mb-3">
           <input type="hidden" name="latitude_customer" id="latitude" class="form-control" placeholder="Latitudine" >
