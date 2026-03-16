@@ -18,7 +18,14 @@ class CreditCardRechargeController extends Controller
             ->join('credit_cards', 'credit_card_recharges.credit_card_id', '=', 'credit_cards.id')
             ->leftJoin('users', 'credit_card_recharges.user_id', '=', 'users.id')
             ->select(
-                'credit_card_recharges.*', 
+                'credit_card_recharges.id',
+                'credit_card_recharges.credit_card_id',
+                'credit_card_recharges.user_id',
+                'credit_card_recharges.importo',
+                'credit_card_recharges.data_ricarica',
+                'credit_card_recharges.note',
+                'credit_card_recharges.created_at',
+                'credit_card_recharges.updated_at',
                 'credit_cards.numero_carta',
                 'users.first_name as autore_nome',
                 'users.last_name as autore_cognome'
@@ -51,12 +58,14 @@ class CreditCardRechargeController extends Controller
             'note' => 'nullable|string',
         ]);
 
-        DB::transaction(function () use ($request) {
+        $newId = null;
+
+        DB::transaction(function () use ($request, &$newId) {
             // Combina data e ora in un unico campo datetime
             $dataRicarica = $request->data_ricarica_data . ' ' . $request->data_ricarica_ora . ':00';
             
-            // Inserisci la ricarica
-            DB::table('credit_card_recharges')->insert([
+            // Inserisci la ricarica e ottieni l'ID del nuovo record
+            $newId = DB::table('credit_card_recharges')->insertGetId([
                 'credit_card_id' => $request->credit_card_id,
                 'user_id' => Auth::id(), // Salva l'utente connesso come autore
                 'importo' => $request->importo,
@@ -72,7 +81,7 @@ class CreditCardRechargeController extends Controller
                 ->increment('fondo_carta', $request->importo);
         });
 
-        return redirect()->route('credit-card-recharges.index')
+        return redirect()->route('credit-card-recharges.show', $newId)
             ->with('success', 'Ricarica effettuata con successo');
     }
 
