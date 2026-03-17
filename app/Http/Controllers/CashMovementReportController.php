@@ -39,32 +39,37 @@ class CashMovementReportController extends Controller
         }
         
         $request->validate([
-            'worker_id' => 'required|exists:workers,id',
-            'data' => 'required|date',
+            'worker_id'  => 'required|exists:workers,id',
+            'data_inizio' => 'required|date',
+            'data_fine'   => 'required|date|after_or_equal:data_inizio',
         ], [
-            'worker_id.required' => 'Seleziona un dipendente',
-            'worker_id.exists' => 'Dipendente non valido',
-            'data.required' => 'Seleziona una data',
-            'data.date' => 'Data non valida',
+            'worker_id.required'        => 'Seleziona un dipendente',
+            'worker_id.exists'          => 'Dipendente non valido',
+            'data_inizio.required'      => 'Seleziona la data di inizio',
+            'data_inizio.date'          => 'Data di inizio non valida',
+            'data_fine.required'        => 'Seleziona la data di fine',
+            'data_fine.date'            => 'Data di fine non valida',
+            'data_fine.after_or_equal'  => 'La data di fine deve essere uguale o successiva alla data di inizio',
         ]);
-        
+
         // Recupera il worker
         $worker = Worker::findOrFail($request->worker_id);
-        
-        // Data selezionata
-        $data = $request->data;
-        
-        // Recupera i movimenti del giorno specificato per il worker selezionato
+
+        $dataInizio = $request->data_inizio;
+        $dataFine   = $request->data_fine;
+
+        // Recupera i movimenti nel range selezionato per il worker
         $movimenti = CashMovement::where('worker_id', $worker->id)
-                                ->whereDate('data_movimento', $data)
-                                ->orderBy('created_at', 'desc')
+                                ->whereBetween('data_movimento', [$dataInizio, $dataFine])
+                                ->orderBy('data_movimento', 'asc')
+                                ->orderBy('created_at', 'asc')
                                 ->get();
-        
+
         // Calcola il totale entrate, uscite e saldo
         $totaleEntrate = $movimenti->where('tipo_movimento', 'entrata')->sum('importo');
-        $totaleUscite = $movimenti->where('tipo_movimento', 'uscita')->sum('importo');
-        $saldo = $totaleEntrate - $totaleUscite;
-        
-        return view('admin.reports.cashflow.report', compact('movimenti', 'worker', 'data', 'totaleEntrate', 'totaleUscite', 'saldo'));
+        $totaleUscite  = $movimenti->where('tipo_movimento', 'uscita')->sum('importo');
+        $saldo         = $totaleEntrate - $totaleUscite;
+
+        return view('admin.reports.cashflow.report', compact('movimenti', 'worker', 'dataInizio', 'dataFine', 'totaleEntrate', 'totaleUscite', 'saldo'));
     }
 } 

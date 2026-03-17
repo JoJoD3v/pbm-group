@@ -11,7 +11,7 @@
     
     <div class="alert alert-info mb-4">
         <strong>Dipendente:</strong> {{ $worker->name_worker }} {{ $worker->cognome_worker }} ({{ $worker->worker_email }})<br>
-        <strong>Data:</strong> {{ \Carbon\Carbon::parse($data)->format('d/m/Y') }}<br>
+        <strong>Periodo:</strong> {{ \Carbon\Carbon::parse($dataInizio)->format('d/m/Y') }} — {{ \Carbon\Carbon::parse($dataFine)->format('d/m/Y') }}<br>
         <strong>Fondo Cassa:</strong> € {{ number_format($worker->fondo_cassa, 2, ',', '.') }}
     </div>
     
@@ -81,6 +81,7 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
+                                <th>Data</th>
                                 <th>Ora</th>
                                 <th>Tipo</th>
                                 <th>Importo</th>
@@ -92,6 +93,7 @@
                         <tbody>
                             @foreach($movimenti as $movimento)
                                 <tr class="{{ $movimento->tipo_movimento == 'entrata' ? 'table-success' : 'table-danger' }}">
+                                    <td>{{ \Carbon\Carbon::parse($movimento->data_movimento)->format('d/m/Y') }}</td>
                                     <td>{{ $movimento->created_at->format('H:i') }}</td>
                                     <td>
                                         @if($movimento->tipo_movimento == 'entrata')
@@ -134,7 +136,7 @@
                 </div>
             @else
                 <div class="alert alert-info">
-                    Nessun movimento registrato per il giorno {{ \Carbon\Carbon::parse($data)->format('d/m/Y') }} da questo dipendente.
+                    Nessun movimento registrato dal {{ \Carbon\Carbon::parse($dataInizio)->format('d/m/Y') }} al {{ \Carbon\Carbon::parse($dataFine)->format('d/m/Y') }} per questo dipendente.
                 </div>
             @endif
         </div>
