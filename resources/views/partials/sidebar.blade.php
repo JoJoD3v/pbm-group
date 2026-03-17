@@ -101,6 +101,7 @@
       </a>
       <div id="collapseCashflow" class="collapse" aria-labelledby="headingCashflow" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
+          <a class="collapse-item" href="{{ route('admin.fondo-cassa.index') }}">Fondo Cassa Dipendenti</a>
           <a class="collapse-item" href="{{ route('reports.cashflow.index') }}">Report Movimenti</a>
           <a class="collapse-item" href="{{ route('worker.cash.recharge') }}">Ricarica Fondo Cassa</a>
         </div>

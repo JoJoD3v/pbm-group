@@ -119,6 +119,7 @@ Route::resource('credit-card-recharges', CreditCardRechargeController::class);
 // Rotte per i report del fondo cassa (amministratore)
 use App\Http\Controllers\CashMovementReportController;
 use App\Http\Controllers\WorkerCashRechargeController;
+use App\Http\Controllers\AdminFondoCassaController;
 Route::middleware(['auth'])->group(function () {
     // Report fondo cassa
     Route::get('/reports/cashflow', [CashMovementReportController::class, 'index'])
@@ -131,6 +132,14 @@ Route::middleware(['auth'])->group(function () {
         ->name('worker.cash.recharge');
     Route::post('/worker/cash/recharge', [WorkerCashRechargeController::class, 'store'])
         ->name('worker.cash.recharge.store');
+
+    // Gestione fondo cassa (lista + modifica) - admin
+    Route::get('/admin/fondo-cassa', [AdminFondoCassaController::class, 'index'])
+        ->name('admin.fondo-cassa.index');
+    Route::get('/admin/fondo-cassa/{worker}/edit', [AdminFondoCassaController::class, 'edit'])
+        ->name('admin.fondo-cassa.edit');
+    Route::put('/admin/fondo-cassa/{worker}', [AdminFondoCassaController::class, 'update'])
+        ->name('admin.fondo-cassa.update');
 });
 
 // Rotte per i lavoratori (dipendenti)
