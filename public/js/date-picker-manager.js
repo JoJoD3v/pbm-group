@@ -105,13 +105,26 @@ document.addEventListener('DOMContentLoaded', function() {
             if (flatpickrInput._flatpickr) {
                 return;
             }
-            
+
+            // Converti il valore originale (formato Y-m-d) in un oggetto Date per evitare
+            // che flatpickr lo interpreti erroneamente usando il dateFormat 'd/m/Y',
+            // il che causerebbe uno spostamento della data (es. marzo → giugno).
+            let defaultDateValue = null;
+            if (originalValue) {
+                const parts = originalValue.split('-');
+                if (parts.length === 3) {
+                    defaultDateValue = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+                }
+            } else if (input.getAttribute('data-default-today') !== null) {
+                defaultDateValue = new Date();
+            }
+
             // Inizializza flatpickr
             const fp = flatpickr(flatpickrInput, {
                 dateFormat: 'd/m/Y',
                 altInput: true,
                 altFormat: 'd/m/Y',
-                defaultDate: originalValue || (input.getAttribute('data-default-today') !== null ? new Date() : null),
+                defaultDate: defaultDateValue,
                 locale: 'it',
                 allowInput: true,
                 closeOnSelect: true,
