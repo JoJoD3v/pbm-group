@@ -151,7 +151,6 @@
         <div class="header-right">
             <div class="company-name">TEP SRL</div>
             <div class="company-details">
-                TEP SRL<br>
                 P.IVA: 16433631005<br>
                 Via Conca d'Oro 327 00141 Roma 
                 Tel: 342 896 4506<br> 
