@@ -163,10 +163,17 @@ class WorkController extends Controller
             ? Carbon::parse($request->data_esecuzione)->format('Y-m-d H:i:s')
             : null;
 
+        // Salva l'ID della discarica o del cantiere scelto come destinazione
+        $dataDestinazione = [
+            'deposit_id'               => $request->nome_destinazione === 'deposito' ? ($request->deposit_id ?: null) : null,
+            'warehouse_destinazione_id' => $request->nome_destinazione === 'cantiere' ? ($request->warehouse_id ?: null) : null,
+        ];
+
         $work = Work::create(array_merge(
             $request->all(),
             $dataMateriale,
-            ['data_esecuzione' => $dataEsecuzione]
+            ['data_esecuzione' => $dataEsecuzione],
+            $dataDestinazione
         ));
 
         return redirect()->route('works.index')
@@ -220,10 +227,17 @@ class WorkController extends Controller
             ? Carbon::parse($request->data_esecuzione)->format('Y-m-d H:i:s')
             : null;
 
+        // Salva l'ID della discarica o del cantiere scelto come destinazione
+        $dataDestinazione = [
+            'deposit_id'               => $request->nome_destinazione === 'deposito' ? ($request->deposit_id ?: null) : null,
+            'warehouse_destinazione_id' => $request->nome_destinazione === 'cantiere' ? ($request->warehouse_id ?: null) : null,
+        ];
+
         $work->update(array_merge(
             $request->all(),
             $dataMateriale,
-            ['data_esecuzione' => $dataEsecuzione]
+            ['data_esecuzione' => $dataEsecuzione],
+            $dataDestinazione
         ));
 
         return redirect()->route('works.index')

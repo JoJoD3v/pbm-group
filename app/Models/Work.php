@@ -26,6 +26,8 @@ class Work extends Model
         'indirizzo_destinazione',
         'latitude_destinazione',
         'longitude_destinazione',
+        'deposit_id',
+        'warehouse_destinazione_id',
         'note',
     ];
 
@@ -50,5 +52,17 @@ class Work extends Model
     public function ricevute()
     {
         return $this->hasMany(Ricevuta::class);
+    }
+
+    // Relazione con la discarica di destinazione
+    public function deposit()
+    {
+        return $this->belongsTo(Deposit::class);
+    }
+
+    // Relazione con il cantiere di destinazione
+    public function warehouseDestinazione()
+    {
+        return $this->belongsTo(Warehouse::class, 'warehouse_destinazione_id');
     }
 }

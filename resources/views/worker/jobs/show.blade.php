@@ -165,7 +165,19 @@
                         <h6 class="m-0 font-weight-bold text-primary">Indirizzo di Destinazione</h6>
                     </div>
                     <div class="card-body">
-                        <p><strong>Nome:</strong> {{ $work->nome_destinazione }}</p>
+                        @if($work->nome_destinazione === 'deposito' && $work->deposit)
+                            <p>
+                                <strong>Discarica:</strong>
+                                <span class="badge bg-info text-dark">{{ $work->deposit->name }}</span>
+                            </p>
+                        @elseif($work->nome_destinazione === 'cantiere' && $work->warehouseDestinazione)
+                            <p>
+                                <strong>Cantiere:</strong>
+                                <span class="badge bg-warning text-dark">{{ $work->warehouseDestinazione->nome_sede }}</span>
+                            </p>
+                        @else
+                            <p><strong>Nome:</strong> {{ $work->nome_destinazione }}</p>
+                        @endif
                         <p><strong>Indirizzo:</strong> {{ $work->indirizzo_destinazione }}</p>
                         
                         @if($work->latitude_destinazione && $work->longitude_destinazione)

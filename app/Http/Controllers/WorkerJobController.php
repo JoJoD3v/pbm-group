@@ -96,7 +96,7 @@ class WorkerJobController extends Controller
         
         try {
             // Recupera il lavoro con l'ID specificato
-            $work = Work::findOrFail($id);
+            $work = Work::with(['deposit', 'warehouseDestinazione'])->findOrFail($id);
             
             // Verifica se il lavoratore è associato al lavoro o se il lavoro non è assegnato a nessuno
             if (!$worker->works->contains($id) && $work->workers->count() > 0) {
