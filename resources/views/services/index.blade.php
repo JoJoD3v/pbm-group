@@ -25,7 +25,7 @@
             </tr>
           </thead>
           <tbody>
-            @forelse($services as $service)
+            @foreach($services as $service)
               <tr>
                 <td>{{ $service->nome_servizio }}</td>
                 <td>
@@ -51,11 +51,7 @@
                   </form>
                 </td>
               </tr>
-            @empty
-              <tr>
-                <td colspan="3" class="text-center">Nessun servizio inserito.</td>
-              </tr>
-            @endforelse
+            @endforeach
           </tbody>
         </table>
       </div>
