@@ -34,6 +34,9 @@
               <td>{{ $material->name }}</td>
               <td>{{ $material->eer_code ?? 'N/D' }}</td>
               <td>
+                <a href="{{ route('materials.show', $material->id) }}" class="btn btn-info btn-sm">
+                  <i class="bi bi-eye"></i>
+                </a>
                 <a href="{{ route('materials.edit', $material->id) }}" class="btn btn-warning btn-sm">
                   <i class="bi bi-pencil"></i>
                 </a>

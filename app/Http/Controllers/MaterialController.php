@@ -20,6 +20,12 @@ class MaterialController extends Controller
         return view('materials.create');
     }
 
+    // Mostra la scheda di un materiale
+    public function show(Material $material)
+    {
+        return view('materials.show', compact('material'));
+    }
+
     // Salva il nuovo materiale nel database
     public function store(Request $request)
     {

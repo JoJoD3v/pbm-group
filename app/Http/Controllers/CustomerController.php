@@ -20,6 +20,12 @@ class CustomerController extends Controller
         return view('customers.create');
     }
 
+    // Mostra la scheda di un Customer
+    public function show(Customer $customer)
+    {
+        return view('customers.show', compact('customer'));
+    }
+
     // Salva un nuovo Customer
     public function store(Request $request)
     {

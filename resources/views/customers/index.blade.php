@@ -54,6 +54,9 @@
                 @endif
               </td>
               <td>
+                <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-info btn-sm">
+                  <i class="bi bi-eye"></i>
+                </a>
                 <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm">
                   <i class="bi bi-pencil"></i>
                 </a>
