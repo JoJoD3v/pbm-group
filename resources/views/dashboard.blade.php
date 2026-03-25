@@ -34,7 +34,7 @@
                       <th>Cliente</th>
                       <th>Stato</th>
                       <th>Lavoratore</th>
-                      <th></th>Partenza</th>
+                      <th>Partenza</th>
                       <th>Destinazione</th>
                       <th>Materiale</th>
                       <th>Azioni</th>
