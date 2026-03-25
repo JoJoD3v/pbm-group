@@ -29,6 +29,26 @@
       </div>
       
       <div class="mb-3">
+          <label for="n_aut_comunicazione" class="form-label">N. Aut. Comunicazione</label>
+          <input type="text" name="n_aut_comunicazione" id="n_aut_comunicazione" class="form-control" value="{{ old('n_aut_comunicazione', $deposit->n_aut_comunicazione) }}">
+      </div>
+      
+      <div class="mb-3">
+          <label for="numero_iscrizione_albo" class="form-label">Numero iscrizione albo</label>
+          <input type="text" name="numero_iscrizione_albo" id="numero_iscrizione_albo" class="form-control" value="{{ old('numero_iscrizione_albo', $deposit->numero_iscrizione_albo) }}">
+      </div>
+      
+      <div class="mb-3">
+          <label for="tipo" class="form-label">Tipo</label>
+          <input type="text" name="tipo" id="tipo" class="form-control" value="{{ old('tipo', $deposit->tipo) }}">
+      </div>
+      
+      <div class="mb-3">
+          <label for="destinazione" class="form-label">Destinazione</label>
+          <input type="text" name="destinazione" id="destinazione" class="form-control" value="{{ old('destinazione', $deposit->destinazione) }}">
+      </div>
+      
+      <div class="mb-3">
           <label for="latitude" class="form-label">Latitudine</label>
           <input type="text" name="latitude" id="latitude" class="form-control" value="{{ $deposit->latitude }}" placeholder="Inserisci latitudine" readonly>
       </div>

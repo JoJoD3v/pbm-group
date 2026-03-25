@@ -58,6 +58,9 @@
               </td>              
               <td class="distance">Calcolo...</td>
               <td>
+                <a href="{{ route('deposits.show', $deposit->id) }}" class="btn btn-info btn-sm mb-1">
+                  <i class="bi bi-eye"></i>
+                </a>
                 <a href="{{ route('deposits.edit', $deposit->id) }}" class="btn btn-warning btn-sm mb-1">
                   <i class="bi bi-pencil"></i> 
                 </a>

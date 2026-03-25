@@ -9,7 +9,7 @@ class Deposit extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'address','latitude','longitude'];
+    protected $fillable = ['name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'latitude', 'longitude'];
 
     // Relazione many-to-many con Material
     public function materials()

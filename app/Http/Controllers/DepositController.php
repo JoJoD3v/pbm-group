@@ -33,7 +33,7 @@ class DepositController extends Controller
             'longitude' => 'nullable|numeric',            
         ]);
 
-        $deposit = Deposit::create($request->only('name', 'address', 'latitude', 'longitude'));
+        $deposit = Deposit::create($request->only('name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'latitude', 'longitude'));
 
         // Associa i materiali selezionati (se presenti)
         if ($request->has('materials')) {
@@ -63,7 +63,7 @@ class DepositController extends Controller
             'longitude' => 'nullable|numeric',
         ]);
 
-        $deposit->update($request->only('name', 'address','latitude','longitude'));
+        $deposit->update($request->only('name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'latitude', 'longitude'));
 
         // Aggiorna la relazione many-to-many
         if ($request->has('materials')) {
@@ -75,6 +75,13 @@ class DepositController extends Controller
 
         return redirect()->route('deposits.index')
                          ->with('success', 'Deposito aggiornato con successo.');
+    }
+
+    // Mostra la scheda di un deposito
+    public function show(Deposit $deposit)
+    {
+        $deposit->load('materials');
+        return view('deposits.show', compact('deposit'));
     }
 
     // Elimina il deposito
