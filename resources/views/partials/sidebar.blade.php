@@ -2,7 +2,7 @@
     <!-- Logo e titolo -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('dashboard') }}">
       <img src="{{ asset('img/logo/logo.jpg') }}" alt="PBM Group Logo" class="sidebar-brand-logo">
-      <div class="sidebar-brand-text mx-2">TEP SRL</div>
+      <div class="sidebar-brand-text mx-2">PBM GROUP</div>
     </a>
 
     <!-- Divider -->
