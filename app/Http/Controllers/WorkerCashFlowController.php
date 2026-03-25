@@ -147,13 +147,6 @@ class WorkerCashFlowController extends Controller
                         ->with('error', 'La carta selezionata non è assegnata a questo dipendente.');
                 }
                 
-                // Verifica che la carta abbia un saldo sufficiente
-                if ($carta->fondo_carta < $request->importo) {
-                    return redirect()->back()
-                        ->withInput()
-                        ->with('error', 'La carta selezionata non ha saldo sufficiente.');
-                }
-                
                 // Scala l'importo dal saldo della carta
                 $carta->fondo_carta -= $request->importo;
                 $carta->save();
@@ -170,13 +163,6 @@ class WorkerCashFlowController extends Controller
                 ]);
                 
             } elseif ($request->metodo_pagamento === 'contanti') {
-                // Verifica che il fondo cassa sia sufficiente
-                if ($worker->fondo_cassa < $request->importo) {
-                    return redirect()->back()
-                        ->withInput()
-                        ->with('error', 'Il fondo cassa non è sufficiente per questa spesa.');
-                }
-                
                 // Scala l'importo dal fondo cassa
                 $worker->fondo_cassa -= $request->importo;
                 $worker->save();

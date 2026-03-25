@@ -50,12 +50,11 @@ class AdminFondoCassaController extends Controller
         }
 
         $request->validate([
-            'nuovo_valore' => 'required|numeric|min:0',
+            'nuovo_valore' => 'required|numeric',
             'motivo' => 'nullable|string|max:255',
         ], [
             'nuovo_valore.required' => 'Inserisci il nuovo valore del fondo cassa',
             'nuovo_valore.numeric'  => 'Il valore deve essere un numero',
-            'nuovo_valore.min'      => 'Il fondo cassa non può essere negativo',
         ]);
 
         $vecchioValore = (float) $worker->fondo_cassa;

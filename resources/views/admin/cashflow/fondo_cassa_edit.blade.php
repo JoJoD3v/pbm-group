@@ -41,7 +41,6 @@
                                    id="nuovo_valore"
                                    name="nuovo_valore"
                                    step="0.01"
-                                   min="0"
                                    value="{{ old('nuovo_valore', number_format($worker->fondo_cassa, 2, '.', '')) }}"
                                    required>
                         </div>
