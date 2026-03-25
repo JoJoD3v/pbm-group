@@ -21,7 +21,6 @@
         <table id="materialsTable" class="table table-bordered dataTable" width="100%" cellspacing="0">
           <thead class="thead-light">
             <tr>
-              <th width="20">ID</th>
               <th>Nome</th>
               <th>EER Code</th>
               <th>Prezzo</th>
@@ -31,7 +30,6 @@
           <tbody>
             @foreach($materials as $material)
             <tr>
-              <td>{{ $material->id }}</td>
               <td>{{ $material->name }}</td>
               <td>{{ $material->eer_code ?? 'N/D' }}</td>
               <td>{{ $material->prezzo !== null ? number_format($material->prezzo, 2, ',', '.') . ' €' : 'N/D' }}</td>

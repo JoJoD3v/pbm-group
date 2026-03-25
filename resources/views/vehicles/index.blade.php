@@ -18,7 +18,6 @@
         <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>ID</th>
               <th>Nome</th>
               <th>Targa</th>
               <th class="date-column">Scadenza Assicurazione</th>
@@ -28,7 +27,6 @@
           <tbody>
             @foreach($vehicles as $vehicle)
               <tr>
-                <td>{{ $vehicle->id }}</td>
                 <td>{{ $vehicle->nome }}</td>
                 <td>{{ $vehicle->targa }}</td>
                 <td class="date-column">

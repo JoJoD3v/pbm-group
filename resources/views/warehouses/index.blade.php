@@ -21,7 +21,6 @@
         <table id="warehousesTable" class="table table-bordered dataTable" width="100%" cellspacing="0">
           <thead class="thead-light">
             <tr>
-              <th width="20">ID</th>
               <th>Nome Cantiere</th>
               <th>Indirizzo</th>
               <th>Azioni</th>
@@ -30,7 +29,6 @@
           <tbody>
             @foreach($warehouses as $warehouse)
             <tr class="deposit" data-lat="{{ $warehouse->latitude }}" data-lon="{{ $warehouse->longitude }}">
-              <td>{{ $warehouse->id }}</td>
               <td>{{ $warehouse->nome_sede }}</td>
               <td>
                 <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($warehouse->indirizzo) }}" target="_blank">                

@@ -23,7 +23,6 @@
                         <table class="table table-bordered table-striped dataTable">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Carta</th>
                                     <th>Lavoratore</th>
                                     <th class="date-column">Data Assegnazione</th>
@@ -34,7 +33,6 @@
                             <tbody>
                                 @foreach($assignments as $assignment)
                                 <tr>
-                                    <td>{{ $assignment->id }}</td>
                                     <td>{{ $assignment->numero_carta }}</td>
                                     <td>{{ $assignment->name_worker }} {{ $assignment->cognome_worker }}</td>
                                     <td>{{ $assignment->data_assegnazione }}</td>

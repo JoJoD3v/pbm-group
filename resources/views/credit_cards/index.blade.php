@@ -23,7 +23,6 @@
                         <table class="table table-bordered table-striped dataTable">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Numero Carta</th>
                                     <th class="date-column">Scadenza</th>
                                     <th>Fondo</th>
@@ -34,7 +33,6 @@
                             <tbody>
                                 @foreach($creditCards as $card)
                                 <tr>
-                                    <td>{{ $card->id }}</td>
                                     <td>{{ $card->numero_carta }}</td>
                                     <td>{{ $card->scadenza_carta }}</td>
                                     <td>€ {{ number_format($card->fondo_carta, 2) }}</td>

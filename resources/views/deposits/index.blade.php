@@ -21,7 +21,6 @@
         <table id="depositsTable" class="table table-bordered dataTable" width="100%" cellspacing="0">
           <thead class="thead-light">
             <tr>
-              <th width="20">ID</th>
               <th>Nome Discarica</th>
               <th>Indirizzo</th>
               <th>Materiali Accettati</th>
@@ -33,7 +32,6 @@
           <tbody>
             @foreach($deposits as $deposit)
             <tr class="deposit" data-lat="{{ $deposit->latitude }}" data-lon="{{ $deposit->longitude }}">
-              <td>{{ $deposit->id }}</td>
               <td>{{ $deposit->name }}</td>
               <td>
                 <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($deposit->address) }}" target="_blank">                

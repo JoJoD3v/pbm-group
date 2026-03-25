@@ -20,7 +20,6 @@
       </div>      <div class="table-responsive">
         <table id="workersTable" class="table table-bordered dataTable" width="100%" cellspacing="0">
           <thead class="thead-light">            <tr>
-              <th>ID</th>
               <th>ID Lavoratore</th>
               <th>Nome</th>
               <th>Cognome</th>
@@ -31,7 +30,6 @@
           </thead>
           <tbody>
             @foreach($workers as $worker)            <tr>
-              <td>{{ $worker->id }}</td>
               <td>{{ $worker->id_worker }}</td>
               <td>{{ $worker->name_worker }}</td>
               <td>{{ $worker->cognome_worker }}</td>

@@ -25,7 +25,6 @@
                         <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Numero Carta</th>
                                     <th>Saldo</th>
                                     <th class="date-column">Data Assegnazione</th>
@@ -35,7 +34,6 @@
                             <tbody>
                                 @foreach($creditCards as $card)
                                     <tr>
-                                        <td>{{ $card->id }}</td>
                                         <td>{{ substr($card->numero_carta, 0, 4) . ' **** **** ' . substr($card->numero_carta, -4) }}</td>
                                         <td>€ {{ number_format($card->fondo_carta, 2, ',', '.') }}</td>
                                         <td class="date-column">@formatDate($card->data_assegnazione)</td>

@@ -25,7 +25,6 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Carta</th>
                                     <th>Importo</th>
                                     <th>Data Ricarica</th>
@@ -37,7 +36,6 @@
                             <tbody>
                                 @foreach($recharges as $recharge)
                                 <tr>
-                                    <td>{{ $recharge->id }}</td>
                                     <td>{{ $recharge->numero_carta }}</td>
                                     <td>€ {{ number_format($recharge->importo, 2) }}</td>
                                     <td>{{ \Carbon\Carbon::parse($recharge->data_ricarica)->format('d/m/Y H:i') }}</td>

@@ -26,7 +26,6 @@
                         <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Data/Ora</th>
                                     <th>Tipo Lavoro</th>
                                     <th>Cliente</th>
@@ -40,7 +39,6 @@
                             <tbody>
                                 @foreach($works as $work)
                                     <tr class="table-info">
-                                        <td>{{ $work->id }}</td>
                                         <td>@formatDateTime($work->data_esecuzione ?? $work->created_at)</td>
                                         <td>{{ $work->tipo_lavoro }}</td>
                                         <td>

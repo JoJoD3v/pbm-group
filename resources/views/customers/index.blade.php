@@ -21,7 +21,6 @@
         <table id="customersTable" class="table table-bordered dataTable" width="100%" cellspacing="0">
           <thead class="thead-light">
             <tr>
-              <th>ID</th>
               <th>Tipo</th>
               <th>Nome / Ragione Sociale</th>
               <th>Indirizzo</th>
@@ -34,7 +33,6 @@
           <tbody>
             @foreach($customers as $customer)
             <tr>
-              <td>{{ $customer->id }}</td>
               <td>{{ ucfirst($customer->customer_type) }}</td>
               <td>
                 @if($customer->customer_type == 'fisica')
