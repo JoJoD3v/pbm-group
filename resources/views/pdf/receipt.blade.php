@@ -152,7 +152,7 @@
             <div class="company-name">TEP SRL</div>
             <div class="company-details">
                 P.IVA: 16433631005<br>
-                Via Conca d'Oro 327 00141 Roma 
+                Via Conca d'Oro 327 00141 Roma <br>
                 Tel: 342 896 4506<br> 
                 Email: tepsrl@smaltimentieservizi.it
             </div>
