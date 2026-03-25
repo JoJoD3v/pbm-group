@@ -23,6 +23,13 @@
     </li>
 
     <li class="nav-item">
+      <a class="nav-link" href="{{ route('services.index') }}">
+        <i class="bi bi-tags"></i>
+        <span>Servizi Offerti</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
       <a class="nav-link" href="{{ route('customers.index') }}">
         <i class="bi bi-person"></i>
             <span>Clienti</span>

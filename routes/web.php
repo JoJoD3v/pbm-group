@@ -72,6 +72,9 @@ Route::resource('materials', MaterialController::class)->middleware('auth');
 use App\Http\Controllers\DepositController;
 Route::resource('deposits', DepositController::class)->middleware('auth');
 
+use App\Http\Controllers\ServiceController;
+Route::resource('services', ServiceController::class)->middleware('auth');
+
 use App\Http\Controllers\CustomerController;
 Route::resource('customers', CustomerController::class)->middleware('auth');
 
