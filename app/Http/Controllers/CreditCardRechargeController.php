@@ -41,7 +41,7 @@ class CreditCardRechargeController extends Controller
      */
     public function create()
     {
-        $creditCards = CreditCard::all();
+        $creditCards = CreditCard::with('assignedWorker')->get();
         return view('credit_card_recharges.create', compact('creditCards'));
     }
 

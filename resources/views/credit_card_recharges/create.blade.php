@@ -16,7 +16,14 @@
                             <select class="form-control @error('credit_card_id') is-invalid @enderror" id="credit_card_id" name="credit_card_id" required>
                                 <option value="">Seleziona una carta</option>
                                 @foreach($creditCards as $card)
-                                    <option value="{{ $card->id }}">{{ $card->numero_carta }} - Saldo: € {{ number_format($card->fondo_carta, 2) }}</option>
+                                    @php
+                                        $worker = $card->assignedWorker->first();
+                                        $label = $card->numero_carta . ' - Saldo: € ' . number_format($card->fondo_carta, 2);
+                                        if ($worker) {
+                                            $label .= ' — ' . $worker->name_worker . ' ' . $worker->cognome_worker;
+                                        }
+                                    @endphp
+                                    <option value="{{ $card->id }}">{{ $label }}</option>
                                 @endforeach
                             </select>
                             @error('credit_card_id')
