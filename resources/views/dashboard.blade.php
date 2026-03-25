@@ -3,6 +3,9 @@
 @section('content')
   @php
     $role = strtolower(Auth::user()->role ?? '');
+    $prevDate = $currentDate->copy()->subDay()->format('Y-m-d');
+    $nextDate = $currentDate->copy()->addDay()->format('Y-m-d');
+    $isToday = $currentDate->isToday();
   @endphp
 
   <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
@@ -33,7 +36,15 @@
       <div class="col-lg-12">
         <div class="card shadow mb-4">
           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Lavori Programmati per Oggi ({{ date('d/m/Y') }})</h6>
+            <a href="{{ route('dashboard', ['date' => $prevDate]) }}" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-chevron-left"></i>
+            </a>
+            <h6 class="m-0 font-weight-bold text-primary">
+              Lavori Programmati{{ $isToday ? ' per Oggi' : '' }} ({{ $currentDate->format('d/m/Y') }})
+            </h6>
+            <a href="{{ route('dashboard', ['date' => $nextDate]) }}" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-chevron-right"></i>
+            </a>
           </div>
           <div class="card-body">
             @if($todayWorks->count() > 0)
@@ -106,7 +117,15 @@
       <div class="col-lg-12">
         <div class="card shadow mb-4">
           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Lavori Assegnati Oggi ({{ date('d/m/Y') }})</h6>
+            <a href="{{ route('dashboard', ['date' => $prevDate]) }}" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-chevron-left"></i>
+            </a>
+            <h6 class="m-0 font-weight-bold text-primary">
+              Lavori Assegnati{{ $isToday ? ' Oggi' : '' }} ({{ $currentDate->format('d/m/Y') }})
+            </h6>
+            <a href="{{ route('dashboard', ['date' => $nextDate]) }}" class="btn btn-sm btn-outline-secondary">
+              <i class="bi bi-chevron-right"></i>
+            </a>
           </div>
           <div class="card-body">
             @if($workerTodayWorks->count() > 0)
@@ -167,7 +186,7 @@
       <div class="col-lg-12">
         <div class="card shadow mb-4">
           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Primo Lavoro di Domani ({{ date('d/m/Y', strtotime('+1 day')) }})</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Primo Lavoro di {{ $isToday ? 'Domani' : 'Dopodomani' }} ({{ $currentDate->copy()->addDay()->format('d/m/Y') }})</h6>
           </div>
           <div class="card-body">
             @if($tomorrowFirstWork)

@@ -16,7 +16,14 @@ Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login.for
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', function(){
+Route::get('/dashboard', function(\Illuminate\Http\Request $request){
+    $dateParam = $request->query('date');
+    try {
+        $currentDate = $dateParam ? \Carbon\Carbon::parse($dateParam)->startOfDay() : \Carbon\Carbon::today();
+    } catch (\Exception $e) {
+        $currentDate = \Carbon\Carbon::today();
+    }
+
     $todayWorks = collect([]);
     $workerTodayWorks = collect([]);
     $tomorrowFirstWork = null;
@@ -24,38 +31,38 @@ Route::get('/dashboard', function(){
     $user = auth()->user();
     $role = strtolower($user->role ?? '');
 
-    // Se l'utente e' amministratore o sviluppatore, carica i lavori di oggi
+    // Se l'utente e' amministratore o sviluppatore, carica i lavori del giorno selezionato
     if (in_array($role, ['amministratore', 'sviluppatore'])) {
-        $todayWorks = \App\Models\Work::whereDate('data_esecuzione', today())
+        $todayWorks = \App\Models\Work::whereDate('data_esecuzione', $currentDate)
             ->with('customer')
             ->get();
     }
 
-    // Se l'utente e' dipendente, carica i lavori assegnati di oggi e il primo lavoro di domani
+    // Se l'utente e' dipendente, carica i lavori assegnati del giorno selezionato e il primo lavoro del giorno successivo
     if ($role === 'dipendente') {
         $worker = $user->worker;
 
         if ($worker) {
-            $todayStart = \Carbon\Carbon::today()->startOfDay();
-            $todayEnd = \Carbon\Carbon::today()->endOfDay();
-            $tomorrowStart = \Carbon\Carbon::tomorrow()->startOfDay();
-            $tomorrowEnd = \Carbon\Carbon::tomorrow()->endOfDay();
+            $dayStart = $currentDate->copy()->startOfDay();
+            $dayEnd = $currentDate->copy()->endOfDay();
+            $nextDayStart = $currentDate->copy()->addDay()->startOfDay();
+            $nextDayEnd = $currentDate->copy()->addDay()->endOfDay();
 
             $workerTodayWorks = $worker->works()
                 ->with('customer')
-                ->whereBetween('data_esecuzione', [$todayStart, $todayEnd])
+                ->whereBetween('data_esecuzione', [$dayStart, $dayEnd])
                 ->orderBy('data_esecuzione')
                 ->get();
 
             $tomorrowFirstWork = $worker->works()
                 ->with('customer')
-                ->whereBetween('data_esecuzione', [$tomorrowStart, $tomorrowEnd])
+                ->whereBetween('data_esecuzione', [$nextDayStart, $nextDayEnd])
                 ->orderBy('data_esecuzione')
                 ->first();
         }
     }
 
-    return view('dashboard', compact('todayWorks', 'workerTodayWorks', 'tomorrowFirstWork'));
+    return view('dashboard', compact('todayWorks', 'workerTodayWorks', 'tomorrowFirstWork', 'currentDate'));
 })->middleware('auth')->name('dashboard');
 
 
