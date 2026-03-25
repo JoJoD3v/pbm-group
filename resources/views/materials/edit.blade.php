@@ -25,6 +25,10 @@
           <label for="eer_code" class="form-label">EER Code</label>
           <input type="text" name="eer_code" id="eer_code" class="form-control" value="{{ $material->eer_code }}">
       </div>
+      <div class="mb-3">
+          <label for="note" class="form-label">Note</label>
+          <textarea name="note" id="note" class="form-control" rows="3">{{ old('note', $material->note) }}</textarea>
+      </div>
       <button type="submit" class="btn btn-primary">Aggiorna</button>
       <a href="{{ route('materials.index') }}" class="btn btn-secondary">Indietro</a>
   </form>

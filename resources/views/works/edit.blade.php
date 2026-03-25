@@ -147,6 +147,11 @@
           </select>
         </div>
 
+        <div class="mb-3">
+          <label for="note" class="form-label">Note</label>
+          <textarea name="note" id="note" class="form-control" rows="3">{{ old('note', $work->note) }}</textarea>
+        </div>
+
         <button type="submit" class="btn btn-primary">Aggiorna Lavoro</button>
         <a href="{{ route('works.index') }}" class="btn btn-secondary">Indietro</a>
       </form>

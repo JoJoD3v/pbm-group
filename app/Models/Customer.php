@@ -20,5 +20,6 @@ class Customer extends Model
         'email',
         'latitude_customer',
         'longitude_customer',
+        'note',
     ];
 }

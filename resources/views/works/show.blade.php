@@ -127,6 +127,15 @@ use Illuminate\Support\Str;
                 </div>
               </div>
 
+              @if($work->note)
+              <div class="row mb-3">
+                <div class="col-12">
+                  <strong>Note:</strong>
+                  <p>{{ $work->note }}</p>
+                </div>
+              </div>
+              @endif
+
               <div class="mt-3">
                 <a href="{{ route('works.edit', $work->id) }}" class="btn btn-warning">
                   <i class="bi bi-pencil"></i> Modifica

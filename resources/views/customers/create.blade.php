@@ -78,6 +78,11 @@
           <input type="hidden" name="longitude_customer" id="longitude" class="form-control" placeholder="Longitudine" >
         </div>
 
+        <div class="mb-3">
+          <label for="note" class="form-label">Note</label>
+          <textarea name="note" id="note" class="form-control" rows="3">{{ old('note') }}</textarea>
+        </div>
+
         <button type="submit" class="btn btn-primary">Salva</button>
         <a href="{{ route('customers.index') }}" class="btn btn-secondary">Indietro</a>
       </form>

@@ -9,7 +9,7 @@ class Material extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','eer_code'];
+    protected $fillable = ['name', 'eer_code', 'note'];
 
     public function deposits(){
         return $this->belongsToMany(Deposit::class, 'deposit_material');

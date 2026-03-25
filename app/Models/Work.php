@@ -26,6 +26,7 @@ class Work extends Model
         'indirizzo_destinazione',
         'latitude_destinazione',
         'longitude_destinazione',
+        'note',
     ];
 
     protected $casts = [
