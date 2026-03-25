@@ -9,28 +9,6 @@
   @endphp
 
   <h1 class="h3 mb-4 text-gray-800">Dashboard</h1>
-  @if($role !== 'dipendente')
-    <div class="row mb-4">
-      <div class="col-lg-12">
-        <div class="card shadow mb-4">
-          <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Informazioni Personali</h6>
-          </div>        <div class="card-body">
-            <p>Benvenuto, {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}.</p>
-            <p>Il tuo ruolo: 
-              @if($role === 'amministratore')
-                <span class="badge bg-primary">{{ ucfirst($role) }}</span>
-              @elseif($role === 'sviluppatore')
-                <span class="badge bg-info">{{ ucfirst($role) }}</span>
-              @else
-                <span class="badge bg-secondary">{{ ucfirst($role) }}</span>
-              @endif
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  @endif
   @if(in_array($role, ['amministratore', 'sviluppatore']))
     <div class="row">
       <div class="col-lg-12">
