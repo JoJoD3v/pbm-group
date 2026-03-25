@@ -168,12 +168,12 @@
                         @if($work->nome_destinazione === 'deposito' && $work->deposit)
                             <p>
                                 <strong>Discarica:</strong>
-                                <span class="badge bg-info text-dark">{{ $work->deposit->name }}</span>
+                                <p>{{ $work->deposit->name }}</p>
                             </p>
                         @elseif($work->nome_destinazione === 'cantiere' && $work->warehouseDestinazione)
                             <p>
                                 <strong>Cantiere:</strong>
-                                <span class="badge bg-warning text-dark">{{ $work->warehouseDestinazione->nome_sede }}</span>
+                                <p>{{ $work->warehouseDestinazione->nome_sede }}</p>
                             </p>
                         @else
                             <p><strong>Nome:</strong> {{ $work->nome_destinazione }}</p>
