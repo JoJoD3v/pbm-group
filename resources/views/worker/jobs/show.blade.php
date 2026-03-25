@@ -170,6 +170,18 @@
                                 <strong>Discarica:</strong>
                                 {{ $work->deposit->name }}
                             </p>
+                            @if($work->deposit->n_aut_comunicazione)
+                                <p><strong>N. Aut. Comunicazione:</strong> {{ $work->deposit->n_aut_comunicazione }}</p>
+                            @endif
+                            @if($work->deposit->numero_iscrizione_albo)
+                                <p><strong>Numero Iscrizione Albo:</strong> {{ $work->deposit->numero_iscrizione_albo }}</p>
+                            @endif
+                            @if($work->deposit->tipo)
+                                <p><strong>Tipo:</strong> {{ $work->deposit->tipo }}</p>
+                            @endif
+                            @if($work->deposit->destinazione)
+                                <p><strong>Destinazione:</strong> {{ $work->deposit->destinazione }}</p>
+                            @endif
                         @elseif($work->nome_destinazione === 'cantiere' && $work->warehouseDestinazione)
                             <p>
                                 <strong>Cantiere:</strong>
