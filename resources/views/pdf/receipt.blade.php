@@ -149,12 +149,13 @@
             @endif
         </div>
         <div class="header-right">
-            <div class="company-name">{{ env('NOME_AZIENDA', config('app.name')) }}</div>
+            <div class="company-name">TEP SRL</div>
             <div class="company-details">
-                {{ env('INDIRIZZO_AZIENDA', '-') }}<br>
-                P.IVA: {{ env('PARTITA_IVA_AZIENDA', '-') }}<br>
-                Tel: {{ env('TELEFONO_AZIENDA', '-') }}<br>
-                Email: {{ env('EMAIL_AZIENDA', '-') }}
+                TEP SRL<br>
+                P.IVA: 16433631005<br>
+                Via Conca d'Oro 327 00141 Roma 
+                Tel: 342 896 4506<br>
+                Email: tepsrl@smaltimentieservizi.it
             </div>
         </div>
     </div>
