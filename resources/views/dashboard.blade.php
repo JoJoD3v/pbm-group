@@ -30,11 +30,11 @@
                 <table class="table table-bordered" id="todayWorksTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th>ID</th>
                       <th>Tipo</th>
                       <th>Cliente</th>
                       <th>Stato</th>
-                      <th>Partenza</th>
+                      <th>Lavoratore</th>
+                      <th></th>Partenza</th>
                       <th>Destinazione</th>
                       <th>Materiale</th>
                       <th>Azioni</th>
@@ -43,7 +43,6 @@
                   <tbody>
                     @foreach($todayWorks as $work)
                       <tr>
-                        <td>{{ $work->id }}</td>
                         <td>{{ $work->tipo_lavoro }}</td>
                         <td>
                           @if($work->customer)
@@ -62,6 +61,13 @@
                             if ($status === 'Lavoro Annullato') $statusBadge = 'danger';
                           @endphp
                           <span class="badge bg-{{ $statusBadge }}">{{ $status ?? 'In Sospeso' }}</span>
+                        </td>
+                        <td>
+                          @if($work->workers->isNotEmpty())
+                            {{ $work->workers->map->full_name->join(', ') }}
+                          @else
+                            <span class="text-muted">—</span>
+                          @endif
                         </td>
                         <td>{{ $work->indirizzo_partenza }}</td>
                         <td>{{ $work->indirizzo_destinazione }}</td>

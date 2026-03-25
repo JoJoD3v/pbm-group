@@ -34,7 +34,7 @@ Route::get('/dashboard', function(\Illuminate\Http\Request $request){
     // Se l'utente e' amministratore o sviluppatore, carica i lavori del giorno selezionato
     if (in_array($role, ['amministratore', 'sviluppatore'])) {
         $todayWorks = \App\Models\Work::whereDate('data_esecuzione', $currentDate)
-            ->with('customer')
+            ->with(['customer', 'workers'])
             ->get();
     }
 
