@@ -25,6 +25,10 @@
           <input type="text" name="eer_code" id="eer_code" class="form-control">
       </div>
       <div class="mb-3">
+          <label for="prezzo" class="form-label">Prezzo (€)</label>
+          <input type="number" step="0.01" min="0" name="prezzo" id="prezzo" class="form-control" value="{{ old('prezzo') }}">
+      </div>
+      <div class="mb-3">
           <label for="note" class="form-label">Note</label>
           <textarea name="note" id="note" class="form-control" rows="3">{{ old('note') }}</textarea>
       </div>

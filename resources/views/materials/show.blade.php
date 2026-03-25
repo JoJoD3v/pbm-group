@@ -9,13 +9,17 @@
     <div class="card-body">
 
       <div class="row mb-3">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <strong>Nome:</strong>
           <p>{{ $material->name }}</p>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <strong>EER Code:</strong>
           <p>{{ $material->eer_code ?? 'N/D' }}</p>
+        </div>
+        <div class="col-md-4">
+          <strong>Prezzo:</strong>
+          <p>{{ $material->prezzo !== null ? number_format($material->prezzo, 2, ',', '.') . ' €' : 'N/D' }}</p>
         </div>
       </div>
 
