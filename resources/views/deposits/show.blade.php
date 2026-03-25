@@ -48,6 +48,18 @@
           <strong>Destinazione</strong>
           <p>{{ $deposit->destinazione ?? 'N/D' }}</p>
         </div>
+        <div class="col-md-3">
+          <strong>Data Scadenza</strong>
+          <p>
+            @if($deposit->data_scadenza)
+              <span class="{{ $deposit->data_scadenza->isPast() ? 'text-danger fw-bold' : '' }}">
+                {{ $deposit->data_scadenza->format('d/m/Y') }}
+              </span>
+            @else
+              N/D
+            @endif
+          </p>
+        </div>
       </div>
 
       @if($deposit->latitude && $deposit->longitude)

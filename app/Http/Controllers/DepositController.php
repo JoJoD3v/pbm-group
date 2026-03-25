@@ -33,7 +33,7 @@ class DepositController extends Controller
             'longitude' => 'nullable|numeric',            
         ]);
 
-        $deposit = Deposit::create($request->only('name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'latitude', 'longitude'));
+        $deposit = Deposit::create($request->only('name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'data_scadenza', 'latitude', 'longitude'));
 
         // Associa i materiali selezionati (se presenti)
         if ($request->has('materials')) {
@@ -63,7 +63,7 @@ class DepositController extends Controller
             'longitude' => 'nullable|numeric',
         ]);
 
-        $deposit->update($request->only('name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'latitude', 'longitude'));
+        $deposit->update($request->only('name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'data_scadenza', 'latitude', 'longitude'));
 
         // Aggiorna la relazione many-to-many
         if ($request->has('materials')) {

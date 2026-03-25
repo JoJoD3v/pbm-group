@@ -49,6 +49,11 @@
       </div>
       
       <div class="mb-3">
+          <label for="data_scadenza" class="form-label">Data Scadenza</label>
+          <input type="date" name="data_scadenza" id="data_scadenza" class="form-control" value="{{ old('data_scadenza', $deposit->data_scadenza ? $deposit->data_scadenza->format('Y-m-d') : '') }}">
+      </div>
+      
+      <div class="mb-3">
           <label for="latitude" class="form-label">Latitudine</label>
           <input type="text" name="latitude" id="latitude" class="form-control" value="{{ $deposit->latitude }}" placeholder="Inserisci latitudine" readonly>
       </div>
