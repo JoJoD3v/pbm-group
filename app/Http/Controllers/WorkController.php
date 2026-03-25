@@ -99,7 +99,7 @@ class WorkController extends Controller
     public function create()
     {
         // Recupera dati utili per i select:
-        $customers = Customer::all();
+        $customers = Customer::all()->sortBy(fn($c) => $c->customer_type === 'fisica' ? $c->full_name : $c->ragione_sociale)->values();
         $materials = Material::all();
         $warehouses = Warehouse::all();
         return view('works.create', compact('customers', 'materials', 'warehouses'));
@@ -108,7 +108,7 @@ class WorkController extends Controller
     public function createDisposal()
     {
         // Recupera dati utili per i select:
-        $customers = Customer::all();
+        $customers = Customer::all()->sortBy(fn($c) => $c->customer_type === 'fisica' ? $c->full_name : $c->ragione_sociale)->values();
         $materials = Material::with('deposits')->get();
         $warehouses = Warehouse::all();
         return view('works.create_disposal', compact('customers', 'materials', 'warehouses'));
