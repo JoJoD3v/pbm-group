@@ -121,7 +121,12 @@
                   <td>
                     <a href="{{ route('works.show', $work->id) }}" class="btn btn-success btn-sm">
                         <i class="bi bi-eye"></i>
-                      </a>                    
+                      </a>
+                    @if(strtolower(Auth::user()->role ?? '') === 'sviluppatore')
+                    <a href="{{ route('works.edit', $work->id) }}" class="btn btn-warning btn-sm">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    @endif
                     <form action="{{ route('works.destroy', $work->id) }}" method="POST" style="display:inline-block;">
                       @csrf
                       @method('DELETE')
