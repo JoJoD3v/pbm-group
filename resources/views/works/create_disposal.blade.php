@@ -48,12 +48,6 @@
           </div>
         </div>
 
-        <!-- Costo Lavoro -->
-        <div class="mb-3">
-          <label for="costo_lavoro" class="form-label">Costo Lavoro (€)</label>
-          <input type="number" step="0.01" min="0" name="costo_lavoro" id="costo_lavoro" class="form-control">
-        </div>
-
         <!-- Modalità Pagamento Lavoro -->
         <div class="mb-3">
           <label for="modalita_pagamento" class="form-label">Modalità Pagamento Lavoro</label>
@@ -136,22 +130,14 @@
             <input type="text" name="codice_eer" id="codice_eer" class="form-control" readonly>
           </div>
           <div class="row mt-3">
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label for="prezzo_materiale" class="form-label">Prezzo unitario (€/kg)</label>
               <input type="number" step="0.01" min="0" name="prezzo_materiale" id="prezzo_materiale" class="form-control" value="{{ old('prezzo_materiale', '1.00') }}">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label for="quantita_materiale" class="form-label">Quantità (kg)</label>
               <input type="number" step="0.01" min="0" name="quantita_materiale" id="quantita_materiale" class="form-control" value="{{ old('quantita_materiale', '1.00') }}">
             </div>
-            <div class="col-md-4">
-              <label for="prezzo_totale_display" class="form-label">Prezzo Totale (€)</label>
-              <input type="number" step="0.01" id="prezzo_totale_display" class="form-control" readonly>
-            </div>
-          </div>
-          <div class="form-check mt-3">
-            <input type="checkbox" class="form-check-input" name="iva_applicata" id="iva_applicata" value="1" {{ old('iva_applicata') ? 'checked' : '' }}>
-            <label class="form-check-label" for="iva_applicata">Applicazione IVA (22%)</label>
           </div>
         </div>
 
@@ -159,6 +145,25 @@
         <div id="material_libero_section" class="mb-3" style="display: none;">
           <label for="materiale_libero" class="form-label">Materiale Libero</label>
           <input type="text" name="materiale_libero" id="materiale_libero" class="form-control">
+        </div>
+
+        <!-- Riepilogo Prezzi -->
+        <div class="card mb-4 border-primary">
+          <div class="card-header bg-primary text-white py-2 fw-bold">Riepilogo Prezzi</div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="costo_lavoro" class="form-label">Costo Lavoro (€)</label>
+              <input type="number" step="0.01" min="0" name="costo_lavoro" id="costo_lavoro" class="form-control" value="{{ old('costo_lavoro') }}">
+            </div>
+            <div class="form-check mb-3">
+              <input type="checkbox" class="form-check-input" name="iva_applicata" id="iva_applicata" value="1" {{ old('iva_applicata') ? 'checked' : '' }}>
+              <label class="form-check-label" for="iva_applicata">Applicazione IVA (22%)</label>
+            </div>
+            <div class="mb-0">
+              <label for="prezzo_totale_display" class="form-label fw-bold">Totale (€)</label>
+              <input type="number" step="0.01" id="prezzo_totale_display" class="form-control form-control-lg" readonly>
+            </div>
+          </div>
         </div>
 
         <!-- Nome Destinazione: selezione tra indirizzo cliente, cantiere, deposito, indirizzo libero -->
@@ -253,16 +258,22 @@ $(document).ready(function(){
     });
 
     function calcolaTotale(){
-        var prezzo = parseFloat($('#prezzo_materiale').val()) || 0;
-        var quantita = parseFloat($('#quantita_materiale').val()) || 0;
-        var totale = prezzo * quantita;
-        if($('#iva_applicata').is(':checked')) {
-            totale = totale * 1.22;
+        var subtotaleMateriale = 0;
+        if($('#material_registrato').is(':checked')){
+            var prezzo = parseFloat($('#prezzo_materiale').val()) || 0;
+            var quantita = parseFloat($('#quantita_materiale').val()) || 0;
+            subtotaleMateriale = prezzo * quantita;
         }
-        $('#prezzo_totale_display').val(totale.toFixed(2));
+        var costoLavoro = parseFloat($('#costo_lavoro').val()) || 0;
+        var subtotale = subtotaleMateriale + costoLavoro;
+        if($('#iva_applicata').is(':checked')) {
+            subtotale = subtotale * 1.22;
+        }
+        $('#prezzo_totale_display').val(subtotale.toFixed(2));
     }
 
-    $('#prezzo_materiale, #quantita_materiale').on('input', calcolaTotale);
+    $('input[name="materiale_option"]').on('change', calcolaTotale);
+    $('#prezzo_materiale, #quantita_materiale, #costo_lavoro').on('input', calcolaTotale);
     $('#iva_applicata').on('change', calcolaTotale);
     calcolaTotale();
 

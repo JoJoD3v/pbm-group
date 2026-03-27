@@ -230,9 +230,19 @@
         </table>
     </div>
 
+    @php
+        $prezzoUnitario = $work->prezzo_materiale ?? 1.00;
+        $quantita = $work->quantita_materiale ?? 1.00;
+        $costoLavoro = (float) ($work->costo_lavoro ?? 0);
+        $subtotaleMateriale = $work->materiale ? ($prezzoUnitario * $quantita) : 0;
+        $subtotale = $subtotaleMateriale + $costoLavoro;
+        $importoIva = $work->iva_applicata ? $subtotale * 0.22 : 0;
+        $importoTotale = $subtotale + $importoIva;
+    @endphp
+
     @if($work->materiale)
     <div class="section">
-        <div class="section-title">Dettaglio Materiale</div>
+        <div class="section-title">Dettaglio Materiale e Costi</div>
         <table>
             <thead>
                 <tr>
@@ -243,19 +253,20 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    $prezzoUnitario = $work->prezzo_materiale ?? 1.00;
-                    $quantita = $work->quantita_materiale ?? 1.00;
-                    $importoBase = $prezzoUnitario * $quantita;
-                    $importoIva = $work->iva_applicata ? $importoBase * 0.22 : 0;
-                    $importoTotale = $importoBase + $importoIva;
-                @endphp
                 <tr>
                     <td>{{ $work->materiale }}@if($work->codice_eer) <small>({{ $work->codice_eer }})</small>@endif</td>
                     <td class="text-right">{{ number_format($quantita, 2, ',', '.') }} kg</td>
                     <td class="text-right">€ {{ number_format($prezzoUnitario, 2, ',', '.') }}</td>
-                    <td class="text-right">€ {{ number_format($importoBase, 2, ',', '.') }}</td>
+                    <td class="text-right">€ {{ number_format($subtotaleMateriale, 2, ',', '.') }}</td>
                 </tr>
+                @if($costoLavoro > 0)
+                <tr>
+                    <td>Costo Lavoro</td>
+                    <td class="text-right">-</td>
+                    <td class="text-right">-</td>
+                    <td class="text-right">€ {{ number_format($costoLavoro, 2, ',', '.') }}</td>
+                </tr>
+                @endif
                 @if($work->iva_applicata)
                 <tr>
                     <td colspan="3">IVA (22%)</td>
@@ -263,7 +274,7 @@
                 </tr>
                 @endif
                 <tr>
-                    <td colspan="3"><strong>Totale Materiale</strong></td>
+                    <td colspan="3"><strong>Totale</strong></td>
                     <td class="text-right"><strong>€ {{ number_format($importoTotale, 2, ',', '.') }}</strong></td>
                 </tr>
             </tbody>
@@ -289,11 +300,7 @@
                         </span>
                     </td>
                     <td class="text-right">
-                        @if($work->costo_lavoro)
-                            € {{ number_format($work->costo_lavoro, 2, ',', '.') }}
-                        @else
-                            -
-                        @endif
+                        € {{ number_format($importoTotale, 2, ',', '.') }}
                     </td>
                     <td class="text-right">
                         @if($ricevuta->pagamento_effettuato && $ricevuta->somma_pagamento)
@@ -305,11 +312,9 @@
                 </tr>
             </tbody>
         </table>
-        @if($work->costo_lavoro)
-            <div class="text-right" style="margin-top: 6px;">
-                <span class="total">TOTALE: € {{ number_format($work->costo_lavoro, 2, ',', '.') }}</span>
-            </div>
-        @endif
+        <div class="text-right" style="margin-top: 6px;">
+            <span class="total">TOTALE: € {{ number_format($importoTotale, 2, ',', '.') }}</span>
+        </div>
     </div>
 
     <div class="signature">
