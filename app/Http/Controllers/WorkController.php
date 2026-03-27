@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Work;
 use App\Models\Customer;
 use App\Models\Material;
 use App\Models\Warehouse;
-use App\Models\Deposit;
+use App\Models\Work;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class WorkController extends Controller
 {
@@ -20,7 +19,7 @@ class WorkController extends Controller
         if ($request->filled('data_inizio')) {
             $query->whereDate('data_esecuzione', '>=', $request->data_inizio);
         }
-        
+
         // Filtro per data fine
         if ($request->filled('data_fine')) {
             $query->whereDate('data_esecuzione', '<=', $request->data_fine);
@@ -32,12 +31,13 @@ class WorkController extends Controller
         }
 
         return $query->orderBy('data_esecuzione', 'desc')
-                     ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', 'desc');
     }
 
     public function index(Request $request)
     {
         $works = $this->buildFilteredQuery($request)->get();
+
         return view('works.index', [
             'works' => $works,
             'pageTitle' => 'Elenco Lavori',
@@ -76,7 +76,7 @@ class WorkController extends Controller
     {
         $ids = $request->input('ids', []);
         $ids = is_array($ids) ? $ids : [];
-        
+
         if (empty($ids)) {
             return response()->json([
                 'server_time' => now()->toIso8601String(),
@@ -99,27 +99,30 @@ class WorkController extends Controller
     public function create()
     {
         // Recupera dati utili per i select:
-        $customers = Customer::all()->sortBy(fn($c) => $c->customer_type === 'fisica' ? $c->full_name : $c->ragione_sociale)->values();
+        $customers = Customer::all()->sortBy(fn ($c) => $c->customer_type === 'fisica' ? $c->full_name : $c->ragione_sociale)->values();
         $materials = Material::all();
         $warehouses = Warehouse::all();
+
         return view('works.create', compact('customers', 'materials', 'warehouses'));
     }
-    
+
     public function createDisposal()
     {
         // Recupera dati utili per i select:
-        $customers = Customer::all()->sortBy(fn($c) => $c->customer_type === 'fisica' ? $c->full_name : $c->ragione_sociale)->values();
+        $customers = Customer::all()->sortBy(fn ($c) => $c->customer_type === 'fisica' ? $c->full_name : $c->ragione_sociale)->values();
         $materials = Material::with('deposits')->get();
         $warehouses = Warehouse::all();
+
         return view('works.create_disposal', compact('customers', 'materials', 'warehouses'));
     }
-    
+
     /**
      * Ottieni i depositi associati a un materiale specifico
      */
     public function getDepositsByMaterial($materialId)
     {
         $material = Material::with('deposits')->findOrFail($materialId);
+
         return response()->json($material->deposits);
     }
 
@@ -127,32 +130,40 @@ class WorkController extends Controller
     {
         // La validazione può essere complessa in base alle opzioni scelte; qui un esempio base:
         $request->validate([
-            'tipo_lavoro'           => 'required|string|max:255',
-            'customer_id'           => 'required|exists:customers,id',
-            'nome_partenza'         => 'nullable|string|max:255',
-            'indirizzo_partenza'    => 'nullable|string|max:255',
-            'nome_destinazione'     => 'required|string|max:255',
-            'indirizzo_destinazione'=> 'required|string|max:255',
-            'data_esecuzione'       => 'nullable|date',
-            'costo_lavoro'          => 'nullable|numeric',
-            'modalita_pagamento'    => 'nullable|string|max:255',
-            'phone'                 => 'nullable', // se necessario
+            'tipo_lavoro' => 'required|string|max:255',
+            'customer_id' => 'required|exists:customers,id',
+            'nome_partenza' => 'nullable|string|max:255',
+            'indirizzo_partenza' => 'nullable|string|max:255',
+            'nome_destinazione' => 'required|string|max:255',
+            'indirizzo_destinazione' => 'required|string|max:255',
+            'data_esecuzione' => 'nullable|date',
+            'costo_lavoro' => 'nullable|numeric',
+            'modalita_pagamento' => 'nullable|string|max:255',
+            'prezzo_materiale' => 'nullable|numeric|min:0',
+            'quantita_materiale' => 'nullable|numeric|min:0',
+            'iva_applicata' => 'nullable|boolean',
             // Altri campi vanno validati secondo la logica della app
         ]);
 
         // Se è stato usato il materiale libero, usa quel campo; altrimenti, se si è scelto un materiale registrato,
         // si potrebbe recuperare il nome e il codice eer dal materiale selezionato.
-        if($request->materiale_option == 'registrato'){
+        if ($request->materiale_option == 'registrato') {
             // Imposta "materiale" e "codice_eer" in base al materiale selezionato
             $material = Material::find($request->material_id);
             $dataMateriale = [
-                'materiale'   => $material ? $material->name : null,
-                'codice_eer'  => $material ? $material->eer_code : null,
+                'materiale' => $material ? $material->name : null,
+                'codice_eer' => $material ? $material->eer_code : null,
+                'material_id' => $material ? $material->id : null,
+                'prezzo_materiale' => $request->filled('prezzo_materiale') ? $request->prezzo_materiale : 1.00,
+                'quantita_materiale' => $request->filled('quantita_materiale') ? $request->quantita_materiale : 1.00,
             ];
         } else {
             $dataMateriale = [
-                'materiale'  => $request->input('materiale_libero'),
+                'materiale' => $request->input('materiale_libero'),
                 'codice_eer' => null,
+                'material_id' => null,
+                'prezzo_materiale' => $request->filled('prezzo_materiale') ? $request->prezzo_materiale : 1.00,
+                'quantita_materiale' => $request->filled('quantita_materiale') ? $request->quantita_materiale : 1.00,
             ];
         }
 
@@ -165,7 +176,7 @@ class WorkController extends Controller
 
         // Salva l'ID della discarica o del cantiere scelto come destinazione
         $dataDestinazione = [
-            'deposit_id'               => $request->nome_destinazione === 'deposito' ? ($request->deposit_id ?: null) : null,
+            'deposit_id' => $request->nome_destinazione === 'deposito' ? ($request->deposit_id ?: null) : null,
             'warehouse_destinazione_id' => $request->nome_destinazione === 'cantiere' ? ($request->warehouse_id ?: null) : null,
         ];
 
@@ -173,25 +184,28 @@ class WorkController extends Controller
             $request->all(),
             $dataMateriale,
             ['data_esecuzione' => $dataEsecuzione],
+            ['iva_applicata' => $request->boolean('iva_applicata')],
             $dataDestinazione
         ));
 
         return redirect()->route('works.index')
-                         ->with('success', 'Work creato con successo.');
+            ->with('success', 'Work creato con successo.');
     }
 
     public function show(Work $work)
     {
         // Carica le ricevute associate al lavoro
         $work->load('ricevute');
+
         return view('works.show', compact('work'));
     }
-    
+
     public function edit(Work $work)
     {
         $customers = Customer::all();
         $materials = Material::all();
         $warehouses = Warehouse::all();
+
         return view('works.edit', compact('work', 'customers', 'materials', 'warehouses'));
     }
 
@@ -199,27 +213,36 @@ class WorkController extends Controller
     {
         // Validazione simile a store (da adattare)
         $request->validate([
-            'tipo_lavoro'           => 'required|string|max:255',
-            'customer_id'           => 'required|exists:customers,id',
-            'nome_partenza'         => 'nullable|string|max:255',
-            'indirizzo_partenza'    => 'nullable|string|max:255',
-            'nome_destinazione'     => 'required|string|max:255',
-            'indirizzo_destinazione'=> 'required|string|max:255',
-            'data_esecuzione'       => 'nullable|date',
-            'costo_lavoro'          => 'nullable|numeric',
-            'modalita_pagamento'    => 'nullable|string|max:255',
+            'tipo_lavoro' => 'required|string|max:255',
+            'customer_id' => 'required|exists:customers,id',
+            'nome_partenza' => 'nullable|string|max:255',
+            'indirizzo_partenza' => 'nullable|string|max:255',
+            'nome_destinazione' => 'required|string|max:255',
+            'indirizzo_destinazione' => 'required|string|max:255',
+            'data_esecuzione' => 'nullable|date',
+            'costo_lavoro' => 'nullable|numeric',
+            'modalita_pagamento' => 'nullable|string|max:255',
+            'prezzo_materiale' => 'nullable|numeric|min:0',
+            'quantita_materiale' => 'nullable|numeric|min:0',
+            'iva_applicata' => 'nullable|boolean',
         ]);
 
-        if($request->materiale_option == 'registrato'){
+        if ($request->materiale_option == 'registrato') {
             $material = Material::find($request->material_id);
             $dataMateriale = [
-                'materiale'   => $material ? $material->name : null,
-                'codice_eer'  => $material ? $material->eer_code : null,
+                'materiale' => $material ? $material->name : null,
+                'codice_eer' => $material ? $material->eer_code : null,
+                'material_id' => $material ? $material->id : null,
+                'prezzo_materiale' => $request->filled('prezzo_materiale') ? $request->prezzo_materiale : 1.00,
+                'quantita_materiale' => $request->filled('quantita_materiale') ? $request->quantita_materiale : 1.00,
             ];
         } else {
             $dataMateriale = [
-                'materiale'  => $request->input('materiale_libero'),
+                'materiale' => $request->input('materiale_libero'),
                 'codice_eer' => null,
+                'material_id' => null,
+                'prezzo_materiale' => $request->filled('prezzo_materiale') ? $request->prezzo_materiale : 1.00,
+                'quantita_materiale' => $request->filled('quantita_materiale') ? $request->quantita_materiale : 1.00,
             ];
         }
 
@@ -229,7 +252,7 @@ class WorkController extends Controller
 
         // Salva l'ID della discarica o del cantiere scelto come destinazione
         $dataDestinazione = [
-            'deposit_id'               => $request->nome_destinazione === 'deposito' ? ($request->deposit_id ?: null) : null,
+            'deposit_id' => $request->nome_destinazione === 'deposito' ? ($request->deposit_id ?: null) : null,
             'warehouse_destinazione_id' => $request->nome_destinazione === 'cantiere' ? ($request->warehouse_id ?: null) : null,
         ];
 
@@ -237,17 +260,19 @@ class WorkController extends Controller
             $request->all(),
             $dataMateriale,
             ['data_esecuzione' => $dataEsecuzione],
+            ['iva_applicata' => $request->boolean('iva_applicata')],
             $dataDestinazione
         ));
 
         return redirect()->route('works.index')
-                         ->with('success', 'Work aggiornato con successo.');
+            ->with('success', 'Work aggiornato con successo.');
     }
 
     public function destroy(Work $work)
     {
         $work->delete();
+
         return redirect()->route('works.index')
-                         ->with('success', 'Work eliminato con successo.');
+            ->with('success', 'Work eliminato con successo.');
     }
 }

@@ -126,7 +126,7 @@
           <select name="material_id" id="material_id" class="form-select">
             <option value="">Seleziona Materiale</option>
             @foreach($materials as $material)
-              <option value="{{ $material->id }}" data-codice="{{ $material->eer_code }}">
+              <option value="{{ $material->id }}" data-codice="{{ $material->eer_code }}" data-prezzo="{{ $material->prezzo ?? '' }}">
                 {{ $material->name }}
               </option>
             @endforeach
@@ -134,6 +134,24 @@
           <div class="mt-2">
             <label for="codice_eer" class="form-label">Codice EER</label>
             <input type="text" name="codice_eer" id="codice_eer" class="form-control" readonly>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <label for="prezzo_materiale" class="form-label">Prezzo unitario (€/kg)</label>
+              <input type="number" step="0.01" min="0" name="prezzo_materiale" id="prezzo_materiale" class="form-control" value="{{ old('prezzo_materiale', '1.00') }}">
+            </div>
+            <div class="col-md-4">
+              <label for="quantita_materiale" class="form-label">Quantità (kg)</label>
+              <input type="number" step="0.01" min="0" name="quantita_materiale" id="quantita_materiale" class="form-control" value="{{ old('quantita_materiale', '1.00') }}">
+            </div>
+            <div class="col-md-4">
+              <label for="prezzo_totale_display" class="form-label">Prezzo Totale (€)</label>
+              <input type="number" step="0.01" id="prezzo_totale_display" class="form-control" readonly>
+            </div>
+          </div>
+          <div class="form-check mt-3">
+            <input type="checkbox" class="form-check-input" name="iva_applicata" id="iva_applicata" value="1" {{ old('iva_applicata') ? 'checked' : '' }}>
+            <label class="form-check-label" for="iva_applicata">Applicazione IVA (22%)</label>
           </div>
         </div>
 
@@ -220,11 +238,33 @@ $(document).ready(function(){
         }
     });
 
-    // Auto-riempi Codice EER quando si seleziona un materiale registrato
+    // Auto-riempi Codice EER e prezzo quando si seleziona un materiale registrato
     $('#material_id').on('change', function(){
-       var codice = $(this).find(':selected').data('codice') || '';
+       var selected = $(this).find(':selected');
+       var codice = selected.data('codice') || '';
        $('#codice_eer').val(codice);
+       var prezzo = selected.data('prezzo');
+       if(prezzo !== undefined && prezzo !== '') {
+           $('#prezzo_materiale').val(parseFloat(prezzo).toFixed(2));
+       } else {
+           $('#prezzo_materiale').val('1.00');
+       }
+       calcolaTotale();
     });
+
+    function calcolaTotale(){
+        var prezzo = parseFloat($('#prezzo_materiale').val()) || 0;
+        var quantita = parseFloat($('#quantita_materiale').val()) || 0;
+        var totale = prezzo * quantita;
+        if($('#iva_applicata').is(':checked')) {
+            totale = totale * 1.22;
+        }
+        $('#prezzo_totale_display').val(totale.toFixed(2));
+    }
+
+    $('#prezzo_materiale, #quantita_materiale').on('input', calcolaTotale);
+    $('#iva_applicata').on('change', calcolaTotale);
+    calcolaTotale();
 
     // Funzione per aggiornare indirizzo e coordinate di destinazione
     function updateIndirizzo(address, lat, lon){

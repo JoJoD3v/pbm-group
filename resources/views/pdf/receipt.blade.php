@@ -230,6 +230,47 @@
         </table>
     </div>
 
+    @if($work->materiale)
+    <div class="section">
+        <div class="section-title">Dettaglio Materiale</div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40%;">Materiale</th>
+                    <th style="width: 20%;" class="text-right">Quantità (kg)</th>
+                    <th style="width: 20%;" class="text-right">Prezzo unitario</th>
+                    <th style="width: 20%;" class="text-right">Importo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $prezzoUnitario = $work->prezzo_materiale ?? 1.00;
+                    $quantita = $work->quantita_materiale ?? 1.00;
+                    $importoBase = $prezzoUnitario * $quantita;
+                    $importoIva = $work->iva_applicata ? $importoBase * 0.22 : 0;
+                    $importoTotale = $importoBase + $importoIva;
+                @endphp
+                <tr>
+                    <td>{{ $work->materiale }}@if($work->codice_eer) <small>({{ $work->codice_eer }})</small>@endif</td>
+                    <td class="text-right">{{ number_format($quantita, 2, ',', '.') }} kg</td>
+                    <td class="text-right">€ {{ number_format($prezzoUnitario, 2, ',', '.') }}</td>
+                    <td class="text-right">€ {{ number_format($importoBase, 2, ',', '.') }}</td>
+                </tr>
+                @if($work->iva_applicata)
+                <tr>
+                    <td colspan="3">IVA (22%)</td>
+                    <td class="text-right">€ {{ number_format($importoIva, 2, ',', '.') }}</td>
+                </tr>
+                @endif
+                <tr>
+                    <td colspan="3"><strong>Totale Materiale</strong></td>
+                    <td class="text-right"><strong>€ {{ number_format($importoTotale, 2, ',', '.') }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    @endif
+
     <div class="section">
         <div class="section-title">Pagamento</div>
         <table>

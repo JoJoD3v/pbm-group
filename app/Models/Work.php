@@ -22,6 +22,10 @@ class Work extends Model
         'longitude_partenza',
         'materiale',
         'codice_eer',
+        'material_id',
+        'prezzo_materiale',
+        'quantita_materiale',
+        'iva_applicata',
         'nome_destinazione',
         'indirizzo_destinazione',
         'latitude_destinazione',
@@ -33,6 +37,9 @@ class Work extends Model
 
     protected $casts = [
         'data_esecuzione' => 'datetime',
+        'iva_applicata' => 'boolean',
+        'prezzo_materiale' => 'decimal:2',
+        'quantita_materiale' => 'decimal:2',
     ];
 
     // Relazione con il Customer
@@ -40,14 +47,20 @@ class Work extends Model
     {
         return $this->belongsTo(Customer::class);
     }
-    
+
+    // Relazione con il materiale
+    public function material()
+    {
+        return $this->belongsTo(Material::class);
+    }
+
     // Relazione many-to-many con i Worker
     public function workers()
     {
         return $this->belongsToMany(Worker::class, 'work_worker')
-                    ->withTimestamps();
+            ->withTimestamps();
     }
-    
+
     // Relazione con le ricevute
     public function ricevute()
     {
