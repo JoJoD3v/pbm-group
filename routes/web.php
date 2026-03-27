@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -217,8 +219,6 @@ Route::get('/ricevute/{ricevutaId}/pdf', [RicevutaController::class, 'downloadPD
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckDeveloperRole;
 use App\Models\Work;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 Route::middleware(['auth', CheckDeveloperRole::class])->group(function () {
     Route::resource('users', UserController::class);
