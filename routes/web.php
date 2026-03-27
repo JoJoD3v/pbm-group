@@ -219,7 +219,6 @@ Route::get('/ricevute/{ricevutaId}/pdf', [RicevutaController::class, 'downloadPD
 // Rotte per la gestione utenti (solo sviluppatori)
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckDeveloperRole;
-use App\Models\Work;
 
 Route::middleware(['auth', CheckDeveloperRole::class])->group(function () {
     Route::resource('users', UserController::class);
