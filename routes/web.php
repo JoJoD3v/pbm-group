@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Work;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
