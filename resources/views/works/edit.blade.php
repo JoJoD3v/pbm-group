@@ -110,23 +110,18 @@
           <input type="text" name="materiale_libero" id="materiale_libero" class="form-control" value="{{ !$work->codice_eer ? $work->materiale : '' }}">
         </div>
 
-        <!-- Riepilogo Prezzi -->
-        <div class="card mb-4 border-primary">
-          <div class="card-header bg-primary text-white py-2 fw-bold">Riepilogo Prezzi</div>
-          <div class="card-body">
-            <div class="mb-3">
-              <label for="costo_lavoro" class="form-label">Costo Lavoro (€)</label>
-              <input type="number" step="0.01" min="0" name="costo_lavoro" id="costo_lavoro" class="form-control" value="{{ old('costo_lavoro', $work->costo_lavoro) }}">
-            </div>
-            <div class="form-check mb-3">
-              <input type="checkbox" class="form-check-input" name="iva_applicata" id="iva_applicata" value="1" {{ old('iva_applicata', $work->iva_applicata) ? 'checked' : '' }}>
-              <label class="form-check-label" for="iva_applicata">Applicazione IVA (22%)</label>
-            </div>
-            <div class="mb-0">
-              <label for="prezzo_totale_display" class="form-label fw-bold">Totale (€)</label>
-              <input type="number" step="0.01" id="prezzo_totale_display" class="form-control form-control-lg" readonly>
-            </div>
-          </div>
+        <!-- Prezzi -->
+        <div class="mb-3">
+          <label for="costo_lavoro" class="form-label">Costo Lavoro (€)</label>
+          <input type="number" step="0.01" min="0" name="costo_lavoro" id="costo_lavoro" class="form-control" value="{{ old('costo_lavoro', $work->costo_lavoro) }}">
+        </div>
+        <div class="form-check mb-3">
+          <input type="checkbox" class="form-check-input" name="iva_applicata" id="iva_applicata" value="1" {{ old('iva_applicata', $work->iva_applicata) ? 'checked' : '' }}>
+          <label class="form-check-label" for="iva_applicata">Applicazione IVA (22%)</label>
+        </div>
+        <div class="mb-3">
+          <label for="prezzo_totale_display" class="form-label">Totale (€)</label>
+          <input type="number" step="0.01" id="prezzo_totale_display" class="form-control" readonly>
         </div>
 
         <!-- Nome Destinazione: select -->
