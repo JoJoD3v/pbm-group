@@ -7,13 +7,22 @@ use Illuminate\Support\Str;
 @section('content')
 <div class="container-fluid mt-4">
   <div class="card shadow mb-4">
-    <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">Lavoro                     
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 font-weight-bold text-primary">Lavoro
         @if($work->customer)
           {{ $work->customer->customer_type == 'fisica' ? $work->customer->full_name : $work->customer->ragione_sociale }}
-        @else          
         @endif
       </h6>
+      @if(!in_array($work->status_lavoro, ['Lavoro Completato', 'Concluso']))
+        <form action="{{ route('works.complete', $work->id) }}" method="POST" class="mb-0">
+          @csrf
+          <button type="submit" class="btn btn-success btn-sm">
+            <i class="bi bi-check-circle"></i> Imposta come Completato
+          </button>
+        </form>
+      @else
+        <span class="badge badge-success">Lavoro Completato</span>
+      @endif
     </div>
     <div class="card-body">
       <div class="row">

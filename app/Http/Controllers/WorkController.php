@@ -275,4 +275,12 @@ class WorkController extends Controller
         return redirect()->route('works.index')
             ->with('success', 'Work eliminato con successo.');
     }
+
+    public function complete(Work $work)
+    {
+        $work->update(['status_lavoro' => 'Lavoro Completato']);
+
+        return redirect()->route('works.show', $work->id)
+            ->with('success', 'Lavoro impostato come completato.');
+    }
 }
