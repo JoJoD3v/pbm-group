@@ -55,7 +55,7 @@ use Illuminate\Support\Str;
                 <div class="col-md-6">                  <strong>Data Esecuzione:</strong>
                   <p>
                     @if($work->data_esecuzione)
-                      @formatDate($work->data_esecuzione)
+                      @formatDateTime($work->data_esecuzione)
                     @else
                       N/D
                     @endif
