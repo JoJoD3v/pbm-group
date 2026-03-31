@@ -30,6 +30,7 @@
                 <table class="table table-bordered" id="todayWorksTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
+                      <th>Ora</th>
                       <th>Tipo</th>
                       <th>Cliente</th>
                       <th>Stato</th>
@@ -43,6 +44,7 @@
                   <tbody>
                     @foreach($todayWorks as $work)
                       <tr>
+                        <td>{{ $work->data_esecuzione ? $work->data_esecuzione->format('H:i') : '—' }}</td>
                         <td>{{ $work->tipo_lavoro }}</td>
                         <td>
                           @if($work->customer)
@@ -217,7 +219,7 @@
               "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Italian.json"
             },
             "pageLength": 10,
-            "order": [[ 0, "desc" ]]
+            "order": [[ 0, "asc" ]]
           });
         }
       });

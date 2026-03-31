@@ -39,6 +39,7 @@ Route::get('/dashboard', function (Request $request) {
     if (in_array($role, ['amministratore', 'sviluppatore'])) {
         $todayWorks = Work::whereDate('data_esecuzione', $currentDate)
             ->with(['customer', 'workers'])
+            ->orderBy('data_esecuzione')
             ->get();
     }
 
