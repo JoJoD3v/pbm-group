@@ -127,6 +127,18 @@
                                     <th>Email:</th>
                                     <td>{{ $work->customer->email }}</td>
                                 </tr>
+                                @if($work->customer->codice_fiscale)
+                                <tr>
+                                    <th>Codice Fiscale:</th>
+                                    <td>{{ $work->customer->codice_fiscale }}</td>
+                                </tr>
+                                @endif
+                                @if($work->customer->partita_iva)
+                                <tr>
+                                    <th>Partita IVA:</th>
+                                    <td>{{ $work->customer->partita_iva }}</td>
+                                </tr>
+                                @endif
                                 <tr>
                                     <th>Costo Lavoro:</th>
                                     <td>{{ $work->costo_lavoro }}</td>
