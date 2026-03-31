@@ -34,45 +34,11 @@ $(document).ready(function() {
         "columnDefs": [
             {
                 "targets": "date-column",
-                "type": "date-eu",
-                "render": function(data, type, row) {
-                    if (type === 'display' || type === 'type') {
-                        if (data) {
-                            // Converte da YYYY-MM-DD a DD/MM/YYYY
-                            var date = new Date(data);
-                            if (!isNaN(date.getTime())) {
-                                return date.toLocaleDateString('it-IT');
-                            }
-                        }
-                        return data;
-                    }
-                    return data;
-                }
-            },            {
+                "type": "date-eu"
+            },
+            {
                 "targets": "datetime-column",
-                "type": "date-eu-time",
-                "render": function(data, type, row) {
-                    if (type === 'display') {
-                        if (data) {
-                            // Converte da YYYY-MM-DD HH:mm:ss a DD/MM/YYYY HH:mm
-                            var date = new Date(data);
-                            if (!isNaN(date.getTime())) {
-                                return date.toLocaleDateString('it-IT') + ' ' + 
-                                       date.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'});
-                            }
-                        }
-                        return data;
-                    } else if (type === 'sort') {
-                        // Per l'ordinamento, restituisce il timestamp (millisecondi)
-                        if (data) {
-                            var date = new Date(data);
-                            if (!isNaN(date.getTime())) {
-                                return date.getTime();
-                            }
-                        }
-                    }
-                    return data;
-                }
+                "type": "date-eu-time"
             }
         ]
     });
