@@ -2,77 +2,79 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Work;
+use App\Models\Worker;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Worker;
-use App\Models\Work;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class WorkerJobController extends Controller
 {
     /**
      * Mostra l'elenco dei lavori assegnati al dipendente
      */
-    public function index()
+    public function index(Request $request)
     {
         // Recupera l'utente autenticato
         $user = Auth::user();
-        Log::info("WorkerJobController: utente autenticato ID: " . $user->id . ", Email: " . $user->email . ", Ruolo: " . $user->role);
-        
+        Log::info('WorkerJobController: utente autenticato ID: '.$user->id.', Email: '.$user->email.', Ruolo: '.$user->role);
+
         // Cerca il worker associato all'utente usando la relazione
         $worker = $user->worker;
-        
-        if (!$worker) {
+
+        if (! $worker) {
             // Prova anche con la query diretta per debug
             $workerByQuery = Worker::where('worker_email', $user->email)->first();
-            
+
             if ($workerByQuery) {
-                Log::error("WorkerJobController: worker trovato solo con query diretta, non attraverso la relazione");
+                Log::error('WorkerJobController: worker trovato solo con query diretta, non attraverso la relazione');
                 $worker = $workerByQuery;
             } else {
-                Log::error("WorkerJobController: worker non trovato per l'email: " . $user->email);
-                
+                Log::error("WorkerJobController: worker non trovato per l'email: ".$user->email);
+
                 // Debug: mostra tutti i worker nel database
                 $allWorkers = Worker::all();
                 if ($allWorkers->count() > 0) {
-                    Log::info("WorkerJobController: elenco di tutti i worker nel database:");
+                    Log::info('WorkerJobController: elenco di tutti i worker nel database:');
                     foreach ($allWorkers as $w) {
-                        Log::info("Worker ID: " . $w->id . ", Email: " . $w->worker_email);
+                        Log::info('Worker ID: '.$w->id.', Email: '.$w->worker_email);
                     }
                 } else {
-                    Log::info("WorkerJobController: nessun worker nel database");
+                    Log::info('WorkerJobController: nessun worker nel database');
                 }
-                
+
                 return redirect()->route('dashboard')
                     ->with('error', 'Profilo dipendente non trovato. Contatta l\'amministratore.');
             }
         }
-        
-        Log::info("WorkerJobController: worker trovato ID: " . $worker->id . ", Nome: " . $worker->getFullNameAttribute());
-        
-        try {
-            $todayStart = Carbon::today()->startOfDay();
-            $todayEnd = Carbon::today()->endOfDay();
 
-            // Recupera i lavori non assegnati con data di esecuzione odierna
+        Log::info('WorkerJobController: worker trovato ID: '.$worker->id.', Nome: '.$worker->getFullNameAttribute());
+
+        try {
+            $currentDate = $request->input('data', Carbon::today()->format('Y-m-d'));
+            $dayStart = Carbon::parse($currentDate)->startOfDay();
+            $dayEnd = Carbon::parse($currentDate)->endOfDay();
+
+            // Recupera i lavori non assegnati con data di esecuzione nel giorno selezionato
             $works = Work::whereDoesntHave('workers')
                 ->with('customer')
-                ->whereBetween('data_esecuzione', [$todayStart, $todayEnd])
+                ->whereBetween('data_esecuzione', [$dayStart, $dayEnd])
                 ->orderBy('data_esecuzione')
                 ->orderBy('created_at', 'desc')
                 ->get();
-            
-            Log::info("WorkerJobController: trovati " . $works->count() . " lavori non assegnati per oggi");
-            
-            return view('worker.jobs.index', compact('works', 'worker'));
+
+            Log::info('WorkerJobController: trovati '.$works->count().' lavori non assegnati per '.$currentDate);
+
+            return view('worker.jobs.index', compact('works', 'worker', 'currentDate'));
         } catch (\Exception $e) {
-            Log::error("WorkerJobController: errore nel recupero dei lavori: " . $e->getMessage());
+            Log::error('WorkerJobController: errore nel recupero dei lavori: '.$e->getMessage());
+
             return redirect()->route('dashboard')
                 ->with('error', 'Errore nel caricamento dei lavori. Contatta l\'amministratore.');
         }
     }
-    
+
     /**
      * Mostra i dettagli di un lavoro specifico
      */
@@ -80,38 +82,39 @@ class WorkerJobController extends Controller
     {
         // Recupera l'utente autenticato
         $user = Auth::user();
-        
+
         // Cerca il worker associato all'utente usando la relazione
         $worker = $user->worker;
-        
-        if (!$worker) {
+
+        if (! $worker) {
             // Prova anche con la query diretta per debug
             $worker = Worker::where('worker_email', $user->email)->first();
-            
-            if (!$worker) {
+
+            if (! $worker) {
                 return redirect()->route('dashboard')
                     ->with('error', 'Profilo dipendente non trovato. Contatta l\'amministratore.');
             }
         }
-        
+
         try {
             // Recupera il lavoro con l'ID specificato
             $work = Work::with(['deposit', 'warehouseDestinazione'])->findOrFail($id);
-            
+
             // Verifica se il lavoratore è associato al lavoro o se il lavoro non è assegnato a nessuno
-            if (!$worker->works->contains($id) && $work->workers->count() > 0) {
+            if (! $worker->works->contains($id) && $work->workers->count() > 0) {
                 return redirect()->route('worker.jobs')
                     ->with('error', 'Lavoro non accessibile.');
             }
-            
+
             return view('worker.jobs.show', compact('work', 'worker'));
         } catch (\Exception $e) {
-            Log::error("WorkerJobController: errore nel recupero del lavoro " . $id . ": " . $e->getMessage());
+            Log::error('WorkerJobController: errore nel recupero del lavoro '.$id.': '.$e->getMessage());
+
             return redirect()->route('worker.jobs')
                 ->with('error', 'Lavoro non trovato o non accessibile.');
         }
     }
-    
+
     /**
      * Assegna un lavoro non assegnato al dipendente loggato
      */
@@ -120,16 +123,16 @@ class WorkerJobController extends Controller
         // Recupera l'utente autenticato
         $user = Auth::user();
         $worker = $user->worker;
-        
-        if (!$worker) {
+
+        if (! $worker) {
             return redirect()->route('dashboard')
                 ->with('error', 'Profilo dipendente non trovato. Contatta l\'amministratore.');
         }
-        
+
         try {
             // Recupera il lavoro
             $work = Work::findOrFail($id);
-            
+
             // Verifica che il lavoro non sia gia' assegnato a qualcuno
             if ($work->workers->count() > 0) {
                 return redirect()->route('worker.jobs')
@@ -139,7 +142,7 @@ class WorkerJobController extends Controller
             // Verifica che il lavoro abbia data di esecuzione odierna
             $todayStart = Carbon::today()->startOfDay();
             $todayEnd = Carbon::today()->endOfDay();
-            if (!$work->data_esecuzione || $work->data_esecuzione < $todayStart || $work->data_esecuzione > $todayEnd) {
+            if (! $work->data_esecuzione || $work->data_esecuzione < $todayStart || $work->data_esecuzione > $todayEnd) {
                 return redirect()->route('worker.jobs')
                     ->with('error', 'Puoi assumere solo lavori con data di esecuzione odierna.');
             }
@@ -148,12 +151,13 @@ class WorkerJobController extends Controller
             $work->workers()->attach($worker->id);
             $work->status_lavoro = 'Preso in Carico';
             $work->save();
-            
+
             return redirect()->route('worker.jobs')
                 ->with('success', 'Lavoro assegnato con successo.');
-                
+
         } catch (\Exception $e) {
-            Log::error("WorkerJobController: errore nell'assegnazione del lavoro " . $id . ": " . $e->getMessage());
+            Log::error("WorkerJobController: errore nell'assegnazione del lavoro ".$id.': '.$e->getMessage());
+
             return redirect()->route('worker.jobs')
                 ->with('error', 'Errore nell\'assegnazione del lavoro. Contatta l\'amministratore.');
         }
@@ -171,7 +175,7 @@ class WorkerJobController extends Controller
         $user = Auth::user();
         $worker = $user->worker;
 
-        if (!$worker) {
+        if (! $worker) {
             return redirect()->route('dashboard')
                 ->with('error', 'Profilo dipendente non trovato. Contatta l\'amministratore.');
         }
@@ -179,7 +183,7 @@ class WorkerJobController extends Controller
         try {
             $work = Work::findOrFail($id);
 
-            if (!$work->workers->contains($worker->id)) {
+            if (! $work->workers->contains($worker->id)) {
                 return redirect()->route('worker.jobs')
                     ->with('error', 'Non sei autorizzato ad aggiornare questo lavoro.');
             }
@@ -190,7 +194,8 @@ class WorkerJobController extends Controller
             return redirect()->route('worker.jobs.show', $work->id)
                 ->with('success', 'Stato lavoro aggiornato con successo.');
         } catch (\Exception $e) {
-            Log::error("WorkerJobController: errore aggiornamento stato lavoro " . $id . ": " . $e->getMessage());
+            Log::error('WorkerJobController: errore aggiornamento stato lavoro '.$id.': '.$e->getMessage());
+
             return redirect()->route('worker.jobs.show', $id)
                 ->with('error', 'Errore nell\'aggiornamento dello stato. Contatta l\'amministratore.');
         }

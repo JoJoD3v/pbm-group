@@ -13,42 +13,28 @@
          </div>
       @endif
 
-      <!-- Filtri di ricerca -->
-      <div class="row mb-4">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header">
-              <h6 class="m-0 font-weight-bold text-primary">Filtri</h6>
-            </div>
-            <div class="card-body">
-              <form action="{{ route($indexRoute ?? 'works.index') }}" method="GET" class="row">                <div class="col-md-4 mb-3">
-                  <label for="data_inizio">Data inizio</label>
-                  <div class="italian-date-input">
-                    <input type="date" class="form-control" id="data_inizio" name="data_inizio" value="{{ request('data_inizio') }}">
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                  <label for="data_fine">Data fine</label>
-                  <div class="italian-date-input">
-                    <input type="date" class="form-control" id="data_fine" name="data_fine" value="{{ request('data_fine') }}">
-                  </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                  <label for="tipo_lavoro">Tipo Lavoro</label>
-                  <select class="form-control" id="tipo_lavoro" name="tipo_lavoro">
-                    <option value="">Tutti</option>
-                    <option value="smaltimento" {{ request('tipo_lavoro') == 'smaltimento' ? 'selected' : '' }}>Smaltimento</option>
-                    <option value="trasporto" {{ request('tipo_lavoro') == 'trasporto' ? 'selected' : '' }}>Trasporto</option>
-                  </select>
-                </div>
-                <div class="col-md-12">
-                  <button type="submit" class="btn btn-primary">Filtra</button>
-                  <a href="{{ route($indexRoute ?? 'works.index') }}" class="btn btn-secondary">Reset</a>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+      <!-- Navigatore giorno -->
+      @php
+        $prevDay = \Carbon\Carbon::parse($currentDate)->subDay()->format('Y-m-d');
+        $nextDay = \Carbon\Carbon::parse($currentDate)->addDay()->format('Y-m-d');
+        $isToday = \Carbon\Carbon::parse($currentDate)->isToday();
+      @endphp
+      <div class="d-flex align-items-center justify-content-center mb-4 gap-3">
+        <a href="{{ route($indexRoute ?? 'works.index', ['data' => $prevDay]) }}" class="btn btn-outline-primary">
+          <i class="bi bi-chevron-left"></i>
+        </a>
+        <span class="h5 m-0 fw-bold">
+          {{ \Carbon\Carbon::parse($currentDate)->locale('it')->isoFormat('dddd D MMMM YYYY') }}
+          @if($isToday)
+            <span class="badge bg-primary ms-2" style="font-size:0.65rem;vertical-align:middle;">Oggi</span>
+          @endif
+        </span>
+        <a href="{{ route($indexRoute ?? 'works.index', ['data' => $nextDay]) }}" class="btn btn-outline-primary">
+          <i class="bi bi-chevron-right"></i>
+        </a>
+        @if(!$isToday)
+          <a href="{{ route($indexRoute ?? 'works.index') }}" class="btn btn-secondary btn-sm ms-2">Torna a oggi</a>
+        @endif
       </div>      <div class="table-responsive">
          <table id="worksTable" class="table table-bordered dataTable" width="100%" cellspacing="0">
             <thead class="thead-light">

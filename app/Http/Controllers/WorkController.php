@@ -15,38 +15,29 @@ class WorkController extends Controller
     {
         $query = Work::with(['customer', 'workers']);
 
-        // Filtro per data inizio
-        if ($request->filled('data_inizio')) {
-            $query->whereDate('data_esecuzione', '>=', $request->data_inizio);
-        }
+        $date = $request->input('data', Carbon::today()->format('Y-m-d'));
+        $query->whereDate('data_esecuzione', $date);
 
-        // Filtro per data fine
-        if ($request->filled('data_fine')) {
-            $query->whereDate('data_esecuzione', '<=', $request->data_fine);
-        }
-
-        // Filtro per tipo di lavoro
-        if ($request->filled('tipo_lavoro')) {
-            $query->where('tipo_lavoro', $request->tipo_lavoro);
-        }
-
-        return $query->orderBy('data_esecuzione', 'desc')
-            ->orderBy('created_at', 'desc');
+        return $query->orderBy('data_esecuzione', 'asc')
+            ->orderBy('created_at', 'asc');
     }
 
     public function index(Request $request)
     {
+        $currentDate = $request->input('data', Carbon::today()->format('Y-m-d'));
         $works = $this->buildFilteredQuery($request)->get();
 
         return view('works.index', [
             'works' => $works,
             'pageTitle' => 'Elenco Lavori',
             'indexRoute' => 'works.index',
+            'currentDate' => $currentDate,
         ]);
     }
 
     public function assigned(Request $request)
     {
+        $currentDate = $request->input('data', Carbon::today()->format('Y-m-d'));
         $works = $this->buildFilteredQuery($request)
             ->whereHas('workers')
             ->get();
@@ -56,11 +47,13 @@ class WorkController extends Controller
             'pageTitle' => 'Elenco Lavori Assegnati',
             'indexRoute' => 'works.assigned',
             'showAssignedWorkerColumn' => true,
+            'currentDate' => $currentDate,
         ]);
     }
 
     public function unassigned(Request $request)
     {
+        $currentDate = $request->input('data', Carbon::today()->format('Y-m-d'));
         $works = $this->buildFilteredQuery($request)
             ->whereDoesntHave('workers')
             ->get();
@@ -69,6 +62,7 @@ class WorkController extends Controller
             'works' => $works,
             'pageTitle' => 'Elenco Lavori Non Assegnati',
             'indexRoute' => 'works.unassigned',
+            'currentDate' => $currentDate,
         ]);
     }
 

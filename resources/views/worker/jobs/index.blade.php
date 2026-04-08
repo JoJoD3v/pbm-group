@@ -2,7 +2,29 @@
 
 @section('content')
     <div class="container-fluid">
-        <h1 class="h3 mb-4 text-gray-800">Lavori Non Assegnati di Oggi ({{ \Carbon\Carbon::today()->format('d/m/Y') }})</h1>
+        @php
+          $prevDay = \Carbon\Carbon::parse($currentDate)->subDay()->format('Y-m-d');
+          $nextDay = \Carbon\Carbon::parse($currentDate)->addDay()->format('Y-m-d');
+          $isToday = \Carbon\Carbon::parse($currentDate)->isToday();
+        @endphp
+
+        <div class="d-flex align-items-center justify-content-center mb-4 gap-3">
+          <a href="{{ route('worker.jobs', ['data' => $prevDay]) }}" class="btn btn-outline-primary">
+            <i class="bi bi-chevron-left"></i>
+          </a>
+          <span class="h5 m-0 fw-bold">
+            {{ \Carbon\Carbon::parse($currentDate)->locale('it')->isoFormat('dddd D MMMM YYYY') }}
+            @if($isToday)
+              <span class="badge bg-primary ms-2" style="font-size:0.65rem;vertical-align:middle;">Oggi</span>
+            @endif
+          </span>
+          <a href="{{ route('worker.jobs', ['data' => $nextDay]) }}" class="btn btn-outline-primary">
+            <i class="bi bi-chevron-right"></i>
+          </a>
+          @if(!$isToday)
+            <a href="{{ route('worker.jobs') }}" class="btn btn-secondary btn-sm ms-2">Torna a oggi</a>
+          @endif
+        </div>
         
         @if(session('error'))
             <div class="alert alert-danger">
@@ -18,7 +40,7 @@
         
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Lavori Non Assegnati di Oggi</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Lavori Non Assegnati</h6>
             </div>
             <div class="card-body">
                 @if($works->count() > 0)
