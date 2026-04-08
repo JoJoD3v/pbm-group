@@ -36,13 +36,13 @@
                 </a>    
             </td>
               <td>
-                <a href="{{ route('warehouses.edit', $warehouse->id) }}" class="btn btn-warning btn-sm mb-1">
+                <a href="{{ route('warehouses.edit', $warehouse->id) }}" class="btn btn-warning mb-1">
                   <i class="bi bi-pencil"></i> 
                 </a>
                <form action="{{ route('warehouses.destroy', $warehouse->id) }}" method="POST" style="display:inline-block;">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn btn-danger btn-sm" style="margin-top:-4px;" onclick="return confirm('Sei sicuro?')">
+                  <button type="submit" class="btn btn-danger" onclick="return confirm('Sei sicuro?')">
                     <i class="bi bi-trash"></i> 
                   </button>
                 </form>

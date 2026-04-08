@@ -48,16 +48,16 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('credit-card-recharges.show', $recharge->id) }}" class="btn btn-sm btn-info">
+                                        <a href="{{ route('credit-card-recharges.show', $recharge->id) }}" class="btn btn-info">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('credit-card-recharges.edit', $recharge->id) }}" class="btn btn-sm btn-warning">
+                                        <a href="{{ route('credit-card-recharges.edit', $recharge->id) }}" class="btn btn-warning">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <form action="{{ route('credit-card-recharges.destroy', $recharge->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Sei sicuro di voler eliminare questa ricarica?')">
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Sei sicuro di voler eliminare questa ricarica?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>

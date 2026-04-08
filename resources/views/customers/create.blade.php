@@ -58,6 +58,10 @@
               <label for="partita_iva" class="form-label">Partita Iva</label>
               <input type="text" name="partita_iva" id="partita_iva" class="form-control">
             </div>
+            <div class="mb-3">
+              <label for="codice_fiscale_giuridica" class="form-label">Codice Fiscale</label>
+              <input type="text" name="codice_fiscale" id="codice_fiscale_giuridica" class="form-control" disabled>
+            </div>
         </div>
 
         <!-- Campi comuni -->

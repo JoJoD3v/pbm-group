@@ -34,16 +34,16 @@
               <td>{{ $material->eer_code ?? 'N/D' }}</td>
               <td>{{ $material->prezzo !== null ? number_format($material->prezzo, 2, ',', '.') . ' €' : 'N/D' }}</td>
               <td>
-                <a href="{{ route('materials.show', $material->id) }}" class="btn btn-info btn-sm">
+                <a href="{{ route('materials.show', $material->id) }}" class="btn btn-info">
                   <i class="bi bi-eye"></i>
                 </a>
-                <a href="{{ route('materials.edit', $material->id) }}" class="btn btn-warning btn-sm">
+                <a href="{{ route('materials.edit', $material->id) }}" class="btn btn-warning">
                   <i class="bi bi-pencil"></i>
                 </a>
                 <form action="{{ route('materials.destroy', $material->id) }}" method="POST" style="display:inline-block;">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Sei sicuro?')">
+                  <button type="submit" class="btn btn-danger" onclick="return confirm('Sei sicuro?')">
                     <i class="bi bi-trash"></i>
                   </button>
                 </form>

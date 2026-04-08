@@ -5,7 +5,7 @@
   <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
       <h6 class="m-0 font-weight-bold text-primary">Assegnazioni Automezzi</h6>
-      <a href="{{ route('vehicle.assignments.create') }}" class="btn btn-primary btn-sm">
+      <a href="{{ route('vehicle.assignments.create') }}" class="btn btn-primary">
         <i class="fas fa-plus"></i> Nuova Assegnazione
       </a>
     </div>
@@ -46,13 +46,13 @@
                 <td>{{ $assignment->note ?? 'N/D' }}</td>
                 <td>
                   <div class="btn-group" role="group">
-                    <a href="{{ route('vehicle.assignments.edit', ['vehicle' => $assignment->vehicle_id, 'worker' => $assignment->worker_id]) }}" class="btn btn-warning btn-sm">
+                    <a href="{{ route('vehicle.assignments.edit', ['vehicle' => $assignment->vehicle_id, 'worker' => $assignment->worker_id]) }}" class="btn btn-warning">
                       <i class="fas fa-edit"></i>
                     </a>
                     <form action="{{ route('vehicle.assignments.destroy', ['vehicle' => $assignment->vehicle_id, 'worker' => $assignment->worker_id]) }}" method="POST" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questa assegnazione?');">
                       @csrf
                       @method('DELETE')
-                      <button type="submit" class="btn btn-danger btn-sm">
+                      <button type="submit" class="btn btn-danger">
                         <i class="fas fa-trash"></i>
                       </button>
                     </form>

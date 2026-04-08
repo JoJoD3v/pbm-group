@@ -119,18 +119,18 @@
                     </a>
                   </td>
                   <td>
-                    <a href="{{ route('works.show', $work->id) }}" class="btn btn-success btn-sm">
+                    <a href="{{ route('works.show', $work->id) }}" class="btn btn-success">
                         <i class="bi bi-eye"></i>
                       </a>
                     @if(strtolower(Auth::user()->role ?? '') === 'sviluppatore')
-                    <a href="{{ route('works.edit', $work->id) }}" class="btn btn-warning btn-sm">
+                    <a href="{{ route('works.edit', $work->id) }}" class="btn btn-warning">
                       <i class="bi bi-pencil"></i>
                     </a>
                     @endif
                     <form action="{{ route('works.destroy', $work->id) }}" method="POST" style="display:inline-block;">
                       @csrf
                       @method('DELETE')
-                      <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Sei sicuro?')">
+                      <button type="submit" class="btn btn-danger" onclick="return confirm('Sei sicuro?')">
                         <i class="bi bi-trash"></i>
                       </button>
                     </form>

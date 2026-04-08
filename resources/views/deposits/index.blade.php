@@ -58,16 +58,16 @@
               </td>              
               <td class="distance">Calcolo...</td>
               <td>
-                <a href="{{ route('deposits.show', $deposit->id) }}" class="btn btn-info btn-sm mb-1">
+                <a href="{{ route('deposits.show', $deposit->id) }}" class="btn btn-info mb-1">
                   <i class="bi bi-eye"></i>
                 </a>
-                <a href="{{ route('deposits.edit', $deposit->id) }}" class="btn btn-warning btn-sm mb-1">
+                <a href="{{ route('deposits.edit', $deposit->id) }}" class="btn btn-warning mb-1">
                   <i class="bi bi-pencil"></i> 
                 </a>
                <form action="{{ route('deposits.destroy', $deposit->id) }}" method="POST" style="display:inline-block;">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn btn-danger btn-sm" style="margin-top:-4px;" onclick="return confirm('Sei sicuro?')">
+                  <button type="submit" class="btn btn-danger" onclick="return confirm('Sei sicuro?')">
                     <i class="bi bi-trash"></i> 
                   </button>
                 </form>

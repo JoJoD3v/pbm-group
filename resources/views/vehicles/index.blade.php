@@ -5,7 +5,7 @@
   <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
       <h6 class="m-0 font-weight-bold text-primary">Gestione Automezzi</h6>
-      <a href="{{ route('vehicles.create') }}" class="btn btn-primary btn-sm">
+      <a href="{{ route('vehicles.create') }}" class="btn btn-primary">
         <i class="fas fa-plus"></i> Nuovo Automezzo
       </a>
     </div>
@@ -38,16 +38,16 @@
                 </td>
                 <td>
                   <div class="btn-group" role="group">
-                    <a href="{{ route('vehicles.show', $vehicle->id) }}" class="btn btn-info btn-sm">
+                    <a href="{{ route('vehicles.show', $vehicle->id) }}" class="btn btn-info">
                       <i class="fas fa-eye"></i>
                     </a>
-                    <a href="{{ route('vehicles.edit', $vehicle->id) }}" class="btn btn-warning btn-sm">
+                    <a href="{{ route('vehicles.edit', $vehicle->id) }}" class="btn btn-warning">
                       <i class="fas fa-edit"></i>
                     </a>
                     <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Sei sicuro di voler eliminare questo automezzo?');">
                       @csrf
                       @method('DELETE')
-                      <button type="submit" class="btn btn-danger btn-sm">
+                      <button type="submit" class="btn btn-danger">
                         <i class="fas fa-trash"></i>
                       </button>
                     </form>

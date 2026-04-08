@@ -3,7 +3,7 @@
 @section('content')
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Utenti Registrati</h1>
-    <a href="{{ route('users.create') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+    <a href="{{ route('users.create') }}" class="d-none d-sm-inline-block btn btn-primary shadow-sm">
         <i class="bi bi-plus-circle fa-sm text-white-50"></i> Aggiungi Utente
     </a>
 </div>
@@ -61,10 +61,10 @@
                         <td>{{ $user->created_at->format('d/m/Y H:i') }}</td>
                         <td>
                             <div class="btn-group" role="group">
-                                <a href="{{ route('users.show', $user) }}" class="btn btn-info btn-sm" title="Visualizza">
+                                <a href="{{ route('users.show', $user) }}" class="btn btn-info" title="Visualizza">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                <a href="{{ route('users.edit', $user) }}" class="btn btn-warning btn-sm" title="Modifica">
+                                <a href="{{ route('users.edit', $user) }}" class="btn btn-warning" title="Modifica">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 @if($user->id !== auth()->id())
@@ -72,7 +72,7 @@
                                       onsubmit="return confirm('Sei sicuro di voler eliminare questo utente?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Elimina">
+                                    <button type="submit" class="btn btn-danger" title="Elimina">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>

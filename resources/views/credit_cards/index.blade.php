@@ -44,13 +44,13 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('credit-cards.edit', $card) }}" class="btn btn-sm btn-info">
+                                        <a href="{{ route('credit-cards.edit', $card) }}" class="btn btn-info">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <form action="{{ route('credit-cards.destroy', $card) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Sei sicuro di voler eliminare questa carta?')">
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Sei sicuro di voler eliminare questa carta?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>

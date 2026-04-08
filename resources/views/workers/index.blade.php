@@ -36,16 +36,16 @@
               <td>{{ $worker->worker_email }}</td>
               <td>{{ $worker->phone_worker ?? 'N/D' }}</td>
               <td>
-                <a href="{{ route('workers.show', $worker->id) }}" class="btn btn-info btn-sm">
+                <a href="{{ route('workers.show', $worker->id) }}" class="btn btn-info">
                   <i class="bi bi-eye"></i>
                 </a>
-                <a href="{{ route('workers.edit', $worker->id) }}" class="btn btn-warning btn-sm">
+                <a href="{{ route('workers.edit', $worker->id) }}" class="btn btn-warning">
                   <i class="bi bi-pencil"></i>
                 </a>
                 <form action="{{ route('workers.destroy', $worker->id) }}" method="POST" style="display:inline-block;">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Sei sicuro?')">
+                  <button type="submit" class="btn btn-danger" onclick="return confirm('Sei sicuro?')">
                     <i class="bi bi-trash"></i>
                   </button>
                 </form>

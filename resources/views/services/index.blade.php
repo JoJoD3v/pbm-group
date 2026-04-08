@@ -5,7 +5,7 @@
   <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex align-items-center justify-content-between">
       <h6 class="m-0 font-weight-bold text-primary">Servizi Offerti</h6>
-      <a href="{{ route('services.create') }}" class="btn btn-primary btn-sm">
+      <a href="{{ route('services.create') }}" class="btn btn-primary">
         <i class="bi bi-plus"></i> Aggiungi Servizio
       </a>
     </div>
@@ -36,16 +36,16 @@
                   @endif
                 </td>
                 <td class="text-center">
-                  <a href="{{ route('services.show', $service->id) }}" class="btn btn-info btn-sm">
+                  <a href="{{ route('services.show', $service->id) }}" class="btn btn-info">
                     <i class="bi bi-eye"></i>
                   </a>
-                  <a href="{{ route('services.edit', $service->id) }}" class="btn btn-warning btn-sm">
+                  <a href="{{ route('services.edit', $service->id) }}" class="btn btn-warning">
                     <i class="bi bi-pencil"></i>
                   </a>
                   <form action="{{ route('services.destroy', $service->id) }}" method="POST" style="display:inline-block;">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Eliminare questo servizio?')">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Eliminare questo servizio?')">
                       <i class="bi bi-trash"></i>
                     </button>
                   </form>

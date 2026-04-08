@@ -38,13 +38,13 @@
                                     <td>{{ $assignment->data_assegnazione }}</td>
                                     <td>{{ $assignment->data_restituzione ?? '-' }}</td>
                                     <td>
-                                        <a href="{{ route('credit-card-assignments.edit', $assignment->id) }}" class="btn btn-sm btn-info">
+                                        <a href="{{ route('credit-card-assignments.edit', $assignment->id) }}" class="btn btn-info">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <form action="{{ route('credit-card-assignments.destroy', $assignment->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Sei sicuro di voler eliminare questa assegnazione?')">
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Sei sicuro di voler eliminare questa assegnazione?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>

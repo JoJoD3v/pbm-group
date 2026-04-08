@@ -38,7 +38,7 @@
                                         <td>€ {{ number_format($card->fondo_carta, 2, ',', '.') }}</td>
                                         <td class="date-column">@formatDate($card->data_assegnazione)</td>
                                         <td>
-                                            <a href="{{ route('worker.cards.show', $card->id) }}" class="btn btn-primary btn-sm">
+                                            <a href="{{ route('worker.cards.show', $card->id) }}" class="btn btn-primary">
                                                 <i class="bi bi-eye"></i> Dettagli
                                             </a>
                                         </td>

@@ -52,16 +52,16 @@
                 @endif
               </td>
               <td>
-                <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-info btn-sm">
+                <a href="{{ route('customers.show', $customer->id) }}" class="btn btn-info">
                   <i class="bi bi-eye"></i>
                 </a>
-                <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning btn-sm">
+                <a href="{{ route('customers.edit', $customer->id) }}" class="btn btn-warning">
                   <i class="bi bi-pencil"></i>
                 </a>
                 <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline-block;">
                   @csrf
                   @method('DELETE')
-                  <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Sei sicuro?')">
+                  <button type="submit" class="btn btn-danger" onclick="return confirm('Sei sicuro?')">
                     <i class="bi bi-trash"></i>
                   </button>
                 </form>

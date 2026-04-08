@@ -71,12 +71,12 @@
                                             <span class="badge bg-{{ $statusBadge }}">{{ $status ?? 'In Sospeso' }}</span>
                                         </td>
                                         <td>
-                                            <a href="{{ route('worker.jobs.show', $work->id) }}" class="btn btn-primary btn-sm">
+                                            <a href="{{ route('worker.jobs.show', $work->id) }}" class="btn btn-primary">
                                                 <i class="bi bi-eye"></i> Dettagli
                                             </a>
                                             <form action="{{ route('worker.jobs.assumi', $work->id) }}" method="POST" class="d-inline">
                                                 @csrf
-                                                <button type="submit" class="btn btn-warning btn-sm">
+                                                <button type="submit" class="btn btn-warning">
                                                     <i class="bi bi-person-check"></i> Assumi Lavoro
                                                 </button>
                                             </form>

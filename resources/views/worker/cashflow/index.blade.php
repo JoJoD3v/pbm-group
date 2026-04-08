@@ -133,11 +133,11 @@
                                     <td>{{ $movimento->motivo }}</td>
                                     <td>
                                         @if($movimento->work_id)
-                                            <a href="{{ route('worker.jobs.show', $movimento->work_id) }}" class="btn btn-sm btn-primary">
+                                            <a href="{{ route('worker.jobs.show', $movimento->work_id) }}" class="btn btn-primary">
                                                 <i class="bi bi-eye"></i> Lavoro #{{ $movimento->work_id }}
                                             </a>
                                         @elseif($movimento->credit_card_id)
-                                            <a href="{{ route('worker.cards.show', $movimento->credit_card_id) }}" class="btn btn-sm btn-info">
+                                            <a href="{{ route('worker.cards.show', $movimento->credit_card_id) }}" class="btn btn-info">
                                                 <i class="bi bi-eye"></i> Carta #{{ $movimento->credit_card_id }}
                                             </a>
                                         @else

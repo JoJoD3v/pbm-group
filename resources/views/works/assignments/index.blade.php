@@ -51,7 +51,7 @@
                       @method('DELETE')
                       <input type="hidden" name="work_id" value="{{ $assignment['work_id'] }}">
                       <input type="hidden" name="worker_id" value="{{ $assignment['worker_id'] }}">
-                      <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Sei sicuro di voler rimuovere questa assegnazione?')">
+                      <button type="submit" class="btn btn-danger" onclick="return confirm('Sei sicuro di voler rimuovere questa assegnazione?')">
                         <i class="bi bi-trash"></i> Rimuovi
                       </button>
                     </form>

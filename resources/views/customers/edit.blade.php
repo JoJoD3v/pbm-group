@@ -57,6 +57,10 @@
             <label for="partita_iva" class="form-label">Partita Iva</label>
             <input type="text" name="partita_iva" id="partita_iva" class="form-control" value="{{ $customer->partita_iva }}">
           </div>
+          <div class="mb-3">
+            <label for="codice_fiscale_giuridica" class="form-label">Codice Fiscale</label>
+            <input type="text" name="codice_fiscale" id="codice_fiscale_giuridica" class="form-control" value="{{ $customer->codice_fiscale }}" disabled>
+          </div>
         </div>
 
         <!-- Campi comuni -->
