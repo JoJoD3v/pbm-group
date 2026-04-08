@@ -11,12 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Rendi obbligatori i campi fisici
         document.getElementById('full_name').required = true;
         document.getElementById('codice_fiscale').required = true;
-        document.getElementById('codice_fiscale').disabled = false;
         // Rimuovi obbligatorietà dai campi giuridici
         document.getElementById('ragione_sociale').required = false;
         document.getElementById('partita_iva').required = false;
-        document.getElementById('codice_fiscale_giuridica').required = false;
-        document.getElementById('codice_fiscale_giuridica').disabled = true;
+        // Svuota il codice fiscale giuridica per non sovrascrivere quello fisica
+        document.getElementById('codice_fiscale_giuridica').value = '';
       } else {
         fisicaFields.style.display = 'none';
         giuridicaFields.style.display = 'block';
@@ -24,8 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('partita_iva').required = true;
         document.getElementById('full_name').required = false;
         document.getElementById('codice_fiscale').required = false;
-        document.getElementById('codice_fiscale').disabled = true;
-        document.getElementById('codice_fiscale_giuridica').disabled = false;
+        // Svuota il codice fiscale fisica per non sovrascrivere quello giuridica
+        document.getElementById('codice_fiscale').value = '';
       }
     }
 

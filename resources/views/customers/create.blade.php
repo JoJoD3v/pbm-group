@@ -60,7 +60,7 @@
             </div>
             <div class="mb-3">
               <label for="codice_fiscale_giuridica" class="form-label">Codice Fiscale</label>
-              <input type="text" name="codice_fiscale" id="codice_fiscale_giuridica" class="form-control" disabled>
+              <input type="text" name="codice_fiscale" id="codice_fiscale_giuridica" class="form-control">
             </div>
         </div>
 
