@@ -131,7 +131,22 @@
     </li>
     @endif
 
-    <!-- Aggiungi qui altre voci di menu -->
+    <!-- Report -->
+    @if(Auth::check() && in_array(Auth::user()->role, ['amministratore', 'sviluppatore']))
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReport" aria-expanded="false" aria-controls="collapseReport">
+        <i class="bi bi-bar-chart-line"></i>
+        <span>Report</span>
+      </a>
+      <div id="collapseReport" class="collapse" aria-labelledby="headingReport" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+          <a class="collapse-item" href="{{ route('reports.dipendenti.index') }}">Dipendenti</a>
+          <a class="collapse-item" href="{{ route('reports.lavori.index') }}">Lavori</a>
+        </div>
+      </div>
+    </li>
+    @endif
+
     <hr class="sidebar-divider my-0">
 
     <li class="nav-item mt-3">

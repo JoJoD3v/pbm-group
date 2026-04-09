@@ -217,6 +217,20 @@ Route::get('/ricevute/{ricevutaId}/pdf', [RicevutaController::class, 'downloadPD
     ->middleware('auth')
     ->name('ricevute.pdf');
 
+// Rotte per i report (dipendenti e lavori)
+use App\Http\Controllers\ReportDipendentiController;
+use App\Http\Controllers\ReportLavoriController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/reports/dipendenti', [ReportDipendentiController::class, 'index'])->name('reports.dipendenti.index');
+    Route::post('/reports/dipendenti', [ReportDipendentiController::class, 'generate'])->name('reports.dipendenti.generate');
+    Route::post('/reports/dipendenti/pdf', [ReportDipendentiController::class, 'pdf'])->name('reports.dipendenti.pdf');
+
+    Route::get('/reports/lavori', [ReportLavoriController::class, 'index'])->name('reports.lavori.index');
+    Route::post('/reports/lavori', [ReportLavoriController::class, 'generate'])->name('reports.lavori.generate');
+    Route::post('/reports/lavori/pdf', [ReportLavoriController::class, 'pdf'])->name('reports.lavori.pdf');
+});
+
 // Rotte per la gestione utenti (solo sviluppatori)
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckDeveloperRole;
