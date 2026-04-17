@@ -8,23 +8,33 @@ document.addEventListener('DOMContentLoaded', function() {
       if (fisicaRadio.checked) {
         fisicaFields.style.display = 'block';
         giuridicaFields.style.display = 'none';
-        // Rendi obbligatori i campi fisici
+        // Abilita e rendi obbligatori i campi fisici
         document.getElementById('full_name').required = true;
+        document.getElementById('full_name').disabled = false;
         document.getElementById('codice_fiscale').required = true;
-        // Rimuovi obbligatorietà dai campi giuridici
+        document.getElementById('codice_fiscale').disabled = false;
+        // Disabilita i campi giuridici (non verranno inviati col form)
         document.getElementById('ragione_sociale').required = false;
+        document.getElementById('ragione_sociale').disabled = true;
         document.getElementById('partita_iva').required = false;
-        // Svuota il codice fiscale giuridica per non sovrascrivere quello fisica
-        document.getElementById('codice_fiscale_giuridica').value = '';
+        document.getElementById('partita_iva').disabled = true;
+        document.getElementById('codice_fiscale_giuridica').required = false;
+        document.getElementById('codice_fiscale_giuridica').disabled = true;
       } else {
         fisicaFields.style.display = 'none';
         giuridicaFields.style.display = 'block';
+        // Abilita e rendi obbligatori i campi giuridici
         document.getElementById('ragione_sociale').required = true;
+        document.getElementById('ragione_sociale').disabled = false;
         document.getElementById('partita_iva').required = true;
+        document.getElementById('partita_iva').disabled = false;
+        document.getElementById('codice_fiscale_giuridica').required = false;
+        document.getElementById('codice_fiscale_giuridica').disabled = false;
+        // Disabilita i campi fisici (non verranno inviati col form)
         document.getElementById('full_name').required = false;
+        document.getElementById('full_name').disabled = true;
         document.getElementById('codice_fiscale').required = false;
-        // Svuota il codice fiscale fisica per non sovrascrivere quello giuridica
-        document.getElementById('codice_fiscale').value = '';
+        document.getElementById('codice_fiscale').disabled = true;
       }
     }
 
