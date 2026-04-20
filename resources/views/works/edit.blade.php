@@ -63,6 +63,44 @@
           </select>
         </div>
 
+        @if($work->nome_partenza)
+        <!-- Indirizzo di Partenza -->
+        <div class="mb-3">
+          <label for="nome_partenza_option" class="form-label">Nome Partenza</label>
+          <select name="nome_partenza_option" id="nome_partenza_option" class="form-select">
+            <option value="">Seleziona Opzione</option>
+            <option value="cliente" {{ $work->nome_partenza == 'cliente' ? 'selected' : '' }}>Indirizzo Cliente</option>
+            <option value="cantiere" {{ $work->nome_partenza == 'cantiere' ? 'selected' : '' }}>Cantiere</option>
+            <option value="libero" {{ $work->nome_partenza == 'libero' ? 'selected' : '' }}>Indirizzo Libero</option>
+          </select>
+        </div>
+
+        <input type="hidden" name="nome_partenza" id="nome_partenza" value="{{ $work->nome_partenza }}">
+
+        <div class="mb-3">
+          <label for="indirizzo_partenza" class="form-label">Indirizzo Partenza</label>
+          <input type="text" name="indirizzo_partenza" id="indirizzo_partenza" class="form-control" value="{{ $work->indirizzo_partenza }}">
+        </div>
+
+        <input type="hidden" name="latitude_partenza" id="latitude_partenza" value="{{ $work->latitude_partenza }}">
+        <input type="hidden" name="longitude_partenza" id="longitude_partenza" value="{{ $work->longitude_partenza }}">
+
+        <div id="cantiere_partenza_section" class="mb-3" style="display: none;">
+          <label for="warehouse_partenza_id" class="form-label">Cantiere Partenza</label>
+          <select name="warehouse_partenza_id" id="warehouse_partenza_id" class="form-select">
+            <option value="">Seleziona Cantiere</option>
+            @foreach($warehouses as $warehouse)
+              <option value="{{ $warehouse->id }}"
+                      data-address="{{ $warehouse->indirizzo }}"
+                      data-lat="{{ $warehouse->latitude_warehouse }}"
+                      data-lon="{{ $warehouse->longitude_warehouse }}">
+                {{ $warehouse->nome_sede }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+        @endif
+
         <!-- Materiale: scelta tra registrato o libero -->
         <div class="mb-3">
           <label class="form-label">Materiale</label>
@@ -169,6 +207,21 @@
           <label for="note" class="form-label">Note</label>
           <textarea name="note" id="note" class="form-control" rows="3">{{ old('note', $work->note) }}</textarea>
         </div>
+
+        @if($work->workers->isNotEmpty())
+        <!-- Dipendente Assegnato -->
+        <div class="mb-3">
+          <label for="worker_id" class="form-label">Dipendente Assegnato</label>
+          <select name="worker_id" id="worker_id" class="form-select">
+            <option value="">Seleziona Dipendente</option>
+            @foreach($workers as $worker)
+              <option value="{{ $worker->id }}" {{ $work->workers->first()->id == $worker->id ? 'selected' : '' }}>
+                {{ $worker->full_name }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+        @endif
 
         <button type="submit" class="btn btn-primary">Aggiorna Lavoro</button>
         <a href="{{ route('works.index') }}" class="btn btn-secondary">Indietro</a>
@@ -305,6 +358,68 @@ $(document).ready(function(){
             var place = autocompleteInstance.getPlace();
             if(place.geometry){
                 updateIndirizzo($('#indirizzo_destinazione').val(), place.geometry.location.lat(), place.geometry.location.lng());
+            }
+        });
+    }
+
+    // Gestione sezione Indirizzo Partenza (visibile solo se il lavoro ha una partenza impostata)
+    if($('#nome_partenza_option').length) {
+        function updateIndirizzoPartenza(address, lat, lon){
+            $('#indirizzo_partenza').val(address);
+            $('#latitude_partenza').val(lat);
+            $('#longitude_partenza').val(lon);
+        }
+
+        var autocompletePartenzaInstance;
+        function initAutocompletePartenza(){
+            if(autocompletePartenzaInstance) return;
+            autocompletePartenzaInstance = new google.maps.places.Autocomplete(document.getElementById('indirizzo_partenza'), {});
+            autocompletePartenzaInstance.setFields(['geometry']);
+            autocompletePartenzaInstance.addListener('place_changed', function(){
+                var place = autocompletePartenzaInstance.getPlace();
+                if(place.geometry){
+                    updateIndirizzoPartenza($('#indirizzo_partenza').val(), place.geometry.location.lat(), place.geometry.location.lng());
+                }
+            });
+        }
+
+        $('#nome_partenza_option').on('change', function(){
+            var selected = $(this).val();
+            $('#nome_partenza').val(selected);
+            if(selected === 'cliente'){
+                $('#cantiere_partenza_section').hide();
+                $('#indirizzo_partenza').prop('readonly', true);
+                var selectedCustomer = $('#customer_id option:selected');
+                updateIndirizzoPartenza(selectedCustomer.data('address') || '', selectedCustomer.data('lat') || '', selectedCustomer.data('lon') || '');
+            } else if(selected === 'cantiere'){
+                $('#cantiere_partenza_section').show();
+                $('#indirizzo_partenza').prop('readonly', true);
+                var selectedWarehouse = $('#warehouse_partenza_id option:selected');
+                if(selectedWarehouse.val()){
+                    updateIndirizzoPartenza(selectedWarehouse.data('address') || '', selectedWarehouse.data('lat') || '', selectedWarehouse.data('lon') || '');
+                } else {
+                    updateIndirizzoPartenza('', '', '');
+                }
+            } else if(selected === 'libero'){
+                $('#cantiere_partenza_section').hide();
+                $('#indirizzo_partenza').prop('readonly', false);
+                initAutocompletePartenza();
+            }
+        });
+
+        // Inizializza la visibilità corretta all'avvio
+        var initialPartenza = $('#nome_partenza_option').val();
+        if(initialPartenza === 'cantiere'){
+            $('#cantiere_partenza_section').show();
+        }
+        if(initialPartenza === 'cliente' || initialPartenza === 'cantiere'){
+            $('#indirizzo_partenza').prop('readonly', true);
+        }
+
+        $('#warehouse_partenza_id').on('change', function(){
+            if($('#nome_partenza_option').val() === 'cantiere'){
+                var selectedWarehouse = $(this).find('option:selected');
+                updateIndirizzoPartenza(selectedWarehouse.data('address') || '', selectedWarehouse.data('lat') || '', selectedWarehouse.data('lon') || '');
             }
         });
     }

@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Material;
 use App\Models\Warehouse;
 use App\Models\Work;
+use App\Models\Worker;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -199,8 +200,10 @@ class WorkController extends Controller
         $customers = Customer::all();
         $materials = Material::all();
         $warehouses = Warehouse::all();
+        $workers = Worker::orderBy('cognome_worker')->get();
+        $work->load('workers');
 
-        return view('works.edit', compact('work', 'customers', 'materials', 'warehouses'));
+        return view('works.edit', compact('work', 'customers', 'materials', 'warehouses', 'workers'));
     }
 
     public function update(Request $request, Work $work)
@@ -219,6 +222,7 @@ class WorkController extends Controller
             'prezzo_materiale' => 'nullable|numeric|min:0',
             'quantita_materiale' => 'nullable|numeric|min:0',
             'iva_applicata' => 'nullable|boolean',
+            'worker_id' => 'nullable|exists:workers,id',
         ]);
 
         if ($request->materiale_option == 'registrato') {
@@ -257,6 +261,10 @@ class WorkController extends Controller
             ['iva_applicata' => $request->boolean('iva_applicata')],
             $dataDestinazione
         ));
+
+        if ($request->filled('worker_id')) {
+            $work->workers()->sync([$request->worker_id]);
+        }
 
         return redirect()->route('works.index')
             ->with('success', 'Work aggiornato con successo.');
