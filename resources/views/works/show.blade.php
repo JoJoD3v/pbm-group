@@ -250,6 +250,15 @@ use Illuminate\Support\Str;
                             <a href="{{ route('ricevute.pdf', $ricevuta->id) }}" class="btn btn-sm btn-danger" target="_blank" title="Scarica PDF">
                               <i class="fas fa-file-pdf"></i> PDF
                             </a>
+                            @if($work->customer && $work->customer->email)
+                              <form action="{{ route('ricevute.send-email', $ricevuta->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-primary" title="Invia fattura via email a {{ $work->customer->email }}"
+                                        onclick="return confirm('Inviare la fattura via email a {{ $work->customer->email }}?');">
+                                  <i class="bi bi-envelope"></i> Invia Fattura
+                                </button>
+                              </form>
+                            @endif
                           </td>
                         </tr>
                       @endforeach

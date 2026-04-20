@@ -87,12 +87,6 @@ class RicevutaController extends Controller
             $ricevuta = Ricevuta::create($validatedData);
             Log::info('Ricevuta creata con ID: '.$ricevuta->id);
 
-            // Invia email al cliente se è richiesta la fattura
-            if ($ricevuta->fattura && $work->customer->email) {
-                $this->sendReceiptEmail($ricevuta);
-                Log::info('Email ricevuta inviata al cliente: '.$work->customer->email);
-            }
-
             return redirect()->route('worker.jobs')
                 ->with('success', 'Ricevuta generata con successo.');
         } catch (ValidationException $e) {
@@ -106,6 +100,38 @@ class RicevutaController extends Controller
             Log::error('Stack trace: '.$e->getTraceAsString());
 
             return back()->with('error', 'Errore nel salvataggio della ricevuta: '.$e->getMessage())->withInput();
+        }
+    }
+
+    /**
+     * Invia la fattura/ricevuta via email al cliente (solo admin/sviluppatore)
+     */
+    public function sendEmail($ricevutaId)
+    {
+        $user = Auth::user();
+        $role = strtolower($user->role ?? '');
+
+        if (! in_array($role, ['amministratore', 'sviluppatore'])) {
+            return redirect()->back()->with('error', 'Non sei autorizzato ad eseguire questa operazione.');
+        }
+
+        try {
+            $ricevuta = Ricevuta::with(['work.customer'])->findOrFail($ricevutaId);
+            $work = $ricevuta->work;
+
+            if (! $work->customer || ! $work->customer->email) {
+                return redirect()->back()->with('error', 'Il cliente non ha un indirizzo email registrato.');
+            }
+
+            $this->sendReceiptEmail($ricevuta);
+
+            Log::info('Fattura inviata via email dall\'admin all\'indirizzo: '.$work->customer->email);
+
+            return redirect()->back()->with('success', 'Fattura inviata via email a '.$work->customer->email.' con successo.');
+        } catch (\Exception $e) {
+            Log::error('Errore invio email fattura (admin): '.$e->getMessage());
+
+            return redirect()->back()->with('error', 'Errore nell\'invio della fattura: '.$e->getMessage());
         }
     }
 

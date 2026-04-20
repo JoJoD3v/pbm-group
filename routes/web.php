@@ -217,6 +217,11 @@ Route::get('/ricevute/{ricevutaId}/pdf', [RicevutaController::class, 'downloadPD
     ->middleware('auth')
     ->name('ricevute.pdf');
 
+// Invia fattura via email (solo admin/sviluppatore)
+Route::post('/ricevute/{ricevutaId}/send-email', [RicevutaController::class, 'sendEmail'])
+    ->middleware('auth')
+    ->name('ricevute.send-email');
+
 // Rotte per i report (dipendenti e lavori)
 use App\Http\Controllers\ReportDipendentiController;
 use App\Http\Controllers\ReportLavoriController;
