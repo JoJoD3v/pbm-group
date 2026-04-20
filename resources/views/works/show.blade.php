@@ -181,8 +181,11 @@ use Illuminate\Support\Str;
       <div class="row mt-4">
         <div class="col-12">
           <div class="card shadow">
-            <div class="card-header py-3">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
               <h6 class="m-0 font-weight-bold text-primary">Ricevute</h6>
+              <a href="{{ route('admin.ricevute.create', $work->id) }}" class="btn btn-sm btn-success">
+                <i class="bi bi-plus-lg"></i> Crea Ricevuta
+              </a>
             </div>
             <div class="card-body">
               @if($work->ricevute && $work->ricevute->count() > 0)
@@ -247,6 +250,9 @@ use Illuminate\Support\Str;
                             @endif
                           </td>
                           <td>
+                            <a href="{{ route('admin.ricevute.edit', $ricevuta->id) }}" class="btn btn-sm btn-warning" title="Modifica ricevuta">
+                              <i class="bi bi-pencil"></i> Modifica
+                            </a>
                             <a href="{{ route('ricevute.pdf', $ricevuta->id) }}" class="btn btn-sm btn-danger" target="_blank" title="Scarica PDF">
                               <i class="fas fa-file-pdf"></i> PDF
                             </a>

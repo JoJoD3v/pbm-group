@@ -222,6 +222,14 @@ Route::post('/ricevute/{ricevutaId}/send-email', [RicevutaController::class, 'se
     ->middleware('auth')
     ->name('ricevute.send-email');
 
+// Gestione ricevute lato admin (solo admin/sviluppatore)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/ricevute/create/{workId}', [RicevutaController::class, 'adminCreate'])->name('admin.ricevute.create');
+    Route::post('/admin/ricevute', [RicevutaController::class, 'adminStore'])->name('admin.ricevute.store');
+    Route::get('/admin/ricevute/{ricevutaId}/edit', [RicevutaController::class, 'adminEdit'])->name('admin.ricevute.edit');
+    Route::put('/admin/ricevute/{ricevutaId}', [RicevutaController::class, 'adminUpdate'])->name('admin.ricevute.update');
+});
+
 // Rotte per i report (dipendenti e lavori)
 use App\Http\Controllers\ReportDipendentiController;
 use App\Http\Controllers\ReportLavoriController;
