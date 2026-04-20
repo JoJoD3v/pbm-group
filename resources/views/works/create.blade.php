@@ -265,6 +265,17 @@ $(document).ready(function(){
     $('input[name="materiale_option"]').on('change', calcolaTotale);
     $('#prezzo_materiale, #quantita_materiale, #costo_lavoro').on('input', calcolaTotale);
     $('#iva_applicata').on('change', calcolaTotale);
+
+    // Auto-check IVA quando si seleziona Bonifico
+    $('#modalita_pagamento').on('change', function(){
+        if($(this).val() === 'Bonifico'){
+            $('#iva_applicata').prop('checked', true);
+        } else {
+            $('#iva_applicata').prop('checked', false);
+        }
+        calcolaTotale();
+    });
+
     calcolaTotale();
 
     // Funzione per aggiornare indirizzo e coordinate di destinazione
