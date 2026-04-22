@@ -9,6 +9,9 @@
                     <a href="{{ route('worker.ricevute.create', $work->id) }}" class="btn btn-success">
                         <i class="bi bi-receipt"></i> Crea Ricevuta
                     </a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#spesaLavoroModal">
+                        <i class="bi bi-currency-euro"></i> Spesa Lavoro
+                    </button>
                 @endif
                 <a href="{{ route('worker.jobs') }}" class="btn btn-primary">
                     <i class="bi bi-arrow-left"></i> Torna all'elenco
@@ -247,4 +250,119 @@
             }
         </script>
     @endif
+
+@if($work->workers->contains($worker->id))
+<!-- Modal Spesa Lavoro -->
+<div class="modal fade" id="spesaLavoroModal" tabindex="-1" aria-labelledby="spesaLavoroModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="spesaLavoroModalLabel">
+                    <i class="bi bi-currency-euro"></i> Spesa Lavoro
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+            </div>
+            <form action="{{ route('worker.jobs.spesa.store', $work->id) }}" method="POST" id="spesaLavoroForm">
+                @csrf
+                <div class="modal-body">
+                    @if(session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+
+                    <div class="mb-3">
+                        <label for="metodo_pagamento_spesa" class="form-label">Fonte <span class="text-danger">*</span></label>
+                        <select class="form-select" id="metodo_pagamento_spesa" name="metodo_pagamento" required>
+                            <option value="">Seleziona fonte...</option>
+                            <option value="contanti">Fondo Cassa (€ {{ number_format($worker->fondo_cassa, 2, ',', '.') }})</option>
+                            @if($carteAssegnate->isNotEmpty())
+                                @if($carteAssegnate->count() === 1)
+                                    @php $carta = $carteAssegnate->first(); @endphp
+                                    <option value="carta" data-card-id="{{ $carta->id }}">
+                                        Carta Prepagata {{ substr($carta->numero_carta, 0, 4) }} **** {{ substr($carta->numero_carta, -4) }}
+                                        (€ {{ number_format($carta->fondo_carta, 2, ',', '.') }})
+                                    </option>
+                                @else
+                                    <option value="carta">Carta Prepagata (seleziona sotto)</option>
+                                @endif
+                            @endif
+                        </select>
+                    </div>
+
+                    @if($carteAssegnate->count() > 1)
+                    <div class="mb-3" id="cartaSelectContainer" style="display:none;">
+                        <label for="credit_card_id_spesa" class="form-label">Seleziona Carta <span class="text-danger">*</span></label>
+                        <select class="form-select" id="credit_card_id_spesa">
+                            <option value="">Seleziona carta...</option>
+                            @foreach($carteAssegnate as $carta)
+                                <option value="{{ $carta->id }}" data-saldo="{{ $carta->fondo_carta }}">
+                                    Carta #{{ $carta->id }} –
+                                    {{ substr($carta->numero_carta, 0, 4) }} **** {{ substr($carta->numero_carta, -4) }}
+                                    (€ {{ number_format($carta->fondo_carta, 2, ',', '.') }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @endif
+
+                    <input type="hidden" id="credit_card_id_hidden" name="credit_card_id" value="">
+
+                    <div class="mb-3">
+                        <label for="importo_spesa" class="form-label">Somma (€) <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text">€</span>
+                            <input type="number" class="form-control" id="importo_spesa" name="importo" step="0.01" min="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="causale_spesa" class="form-label">Causale <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="causale_spesa" name="causale" rows="3" required></textarea>
+                        <small class="text-muted">Verrà aggiunto automaticamente: Lavoro #{{ $work->id }} ({{ $work->customer ? ($work->customer->ragione_sociale ?? $work->customer->full_name) : '' }})</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-save"></i> Registra Spesa
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const metodoPagamento = document.getElementById('metodo_pagamento_spesa');
+        const hiddenCardId = document.getElementById('credit_card_id_hidden');
+        @if($carteAssegnate->count() > 1)
+        const cartaSelectContainer = document.getElementById('cartaSelectContainer');
+        const cartaSelect = document.getElementById('credit_card_id_spesa');
+        @endif
+
+        metodoPagamento.addEventListener('change', function () {
+            const val = this.value;
+            if (val === 'carta') {
+                @if($carteAssegnate->count() === 1)
+                    hiddenCardId.value = this.options[this.selectedIndex].dataset.cardId || '';
+                @else
+                    cartaSelectContainer.style.display = 'block';
+                    hiddenCardId.value = '';
+                @endif
+            } else {
+                @if($carteAssegnate->count() > 1)
+                    cartaSelectContainer.style.display = 'none';
+                @endif
+                hiddenCardId.value = '';
+            }
+        });
+
+        @if($carteAssegnate->count() > 1)
+        cartaSelect.addEventListener('change', function () {
+            hiddenCardId.value = this.value;
+        });
+        @endif
+    });
+</script>
+@endif
 @endsection 

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashMovement;
+use App\Models\CreditCard;
 use App\Models\Work;
 use App\Models\Worker;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class WorkerJobController extends Controller
@@ -106,7 +109,9 @@ class WorkerJobController extends Controller
                     ->with('error', 'Lavoro non accessibile.');
             }
 
-            return view('worker.jobs.show', compact('work', 'worker'));
+            $carteAssegnate = $worker->assignedCreditCards()->select('credit_cards.*')->get();
+
+            return view('worker.jobs.show', compact('work', 'worker', 'carteAssegnate'));
         } catch (\Exception $e) {
             Log::error('WorkerJobController: errore nel recupero del lavoro '.$id.': '.$e->getMessage());
 
@@ -198,6 +203,109 @@ class WorkerJobController extends Controller
 
             return redirect()->route('worker.jobs.show', $id)
                 ->with('error', 'Errore nell\'aggiornamento dello stato. Contatta l\'amministratore.');
+        }
+    }
+
+    /**
+     * Registra una spesa dal fondo cassa o dalla carta del dipendente, collegata al lavoro
+     */
+    public function storeSpesaLavoro(Request $request, $id)
+    {
+        $user = Auth::user();
+        $worker = $user->worker;
+
+        if (! $worker) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Profilo dipendente non trovato. Contatta l\'amministratore.');
+        }
+
+        $request->validate([
+            'metodo_pagamento' => 'required|in:contanti,carta',
+            'importo' => 'required|numeric|min:0.01',
+            'causale' => 'required|string|max:255',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $work = Work::with('customer')->findOrFail($id);
+
+            $customerName = $work->customer
+                ? ($work->customer->ragione_sociale ?? $work->customer->full_name)
+                : 'Cliente sconosciuto';
+
+            $motivo = $request->causale.' - Lavoro #'.$work->id.' ('.$customerName.')';
+
+            $creditCardId = null;
+
+            if ($request->metodo_pagamento === 'carta') {
+                $carteAssegnate = $worker->assignedCreditCards()->get();
+
+                if ($carteAssegnate->isEmpty()) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->with('error', 'Nessuna carta prepagata assegnata a questo dipendente.');
+                }
+
+                $creditCardId = $request->input('credit_card_id');
+
+                if (! $creditCardId && $carteAssegnate->count() === 1) {
+                    $creditCardId = $carteAssegnate->first()->id;
+                }
+
+                if (! $creditCardId) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->with('error', 'Seleziona una carta prepagata.');
+                }
+
+                $carta = CreditCard::find($creditCardId);
+
+                if (! $worker->assignedCreditCards->contains($carta)) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->with('error', 'La carta selezionata non è assegnata a questo dipendente.');
+                }
+
+                $carta->fondo_carta -= $request->importo;
+                $carta->save();
+
+                DB::table('credit_card_recharges')->insert([
+                    'credit_card_id' => $creditCardId,
+                    'user_id' => Auth::id(),
+                    'importo' => -$request->importo,
+                    'data_ricarica' => Carbon::now(),
+                    'note' => 'Spesa lavoro: '.$motivo,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            } else {
+                $worker->fondo_cassa -= $request->importo;
+                $worker->save();
+            }
+
+            CashMovement::create([
+                'worker_id' => $worker->id,
+                'work_id' => $work->id,
+                'tipo_movimento' => 'uscita',
+                'importo' => $request->importo,
+                'motivo' => $motivo,
+                'metodo_pagamento' => $request->metodo_pagamento,
+                'credit_card_id' => $creditCardId,
+                'data_movimento' => Carbon::now()->toDateString(),
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('worker.jobs.show', $work->id)
+                ->with('success', 'Spesa registrata con successo.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('WorkerJobController: errore spesa lavoro '.$id.': '.$e->getMessage());
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Errore durante la registrazione della spesa: '.$e->getMessage());
         }
     }
 }
