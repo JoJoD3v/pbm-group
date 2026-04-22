@@ -48,19 +48,6 @@
           </div>
         </div>
 
-        <!-- Modalità Pagamento Lavoro -->
-        <div class="mb-3">
-          <label for="modalita_pagamento" class="form-label">Modalità Pagamento Lavoro</label>
-          <select name="modalita_pagamento" id="modalita_pagamento" class="form-select">
-            <option value="">Seleziona Modalità</option>
-            <option value="Contanti">Contanti</option>
-            <option value="Bonifico">Bonifico</option>
-            <option value="Assegno">Assegno</option>
-            <option value="Carta di Credito">Carta di Credito</option>
-            <option value="Altro">Altro</option>
-          </select>
-        </div>
-
         <!-- Nome Partenza: selezione tra indirizzo cliente, cantiere, indirizzo libero -->
         <div class="mb-3">
           <label for="nome_partenza_option" class="form-label">Nome Partenza</label>
@@ -152,6 +139,20 @@
           <label for="costo_lavoro" class="form-label">Costo Lavoro (€)</label>
           <input type="number" step="0.01" min="0" name="costo_lavoro" id="costo_lavoro" class="form-control" value="{{ old('costo_lavoro') }}">
         </div>
+
+        <!-- Modalità Pagamento Lavoro -->
+        <div class="mb-3">
+          <label for="modalita_pagamento" class="form-label">Modalità Pagamento Lavoro</label>
+          <select name="modalita_pagamento" id="modalita_pagamento" class="form-select">
+            <option value="">Seleziona Modalità</option>
+            <option value="Contanti">Contanti</option>
+            <option value="Bonifico">Bonifico</option>
+            <option value="Assegno">Assegno</option>
+            <option value="Carta di Credito">Carta di Credito</option>
+            <option value="Altro">Altro</option>
+          </select>
+        </div>
+
         <div class="form-check mb-3">
           <input type="checkbox" class="form-check-input" name="iva_applicata" id="iva_applicata" value="1" {{ old('iva_applicata') ? 'checked' : '' }}>
           <label class="form-check-label" for="iva_applicata">Applicazione IVA (22%)</label>

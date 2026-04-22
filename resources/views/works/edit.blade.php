@@ -50,19 +50,6 @@
           </div>
         </div>
 
-        <!-- Modalità Pagamento Lavoro -->
-        <div class="mb-3">
-          <label for="modalita_pagamento" class="form-label">Modalità Pagamento Lavoro</label>
-          <select name="modalita_pagamento" id="modalita_pagamento" class="form-select">
-            <option value="">Seleziona Modalità</option>
-            <option value="Contanti" {{ $work->modalita_pagamento == 'Contanti' ? 'selected' : '' }}>Contanti</option>
-            <option value="Bonifico" {{ $work->modalita_pagamento == 'Bonifico' ? 'selected' : '' }}>Bonifico</option>
-            <option value="Assegno" {{ $work->modalita_pagamento == 'Assegno' ? 'selected' : '' }}>Assegno</option>
-            <option value="Carta di Credito" {{ $work->modalita_pagamento == 'Carta di Credito' ? 'selected' : '' }}>Carta di Credito</option>
-            <option value="Altro" {{ $work->modalita_pagamento == 'Altro' ? 'selected' : '' }}>Altro</option>
-          </select>
-        </div>
-
         @if($work->nome_partenza)
         <!-- Indirizzo di Partenza -->
         <div class="mb-3">
@@ -153,6 +140,20 @@
           <label for="costo_lavoro" class="form-label">Costo Lavoro (€)</label>
           <input type="number" step="0.01" min="0" name="costo_lavoro" id="costo_lavoro" class="form-control" value="{{ old('costo_lavoro', $work->costo_lavoro) }}">
         </div>
+
+        <!-- Modalità Pagamento Lavoro -->
+        <div class="mb-3">
+          <label for="modalita_pagamento" class="form-label">Modalità Pagamento Lavoro</label>
+          <select name="modalita_pagamento" id="modalita_pagamento" class="form-select">
+            <option value="">Seleziona Modalità</option>
+            <option value="Contanti" {{ old('modalita_pagamento', $work->modalita_pagamento) == 'Contanti' ? 'selected' : '' }}>Contanti</option>
+            <option value="Bonifico" {{ old('modalita_pagamento', $work->modalita_pagamento) == 'Bonifico' ? 'selected' : '' }}>Bonifico</option>
+            <option value="Assegno" {{ old('modalita_pagamento', $work->modalita_pagamento) == 'Assegno' ? 'selected' : '' }}>Assegno</option>
+            <option value="Carta di Credito" {{ old('modalita_pagamento', $work->modalita_pagamento) == 'Carta di Credito' ? 'selected' : '' }}>Carta di Credito</option>
+            <option value="Altro" {{ old('modalita_pagamento', $work->modalita_pagamento) == 'Altro' ? 'selected' : '' }}>Altro</option>
+          </select>
+        </div>
+
         <div class="form-check mb-3">
           <input type="checkbox" class="form-check-input" name="iva_applicata" id="iva_applicata" value="1" {{ old('iva_applicata', $work->iva_applicata) ? 'checked' : '' }}>
           <label class="form-check-label" for="iva_applicata">Applicazione IVA (22%)</label>
