@@ -149,10 +149,17 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" id="submit-btn">
-                    <i class="bi bi-save"></i> Salva Ricevuta
-                </button>
-                <a href="{{ route('works.show', $work->id) }}" class="btn btn-secondary">Annulla</a>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button type="submit" name="send_email" value="0" class="btn btn-secondary" id="submit-btn-no-email">
+                        <i class="bi bi-save"></i> Salva senza inviare email
+                    </button>
+                    @if($work->customer && $work->customer->email)
+                    <button type="submit" name="send_email" value="1" class="btn btn-primary" id="submit-btn-with-email">
+                        <i class="bi bi-envelope"></i> Salva ed invia Email
+                    </button>
+                    @endif
+                    <a href="{{ route('works.show', $work->id) }}" class="btn btn-outline-secondary">Annulla</a>
+                </div>
             </form>
         </div>
     </div>

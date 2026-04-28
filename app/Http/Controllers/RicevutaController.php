@@ -87,8 +87,21 @@ class RicevutaController extends Controller
             $ricevuta = Ricevuta::create($validatedData);
             Log::info('Ricevuta creata con ID: '.$ricevuta->id);
 
+            $successMessage = 'Ricevuta generata con successo.';
+
+            if ($request->input('send_email') == '1') {
+                $work = $ricevuta->work->load('customer');
+                if ($work->customer && $work->customer->email) {
+                    $this->sendReceiptEmail($ricevuta);
+                    Log::info('Email ricevuta inviata al cliente: '.$work->customer->email);
+                    $successMessage = 'Ricevuta generata e inviata via email a '.$work->customer->email.' con successo.';
+                } else {
+                    $successMessage = 'Ricevuta generata con successo. Nessuna email inviata: il cliente non ha un indirizzo email registrato.';
+                }
+            }
+
             return redirect()->route('worker.jobs')
-                ->with('success', 'Ricevuta generata con successo.');
+                ->with('success', $successMessage);
         } catch (ValidationException $e) {
             Log::error('Errore di validazione: ', [
                 'errors' => $e->errors(),
@@ -156,10 +169,24 @@ class RicevutaController extends Controller
         }
 
         $workId = $validatedData['work_id'];
-        Ricevuta::create($validatedData);
+        $ricevuta = Ricevuta::create($validatedData);
+
+        $successMessage = 'Ricevuta creata con successo.';
+
+        if ($request->input('send_email') == '1') {
+            $ricevuta->load('work.customer');
+            $customer = $ricevuta->work->customer;
+            if ($customer && $customer->email) {
+                $this->sendReceiptEmail($ricevuta);
+                Log::info('Email ricevuta inviata dal admin all\'indirizzo: '.$customer->email);
+                $successMessage = 'Ricevuta creata e inviata via email a '.$customer->email.' con successo.';
+            } else {
+                $successMessage = 'Ricevuta creata con successo. Nessuna email inviata: il cliente non ha un indirizzo email registrato.';
+            }
+        }
 
         return redirect()->route('works.show', $workId)
-            ->with('success', 'Ricevuta creata con successo.');
+            ->with('success', $successMessage);
     }
 
     /**
@@ -223,8 +250,22 @@ class RicevutaController extends Controller
 
         $ricevuta->update($validatedData);
 
+        $successMessage = 'Ricevuta aggiornata con successo.';
+
+        if ($request->input('send_email') == '1') {
+            $ricevuta->load('work.customer');
+            $customer = $ricevuta->work->customer;
+            if ($customer && $customer->email) {
+                $this->sendReceiptEmail($ricevuta);
+                Log::info('Email ricevuta aggiornata inviata all\'indirizzo: '.$customer->email);
+                $successMessage = 'Ricevuta aggiornata e inviata via email a '.$customer->email.' con successo.';
+            } else {
+                $successMessage = 'Ricevuta aggiornata con successo. Nessuna email inviata: il cliente non ha un indirizzo email registrato.';
+            }
+        }
+
         return redirect()->route('works.show', $ricevuta->work_id)
-            ->with('success', 'Ricevuta aggiornata con successo.');
+            ->with('success', $successMessage);
     }
 
     /**
