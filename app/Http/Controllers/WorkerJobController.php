@@ -194,6 +194,11 @@ class WorkerJobController extends Controller
             }
 
             $work->status_lavoro = $request->status_lavoro;
+
+            if ($request->status_lavoro === 'Lavoro Iniziato') {
+                $work->data_esecuzione = Carbon::now();
+            }
+
             $work->save();
 
             return redirect()->route('worker.jobs.show', $work->id)
