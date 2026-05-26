@@ -153,11 +153,13 @@
                             <i class="bi bi-receipt"></i>
                           </a>
                           <button type="button" class="btn btn-danger px-3 py-2 btn-spesa-lavoro"
+                                  data-bs-toggle="modal" data-bs-target="#spesaLavoroModalDashboard"
                                   data-work-id="{{ $work->id }}"
                                   data-work-label="Lavoro #{{ $work->id }} ({{ $work->customer ? ($work->customer->ragione_sociale ?? $work->customer->full_name) : 'N/D' }})">
                             <i class="bi bi-currency-euro"></i> Spesa
                           </button>
                           <button type="button" class="btn btn-success px-3 py-2 btn-incasso-lavoro"
+                                  data-bs-toggle="modal" data-bs-target="#incassoLavoroModalDashboard"
                                   data-work-id="{{ $work->id }}"
                                   data-work-label="Lavoro #{{ $work->id }} ({{ $work->customer ? ($work->customer->ragione_sociale ?? $work->customer->full_name) : 'N/D' }})">
                             <i class="bi bi-currency-euro"></i> Incasso
