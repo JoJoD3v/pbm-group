@@ -313,4 +313,62 @@ class WorkerJobController extends Controller
                 ->with('error', 'Errore durante la registrazione della spesa: '.$e->getMessage());
         }
     }
+
+    /**
+     * Registra un incasso nel fondo cassa del dipendente, collegato al lavoro
+     */
+    public function storeIncassoLavoro(Request $request, $id)
+    {
+        $user = Auth::user();
+        $worker = $user->worker;
+
+        if (! $worker) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Profilo dipendente non trovato. Contatta l\'amministratore.');
+        }
+
+        $request->validate([
+            'importo' => 'required|numeric|min:0.01',
+            'causale' => 'required|string|max:255',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $work = Work::with('customer')->findOrFail($id);
+
+            $customerName = $work->customer
+                ? ($work->customer->ragione_sociale ?? $work->customer->full_name)
+                : 'Cliente sconosciuto';
+
+            $motivo = $request->causale.' - Lavoro #'.$work->id.' ('.$customerName.')';
+
+            // Incrementa il fondo cassa
+            $worker->fondo_cassa += $request->importo;
+            $worker->save();
+
+            CashMovement::create([
+                'worker_id' => $worker->id,
+                'work_id' => $work->id,
+                'tipo_movimento' => 'entrata',
+                'importo' => $request->importo,
+                'motivo' => $motivo,
+                'metodo_pagamento' => 'contanti',
+                'credit_card_id' => null,
+                'data_movimento' => Carbon::now()->toDateString(),
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('worker.jobs.show', $work->id)
+                ->with('success', 'Incasso registrato con successo.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('WorkerJobController: errore incasso lavoro '.$id.': '.$e->getMessage());
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Errore durante la registrazione dell\'incasso: '.$e->getMessage());
+        }
+    }
 }

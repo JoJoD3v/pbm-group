@@ -31,6 +31,8 @@ Route::get('/dashboard', function (Request $request) {
     $todayWorks = collect([]);
     $workerTodayWorks = collect([]);
     $tomorrowFirstWork = null;
+    $worker = null;
+    $carteAssegnate = collect([]);
 
     $user = auth()->user();
     $role = strtolower($user->role ?? '');
@@ -48,6 +50,8 @@ Route::get('/dashboard', function (Request $request) {
         $worker = $user->worker;
 
         if ($worker) {
+            $carteAssegnate = $worker->assignedCreditCards()->get();
+
             $dayStart = $currentDate->copy()->startOfDay();
             $dayEnd = $currentDate->copy()->endOfDay();
             $nextDayStart = $currentDate->copy()->addDay()->startOfDay();
@@ -67,7 +71,7 @@ Route::get('/dashboard', function (Request $request) {
         }
     }
 
-    return view('dashboard', compact('todayWorks', 'workerTodayWorks', 'tomorrowFirstWork', 'currentDate'));
+    return view('dashboard', compact('todayWorks', 'workerTodayWorks', 'tomorrowFirstWork', 'currentDate', 'worker', 'carteAssegnate'));
 })->middleware('auth')->name('dashboard');
 
 use App\Http\Controllers\MaterialController;
@@ -186,6 +190,7 @@ Route::middleware(['auth', CheckWorkerRole::class])->group(function () {
     Route::post('/worker/jobs/{id}/assumi', [WorkerJobController::class, 'assumiLavoro'])->name('worker.jobs.assumi');
     Route::post('/worker/jobs/{id}/status', [WorkerJobController::class, 'updateStatus'])->name('worker.jobs.status');
     Route::post('/worker/jobs/{id}/spesa', [WorkerJobController::class, 'storeSpesaLavoro'])->name('worker.jobs.spesa.store');
+    Route::post('/worker/jobs/{id}/incasso', [WorkerJobController::class, 'storeIncassoLavoro'])->name('worker.jobs.incasso.store');
 
     // Gestione ricevute
     Route::get('/worker/ricevute/create/{workId}', [RicevutaController::class, 'create'])->name('worker.ricevute.create');
