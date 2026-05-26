@@ -191,6 +191,7 @@ Route::middleware(['auth', CheckWorkerRole::class])->group(function () {
     Route::post('/worker/jobs/{id}/status', [WorkerJobController::class, 'updateStatus'])->name('worker.jobs.status');
     Route::post('/worker/jobs/{id}/spesa', [WorkerJobController::class, 'storeSpesaLavoro'])->name('worker.jobs.spesa.store');
     Route::post('/worker/jobs/{id}/incasso', [WorkerJobController::class, 'storeIncassoLavoro'])->name('worker.jobs.incasso.store');
+    Route::post('/worker/jobs/{id}/movimento', [WorkerJobController::class, 'storeMovimentoLavoro'])->name('worker.jobs.movimento.store');
 
     // Gestione ricevute
     Route::get('/worker/ricevute/create/{workId}', [RicevutaController::class, 'create'])->name('worker.ricevute.create');

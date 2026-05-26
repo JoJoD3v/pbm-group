@@ -371,4 +371,130 @@ class WorkerJobController extends Controller
                 ->with('error', 'Errore durante la registrazione dell\'incasso: '.$e->getMessage());
         }
     }
+
+    /**
+     * Registra un movimento (spesa o incasso) dal fondo cassa/carta del dipendente,
+     * collegato al lavoro. Usato dal CTA unificato nella dashboard dipendente.
+     */
+    public function storeMovimentoLavoro(Request $request, $id)
+    {
+        $user = Auth::user();
+        $worker = $user->worker;
+
+        if (! $worker) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Profilo dipendente non trovato. Contatta l\'amministratore.');
+        }
+
+        $request->validate([
+            'tipo' => 'required|in:spesa,incasso',
+            'importo' => 'required|numeric|min:0.01',
+            'causale' => 'required|string|max:255',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $work = Work::with('customer')->findOrFail($id);
+
+            $customerName = $work->customer
+                ? ($work->customer->ragione_sociale ?? $work->customer->full_name)
+                : 'Cliente sconosciuto';
+
+            $motivo = $request->causale.' - Lavoro #'.$work->id.' ('.$customerName.')';
+
+            $creditCardId = null;
+
+            if ($request->tipo === 'spesa') {
+                // Logica spesa (ricalca storeSpesaLavoro)
+                $request->validate([
+                    'metodo_pagamento' => 'required|in:contanti,carta',
+                ]);
+
+                if ($request->metodo_pagamento === 'carta') {
+                    $carteAssegnate = $worker->assignedCreditCards()->get();
+
+                    if ($carteAssegnate->isEmpty()) {
+                        return redirect()->back()
+                            ->withInput()
+                            ->with('error', 'Nessuna carta prepagata assegnata a questo dipendente.');
+                    }
+
+                    $creditCardId = $request->input('credit_card_id');
+
+                    if (! $creditCardId && $carteAssegnate->count() === 1) {
+                        $creditCardId = $carteAssegnate->first()->id;
+                    }
+
+                    if (! $creditCardId) {
+                        return redirect()->back()
+                            ->withInput()
+                            ->with('error', 'Seleziona una carta prepagata.');
+                    }
+
+                    $carta = CreditCard::find($creditCardId);
+
+                    if (! $worker->assignedCreditCards->contains($carta)) {
+                        return redirect()->back()
+                            ->withInput()
+                            ->with('error', 'La carta selezionata non è assegnata a questo dipendente.');
+                    }
+
+                    $carta->fondo_carta -= $request->importo;
+                    $carta->save();
+
+                    DB::table('credit_card_recharges')->insert([
+                        'credit_card_id' => $creditCardId,
+                        'user_id' => Auth::id(),
+                        'importo' => -$request->importo,
+                        'data_ricarica' => Carbon::now(),
+                        'note' => 'Spesa lavoro: '.$motivo,
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]);
+                } else {
+                    $worker->fondo_cassa -= $request->importo;
+                    $worker->save();
+                }
+
+                CashMovement::create([
+                    'worker_id' => $worker->id,
+                    'work_id' => $work->id,
+                    'tipo_movimento' => 'uscita',
+                    'importo' => $request->importo,
+                    'motivo' => $motivo,
+                    'metodo_pagamento' => $request->metodo_pagamento,
+                    'credit_card_id' => $creditCardId,
+                    'data_movimento' => Carbon::now()->toDateString(),
+                ]);
+            } else {
+                // Logica incasso (ricalca storeIncassoLavoro)
+                $worker->fondo_cassa += $request->importo;
+                $worker->save();
+
+                CashMovement::create([
+                    'worker_id' => $worker->id,
+                    'work_id' => $work->id,
+                    'tipo_movimento' => 'entrata',
+                    'importo' => $request->importo,
+                    'motivo' => $motivo,
+                    'metodo_pagamento' => 'contanti',
+                    'credit_card_id' => null,
+                    'data_movimento' => Carbon::now()->toDateString(),
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('dashboard')
+                ->with('success', 'Movimento registrato con successo.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('WorkerJobController: errore movimento lavoro '.$id.': '.$e->getMessage());
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Errore durante la registrazione del movimento: '.$e->getMessage());
+        }
+    }
 }
