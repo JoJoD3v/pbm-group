@@ -41,6 +41,10 @@
           <input type="text" name="destinazione" id="destinazione" class="form-control" value="{{ old('destinazione') }}">
       </div>
       <div class="mb-3">
+          <label for="piva" class="form-label">P. IVA</label>
+          <input type="text" name="piva" id="piva" class="form-control" value="{{ old('piva') }}">
+      </div>
+      <div class="mb-3">
           <label for="data_scadenza" class="form-label">Data Scadenza</label>
           <input type="date" name="data_scadenza" id="data_scadenza" class="form-control" value="{{ old('data_scadenza') }}">
       </div>

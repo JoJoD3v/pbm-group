@@ -12,6 +12,7 @@ class DepositController extends Controller
     public function index()
     {
         $deposits = Deposit::with('materials')->get();
+
         return view('deposits.index', compact('deposits'));
     }
 
@@ -20,6 +21,7 @@ class DepositController extends Controller
     {
         // Recupera tutti i Materials per le checkbox
         $materials = Material::all();
+
         return view('deposits.create', compact('materials'));
     }
 
@@ -27,13 +29,13 @@ class DepositController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'    => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'latitude'  => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',            
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
-        $deposit = Deposit::create($request->only('name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'data_scadenza', 'latitude', 'longitude'));
+        $deposit = Deposit::create($request->only('name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'piva', 'data_scadenza', 'latitude', 'longitude'));
 
         // Associa i materiali selezionati (se presenti)
         if ($request->has('materials')) {
@@ -41,7 +43,7 @@ class DepositController extends Controller
         }
 
         return redirect()->route('deposits.index')
-                         ->with('success', 'Deposito creato con successo.');
+            ->with('success', 'Deposito creato con successo.');
     }
 
     // Mostra il form per modificare un deposito
@@ -50,6 +52,7 @@ class DepositController extends Controller
         $materials = Material::all();
         // Recupera gli id dei materiali associati
         $selectedMaterials = $deposit->materials->pluck('id')->toArray();
+
         return view('deposits.edit', compact('deposit', 'materials', 'selectedMaterials'));
     }
 
@@ -57,13 +60,13 @@ class DepositController extends Controller
     public function update(Request $request, Deposit $deposit)
     {
         $request->validate([
-            'name'    => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'latitude'  => 'nullable|numeric',
+            'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
         ]);
 
-        $deposit->update($request->only('name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'data_scadenza', 'latitude', 'longitude'));
+        $deposit->update($request->only('name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'piva', 'data_scadenza', 'latitude', 'longitude'));
 
         // Aggiorna la relazione many-to-many
         if ($request->has('materials')) {
@@ -74,13 +77,14 @@ class DepositController extends Controller
         }
 
         return redirect()->route('deposits.index')
-                         ->with('success', 'Deposito aggiornato con successo.');
+            ->with('success', 'Deposito aggiornato con successo.');
     }
 
     // Mostra la scheda di un deposito
     public function show(Deposit $deposit)
     {
         $deposit->load('materials');
+
         return view('deposits.show', compact('deposit'));
     }
 
@@ -88,7 +92,8 @@ class DepositController extends Controller
     public function destroy(Deposit $deposit)
     {
         $deposit->delete();
+
         return redirect()->route('deposits.index')
-                         ->with('success', 'Deposito eliminato con successo.');
+            ->with('success', 'Deposito eliminato con successo.');
     }
 }

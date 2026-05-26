@@ -49,6 +49,10 @@
           <p>{{ $deposit->destinazione ?? 'N/D' }}</p>
         </div>
         <div class="col-md-3">
+          <strong>P. IVA</strong>
+          <p>{{ $deposit->piva ?? 'N/D' }}</p>
+        </div>
+        <div class="col-md-3">
           <strong>Data Scadenza</strong>
           <p>
             @if($deposit->data_scadenza)

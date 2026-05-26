@@ -9,7 +9,7 @@ class Deposit extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'data_scadenza', 'latitude', 'longitude'];
+    protected $fillable = ['name', 'address', 'n_aut_comunicazione', 'numero_iscrizione_albo', 'tipo', 'destinazione', 'piva', 'data_scadenza', 'latitude', 'longitude'];
 
     protected $casts = [
         'data_scadenza' => 'date',
