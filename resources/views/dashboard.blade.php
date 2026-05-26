@@ -214,8 +214,6 @@
     </div>
 
   @if($worker)
-  <!-- Modal Spesa Lavoro (Dashboard) -->
-  @if($worker)
   <!-- Modal Movimento Lavoro Unificato (Dashboard) -->
   <div class="modal fade" id="movimentoLavoroModalDashboard" tabindex="-1" aria-labelledby="movimentoLavoroModalDashboardLabel" aria-hidden="true">
     <div class="modal-dialog">
