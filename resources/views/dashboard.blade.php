@@ -68,7 +68,7 @@
                           @if($work->workers->isNotEmpty())
                             @foreach($work->workers as $w)
                               @if($w->colore_bg)
-                                <span class="badge" style="background-color: {{ $w->colore_bg }}; color: {{ $w->colore_font ?? '#000' }};">{{ $w->full_name }}</span>{{ !$loop->last ? ', ' : '' }}
+                                <span class="badge" style="background-color: {{ $w->colore_bg }}; color: {{ $w->colore_font ?? '#000' }}; font-size: inherit; padding: 0.35em 0.65em;">{{ $w->full_name }}</span>{{ !$loop->last ? ', ' : '' }}
                               @else
                                 {{ $w->full_name }}{{ !$loop->last ? ', ' : '' }}
                               @endif

@@ -33,14 +33,14 @@
               <td>{{ $worker->id_worker }}</td>
               <td>
                 @if($worker->colore_bg)
-                  <span class="badge" style="background-color: {{ $worker->colore_bg }}; color: {{ $worker->colore_font ?? '#000' }};">{{ $worker->name_worker }}</span>
+                  <span class="badge" style="background-color: {{ $worker->colore_bg }}; color: {{ $worker->colore_font ?? '#000' }}; font-size: inherit; padding: 0.35em 0.65em;">{{ $worker->name_worker }}</span>
                 @else
                   {{ $worker->name_worker }}
                 @endif
               </td>
               <td>
                 @if($worker->colore_bg)
-                  <span class="badge" style="background-color: {{ $worker->colore_bg }}; color: {{ $worker->colore_font ?? '#000' }};">{{ $worker->cognome_worker }}</span>
+                  <span class="badge" style="background-color: {{ $worker->colore_bg }}; color: {{ $worker->colore_font ?? '#000' }}; font-size: inherit; padding: 0.35em 0.65em;">{{ $worker->cognome_worker }}</span>
                 @else
                   {{ $worker->cognome_worker }}
                 @endif
