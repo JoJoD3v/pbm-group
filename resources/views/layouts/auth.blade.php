@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Login') - PBM Group</title>
+    <title>@yield('title', 'Login') - T.E.P. srl</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -192,8 +192,8 @@
                 <div class="col-lg-6">
                     <div class="auth-left h-100">
                         <div>
-                            <img src="{{ asset('img/logo/logo.jpg') }}" alt="PBM Group Logo" class="auth-logo">
-                            <h1 class="auth-title">PBM Group</h1>
+                        <img src="{{ asset('img/logo/logo.jpg') }}" alt="T.E.P. srl Logo" class="auth-logo">
+                        <h1 class="auth-title">T.E.P. srl</h1>
                             <p class="auth-subtitle">Gestionale Trasporto e Smaltimento Rifiuti</p>
                         </div>
                     </div>
