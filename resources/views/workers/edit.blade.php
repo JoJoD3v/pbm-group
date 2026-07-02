@@ -56,10 +56,54 @@
           <div class="form-text">Lascia vuoto per mantenere la password attuale. Se inserita, deve essere di almeno 8 caratteri.</div>
         </div>
 
+        <hr>
+        <h6 class="font-weight-bold text-secondary">Personalizzazione Colore Lavoratore</h6>
+
+        <div class="row">
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="colore_bg" class="form-label">Colore Sfondo Pill</label>
+              <input type="color" name="colore_bg" id="colore_bg" class="form-control form-control-color" value="{{ old('colore_bg', $worker->colore_bg ?? '#6c757d') }}">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="colore_font" class="form-label">Colore Font Pill</label>
+              <input type="color" name="colore_font" id="colore_font" class="form-control form-control-color" value="{{ old('colore_font', $worker->colore_font ?? '#ffffff') }}">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label class="form-label">Anteprima</label>
+              <div>
+                <span id="pillPreview" class="badge" style="background-color: {{ old('colore_bg', $worker->colore_bg ?? '#6c757d') }}; color: {{ old('colore_font', $worker->colore_font ?? '#ffffff') }}; font-size: 1rem; padding: 0.5rem 1rem;">
+                  {{ $worker->full_name }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <button type="submit" class="btn btn-primary">Aggiorna</button>
         <a href="{{ route('workers.index') }}" class="btn btn-secondary">Indietro</a>
       </form>
     </div>
   </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+  const bgInput = document.getElementById('colore_bg');
+  const fontInput = document.getElementById('colore_font');
+  const preview = document.getElementById('pillPreview');
+
+  bgInput.addEventListener('input', function() {
+    preview.style.backgroundColor = this.value;
+  });
+
+  fontInput.addEventListener('input', function() {
+    preview.style.color = this.value;
+  });
+</script>
 @endsection

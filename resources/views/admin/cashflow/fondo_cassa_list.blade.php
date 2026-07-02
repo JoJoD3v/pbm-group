@@ -34,7 +34,13 @@
                     <tbody>
                         @forelse($workers as $worker)
                             <tr>
-                                <td>{{ $worker->name_worker }} {{ $worker->cognome_worker }}</td>
+                                <td>
+                                    @if($worker->colore_bg)
+                                        <span class="badge" style="background-color: {{ $worker->colore_bg }}; color: {{ $worker->colore_font ?? '#000' }};">{{ $worker->name_worker }} {{ $worker->cognome_worker }}</span>
+                                    @else
+                                        {{ $worker->name_worker }} {{ $worker->cognome_worker }}
+                                    @endif
+                                </td>
                                 <td>{{ $worker->worker_email }}</td>
                                 <td class="text-right font-weight-bold {{ $worker->fondo_cassa < 0 ? 'text-danger' : 'text-success' }}">
                                     € {{ number_format($worker->fondo_cassa, 2, ',', '.') }}

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Worker;
 use App\Models\User;
+use App\Models\Worker;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 
 class WorkerController extends Controller
@@ -17,6 +16,7 @@ class WorkerController extends Controller
     public function index()
     {
         $workers = Worker::all();
+
         return view('workers.index', compact('workers'));
     }
 
@@ -39,12 +39,14 @@ class WorkerController extends Controller
             'worker_email' => 'required|email|max:255|unique:workers,worker_email|unique:users,email',
             'phone_worker' => 'nullable|string|max:20',
             'password' => 'required|string|min:8',
+            'colore_bg' => 'nullable|string|max:7',
+            'colore_font' => 'nullable|string|max:7',
         ]);
 
         // Genera automaticamente l'ID lavoratore
         $lastWorker = Worker::orderBy('id', 'desc')->first();
         $nextId = $lastWorker ? $lastWorker->id + 1 : 1;
-        $id_worker = 'TEP-' . str_pad($nextId, 3, '0', STR_PAD_LEFT);
+        $id_worker = 'TEP-'.str_pad($nextId, 3, '0', STR_PAD_LEFT);
 
         // Crea il worker
         $worker = Worker::create([
@@ -53,6 +55,8 @@ class WorkerController extends Controller
             'cognome_worker' => $request->cognome_worker,
             'worker_email' => $request->worker_email,
             'phone_worker' => $request->phone_worker,
+            'colore_bg' => $request->colore_bg,
+            'colore_font' => $request->colore_font,
         ]);
 
         // Crea l'utente associato con la password fornita
@@ -69,7 +73,7 @@ class WorkerController extends Controller
         $this->sendWelcomeEmail($user, $request->password);
 
         return redirect()->route('workers.index')
-                         ->with('success', 'Lavoratore creato con successo. ID generato: ' . $id_worker . '. Email inviata con le credenziali.');
+            ->with('success', 'Lavoratore creato con successo. ID generato: '.$id_worker.'. Email inviata con le credenziali.');
     }
 
     /**
@@ -80,12 +84,12 @@ class WorkerController extends Controller
         $data = [
             'name' => $user->first_name,
             'email' => $user->email,
-            'password' => $password
+            'password' => $password,
         ];
 
-        Mail::send('emails.welcome', $data, function($message) use ($user) {
-            $message->to($user->email, $user->first_name . ' ' . $user->last_name)
-                    ->subject('Benvenuto nel sistema - Credenziali di accesso');
+        Mail::send('emails.welcome', $data, function ($message) use ($user) {
+            $message->to($user->email, $user->first_name.' '.$user->last_name)
+                ->subject('Benvenuto nel sistema - Credenziali di accesso');
         });
     }
 
@@ -97,12 +101,12 @@ class WorkerController extends Controller
         $data = [
             'name' => $user->first_name,
             'email' => $user->email,
-            'password' => $password
+            'password' => $password,
         ];
 
-        Mail::send('emails.password-update', $data, function($message) use ($user) {
-            $message->to($user->email, $user->first_name . ' ' . $user->last_name)
-                    ->subject('Aggiornamento password - Nuove credenziali di accesso');
+        Mail::send('emails.password-update', $data, function ($message) use ($user) {
+            $message->to($user->email, $user->first_name.' '.$user->last_name)
+                ->subject('Aggiornamento password - Nuove credenziali di accesso');
         });
     }
 
@@ -130,20 +134,22 @@ class WorkerController extends Controller
         $request->validate([
             'name_worker' => 'required|string|max:255',
             'cognome_worker' => 'required|string|max:255',
-            'worker_email' => 'required|email|max:255|unique:workers,worker_email,' . $worker->id . '|unique:users,email,' . User::where('email', $worker->worker_email)->first()?->id,
+            'worker_email' => 'required|email|max:255|unique:workers,worker_email,'.$worker->id.'|unique:users,email,'.User::where('email', $worker->worker_email)->first()?->id,
             'phone_worker' => 'nullable|string|max:20',
             'password' => 'nullable|string|min:8',
+            'colore_bg' => 'nullable|string|max:7',
+            'colore_font' => 'nullable|string|max:7',
         ]);
 
         // Salva la vecchia email per verificare se è cambiata
         $oldEmail = $worker->worker_email;
-        
+
         // Aggiorna il worker
         $worker->update($request->except('password'));
-        
+
         // Trova l'utente associato
         $user = User::where('email', $oldEmail)->first();
-        
+
         if ($user) {
             $userData = [
                 'first_name' => $request->name_worker,
@@ -151,20 +157,20 @@ class WorkerController extends Controller
                 'email' => $request->worker_email,
                 'phone' => $request->phone_worker,
             ];
-            
+
             // Se è stata fornita una nuova password, aggiornala
             if ($request->filled('password')) {
                 $userData['password'] = Hash::make($request->password);
-                
+
                 // Invia email con la nuova password
                 $this->sendPasswordUpdateEmail($user, $request->password);
             }
-            
+
             $user->update($userData);
         }
-        
+
         return redirect()->route('workers.index')
-                         ->with('success', 'Lavoratore aggiornato con successo.' . ($request->filled('password') ? ' Email inviata con le nuove credenziali.' : ''));
+            ->with('success', 'Lavoratore aggiornato con successo.'.($request->filled('password') ? ' Email inviata con le nuove credenziali.' : ''));
     }
 
     /**
@@ -177,9 +183,10 @@ class WorkerController extends Controller
         if ($user) {
             $user->delete();
         }
-        
+
         $worker->delete();
+
         return redirect()->route('workers.index')
-                         ->with('success', 'Lavoratore e relativo account utente eliminati con successo.');
+            ->with('success', 'Lavoratore e relativo account utente eliminati con successo.');
     }
 }

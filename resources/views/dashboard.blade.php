@@ -66,7 +66,13 @@
                         </td>
                         <td>
                           @if($work->workers->isNotEmpty())
-                            {{ $work->workers->map->full_name->join(', ') }}
+                            @foreach($work->workers as $w)
+                              @if($w->colore_bg)
+                                <span class="badge" style="background-color: {{ $w->colore_bg }}; color: {{ $w->colore_font ?? '#000' }};">{{ $w->full_name }}</span>{{ !$loop->last ? ', ' : '' }}
+                              @else
+                                {{ $w->full_name }}{{ !$loop->last ? ', ' : '' }}
+                              @endif
+                            @endforeach
                           @else
                             <span class="text-muted">—</span>
                           @endif

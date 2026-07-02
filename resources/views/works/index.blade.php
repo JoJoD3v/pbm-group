@@ -67,7 +67,13 @@
                   @if(!empty($showAssignedWorkerColumn))
                   <td>
                     @if($work->workers && $work->workers->count())
-                      {{ $work->workers->pluck('full_name')->join(', ') }}
+                      @foreach($work->workers as $w)
+                        @if($w->colore_bg)
+                          <span class="badge" style="background-color: {{ $w->colore_bg }}; color: {{ $w->colore_font ?? '#000' }};">{{ $w->full_name }}</span>{{ !$loop->last ? ', ' : '' }}
+                        @else
+                          {{ $w->full_name }}{{ !$loop->last ? ', ' : '' }}
+                        @endif
+                      @endforeach
                     @else
                       N/D
                     @endif
