@@ -72,4 +72,38 @@ class Worker extends Model
             ->select('credit_cards.*')
             ->withTimestamps();
     }
+
+    /**
+     * Relazione con le mansioni del lavoratore
+     */
+    public function mansioni()
+    {
+        return $this->hasMany(WorkerMansione::class);
+    }
+
+    /**
+     * Verifica se il lavoratore ha una determinata mansione
+     */
+    public function hasMansione(string $mansione): bool
+    {
+        return $this->mansioni->contains('mansione', $mansione);
+    }
+
+    /**
+     * Tipi di lavoro accessibili al lavoratore in base alle mansioni assegnate
+     */
+    public function tipiLavoroAccessibili(): array
+    {
+        $tipi = [];
+
+        if ($this->hasMansione('trasportatore')) {
+            $tipi = array_merge($tipi, ['Trasporto', 'Smaltimento']);
+        }
+
+        if ($this->hasMansione('posatore')) {
+            $tipi[] = 'Servizi';
+        }
+
+        return $tipi;
+    }
 }

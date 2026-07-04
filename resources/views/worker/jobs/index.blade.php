@@ -37,7 +37,20 @@
                 {{ session('success') }}
             </div>
         @endif
-        
+
+        @if(count($tipiAccessibili) > 1)
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <a class="nav-link {{ $tab === 'tutti' ? 'active' : '' }}" href="{{ route('worker.jobs', ['data' => $currentDate, 'tab' => 'tutti']) }}">Tutti</a>
+                </li>
+                @foreach($tipiAccessibili as $tipo)
+                    <li class="nav-item">
+                        <a class="nav-link {{ $tab === $tipo ? 'active' : '' }}" href="{{ route('worker.jobs', ['data' => $currentDate, 'tab' => $tipo]) }}">{{ $tipo }}</a>
+                    </li>
+                @endforeach
+            </ul>
+        @endif
+
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Lavori Non Assegnati</h6>

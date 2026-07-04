@@ -96,6 +96,12 @@ Campi: `id_worker`, `name_worker`, `cognome_worker`, `license_worker`, `worker_e
 
 > **Attenzione:** `worker_email` deve coincidere con `users.email` per collegare il dipendente all'account di login.
 
+**Mansioni**: checkbox multiplo nel form create/edit (`trasportatore`, `posatore`), salvate in tabella pivot `worker_mansioni`. Determinano quali `tipo_lavoro` il dipendente può assumere/vedere in dashboard:
+- `trasportatore` → Trasporto, Smaltimento
+- `posatore` → Servizi
+
+Default: nuovo worker creato con mansione `trasportatore` pre-selezionata. Logica su `Worker::tipiLavoroAccessibili()` (`app/Models/Worker.php`).
+
 ---
 
 ### 4. Clienti (`/customers`)
@@ -331,6 +337,12 @@ Il dipendente registra un'entrata (es. pagamento ricevuto da cliente). Crea un `
 **View:** `worker/jobs/`
 
 Il dipendente vede i lavori a lui assegnati. Può vedere il dettaglio (`/worker/jobs/{id}`) e aggiornare lo status del lavoro.
+
+**Filtro per mansione**: la lista lavori non assegnati (`index`) mostra solo i `tipo_lavoro` accessibili in base alle mansioni del worker (vedi sezione 3, Dipendenti). Se il worker ha più di un tipo accessibile, viene mostrata una barra di TAB (`Tutti` + un TAB per tipo abilitato); con un solo tipo accessibile niente TAB (solo lista diretta). Parametro query `?tab=Trasporto|Smaltimento|Servizi|tutti`.
+
+**Guardia "Assumi Lavoro"**: `assumiLavoro()` rifiuta l'assegnazione se `$work->tipo_lavoro` non è tra i tipi accessibili al worker (mansione non abilitata), anche se raggiunto tramite URL diretto.
+
+Worker senza nessuna mansione assegnata → redirect a dashboard con errore, dashboard lavori inaccessibile finché l'admin non assegna almeno una mansione.
 
 ---
 

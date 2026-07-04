@@ -55,13 +55,29 @@ class WorkerJobController extends Controller
         Log::info('WorkerJobController: worker trovato ID: '.$worker->id.', Nome: '.$worker->getFullNameAttribute());
 
         try {
+            $tipiAccessibili = $worker->tipiLavoroAccessibili();
+
+            if (empty($tipiAccessibili)) {
+                return redirect()->route('dashboard')
+                    ->with('error', 'Nessuna mansione assegnata. Contatta l\'amministratore.');
+            }
+
             $currentDate = $request->input('data', Carbon::today()->format('Y-m-d'));
             $dayStart = Carbon::parse($currentDate)->startOfDay();
             $dayEnd = Carbon::parse($currentDate)->endOfDay();
 
-            // Recupera i lavori non assegnati con data di esecuzione nel giorno selezionato
+            $tab = $request->input('tab', 'tutti');
+            if ($tab !== 'tutti' && ! in_array($tab, $tipiAccessibili)) {
+                $tab = 'tutti';
+            }
+
+            $tipiQuery = ($tab === 'tutti') ? $tipiAccessibili : [$tab];
+
+            // Recupera i lavori non assegnati con data di esecuzione nel giorno selezionato,
+            // filtrati per i tipi lavoro accessibili in base alle mansioni del worker
             $works = Work::whereDoesntHave('workers')
                 ->with('customer')
+                ->whereIn('tipo_lavoro', $tipiQuery)
                 ->whereBetween('data_esecuzione', [$dayStart, $dayEnd])
                 ->orderBy('data_esecuzione')
                 ->orderBy('created_at', 'desc')
@@ -69,7 +85,7 @@ class WorkerJobController extends Controller
 
             Log::info('WorkerJobController: trovati '.$works->count().' lavori non assegnati per '.$currentDate);
 
-            return view('worker.jobs.index', compact('works', 'worker', 'currentDate'));
+            return view('worker.jobs.index', compact('works', 'worker', 'currentDate', 'tipiAccessibili', 'tab'));
         } catch (\Exception $e) {
             Log::error('WorkerJobController: errore nel recupero dei lavori: '.$e->getMessage());
 
@@ -142,6 +158,12 @@ class WorkerJobController extends Controller
             if ($work->workers->count() > 0) {
                 return redirect()->route('worker.jobs')
                     ->with('error', 'Questo lavoro è già stato assegnato.');
+            }
+
+            // Verifica che la mansione del worker consenta questo tipo di lavoro
+            if (! in_array($work->tipo_lavoro, $worker->tipiLavoroAccessibili())) {
+                return redirect()->route('worker.jobs')
+                    ->with('error', 'Mansione non abilitata per questo tipo di lavoro.');
             }
 
             // Verifica che il lavoro abbia data di esecuzione odierna

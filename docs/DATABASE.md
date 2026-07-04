@@ -35,6 +35,23 @@ Anagrafica dipendenti operativi.
 
 ---
 
+### `worker_mansioni`
+Mansioni assegnate a ciascun lavoratore (many, tramite pivot). Determinano quali `tipo_lavoro` il worker può assumere/vedere in dashboard.
+
+| Campo | Tipo | Note |
+|---|---|---|
+| `id` | bigint PK | |
+| `worker_id` | FK → workers, cascade | |
+| `mansione` | enum(`trasportatore`,`posatore`) | Unique insieme a `worker_id` |
+
+Mapping mansione → tipi lavoro accessibili (`Worker::tipiLavoroAccessibili()`):
+- `trasportatore` → `Trasporto`, `Smaltimento`
+- `posatore` → `Servizi`
+
+> Worker esistenti al momento dell'introduzione di questa feature hanno ricevuto automaticamente la mansione `trasportatore` (migration `2026_07_06_100000_create_worker_mansioni_table.php`). Nuovi worker creati da form hanno `trasportatore` pre-selezionato di default, ma l'admin può cambiare la selezione.
+
+---
+
 ### `works`
 Lavori (commesse) assegnati ai clienti o appaltatori.
 
@@ -285,6 +302,8 @@ Ricevute di pagamento generate dai dipendenti al termine di un lavoro.
 
 ```
 User         hasOne    Worker          (users.email = workers.worker_email)
+Worker       hasMany   WorkerMansione  (mansioni())
+WorkerMansione belongsTo Worker
 Work         belongsTo Customer (nullable)
 Work         belongsTo Appaltatore (nullable)
 Work         belongsToMany Workers     (work_worker)

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Worker;
+use App\Models\WorkerMansione;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -41,6 +42,8 @@ class WorkerController extends Controller
             'password' => 'required|string|min:8',
             'colore_bg' => 'nullable|string|max:7',
             'colore_font' => 'nullable|string|max:7',
+            'mansioni' => 'nullable|array',
+            'mansioni.*' => 'in:trasportatore,posatore',
         ]);
 
         // Genera automaticamente l'ID lavoratore
@@ -68,6 +71,14 @@ class WorkerController extends Controller
             'phone' => $request->phone_worker,
             'password' => Hash::make($request->password),
         ]);
+
+        $mansioni = $request->input('mansioni', ['trasportatore']);
+        foreach ($mansioni as $mansione) {
+            WorkerMansione::create([
+                'worker_id' => $worker->id,
+                'mansione' => $mansione,
+            ]);
+        }
 
         // Invia email con le credenziali di accesso
         $this->sendWelcomeEmail($user, $request->password);
@@ -139,13 +150,24 @@ class WorkerController extends Controller
             'password' => 'nullable|string|min:8',
             'colore_bg' => 'nullable|string|max:7',
             'colore_font' => 'nullable|string|max:7',
+            'mansioni' => 'nullable|array',
+            'mansioni.*' => 'in:trasportatore,posatore',
         ]);
 
         // Salva la vecchia email per verificare se è cambiata
         $oldEmail = $worker->worker_email;
 
         // Aggiorna il worker
-        $worker->update($request->except('password'));
+        $worker->update($request->except('password', 'mansioni'));
+
+        $mansioni = $request->input('mansioni', []);
+        $worker->mansioni()->delete();
+        foreach ($mansioni as $mansione) {
+            WorkerMansione::create([
+                'worker_id' => $worker->id,
+                'mansione' => $mansione,
+            ]);
+        }
 
         // Trova l'utente associato
         $user = User::where('email', $oldEmail)->first();

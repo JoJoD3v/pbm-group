@@ -57,6 +57,20 @@
         </div>
 
         <hr>
+        <h6 class="font-weight-bold text-secondary">Mansioni</h6>
+        <div class="mb-3">
+          @php $currentMansioni = old('mansioni', $worker->mansioni->pluck('mansione')->toArray()); @endphp
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="mansioni[]" id="mansione_trasportatore" value="trasportatore" {{ in_array('trasportatore', $currentMansioni) ? 'checked' : '' }}>
+            <label class="form-check-label" for="mansione_trasportatore">Trasportatore</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" name="mansioni[]" id="mansione_posatore" value="posatore" {{ in_array('posatore', $currentMansioni) ? 'checked' : '' }}>
+            <label class="form-check-label" for="mansione_posatore">Posatore</label>
+          </div>
+        </div>
+
+        <hr>
         <h6 class="font-weight-bold text-secondary">Personalizzazione Colore Lavoratore</h6>
 
         <div class="row">
