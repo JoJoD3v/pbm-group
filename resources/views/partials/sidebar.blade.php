@@ -139,6 +139,14 @@
         </div>
       </div>
     </li>
+
+    <!-- Export/Import Dati - Solo per Sviluppatori -->
+    <li class="nav-item">
+      <a class="nav-link" href="{{ route('admin.data-transfer.index') }}">
+        <i class="bi bi-arrow-left-right"></i>
+        <span>Export/Import Dati</span>
+      </a>
+    </li>
     @endif
 
     <!-- Report -->

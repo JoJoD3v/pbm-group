@@ -1,74 +1,57 @@
 # Migrazioni Consolidate
 
-Questo pacchetto di migrazioni è stato creato per facilitare la migrazione del database del progetto PBM Group a un nuovo ambiente.
+Secondo consolidamento (2026-07-10) delle migration del progetto PBM Group / T.E.P. srl. Sostituisce il consolidamento precedente (`2025_05_26_*`) più tutte le migration incrementali (`add_*`, `fix_*`, `update_*`) accumulate da allora.
 
-## Creazione automatica dell'utente sviluppatore
+## Migrazioni disponibili
 
-Durante la migrazione, verrà creato automaticamente un utente con i seguenti dati:
-- **Nome**: JoJo
-- **Email**: giovannicastaldodev@gmail.com
-- **Password**: K1t4mmu0rt!
-- **Ruolo**: Sviluppatore
+Un file per tabella/gruppo logico, in ordine di esecuzione:
 
-Questi dati sono configurati nel seeder `UserSeeder` che viene chiamato automaticamente durante l'esecuzione della migrazione principale.
+1. `2026_07_10_000001_consolidated_users_table.php` — users, password_reset_tokens, sessions
+2. `2026_07_10_000002_consolidated_materials_table.php` — materials
+3. `2026_07_10_000003_consolidated_deposits_table.php` — deposits
+4. `2026_07_10_000004_consolidated_works_table.php` — works
+5. `2026_07_10_000005_consolidated_workers_table.php` — workers
+6. `2026_07_10_000006_consolidated_vehicles_table.php` — vehicles
+7. `2026_07_10_000007_consolidated_customers_table.php` — customers
+8. `2026_07_10_000008_consolidated_warehouses_table.php` — warehouses
+9. `2026_07_10_000009_consolidated_credit_cards_table.php` — credit_cards
+10. `2026_07_10_000010_consolidated_services_table.php` — services
+11. `2026_07_10_000011_consolidated_appaltatori_table.php` — appaltatori
+12. `2026_07_10_000012_consolidated_bordero_tables.php` — pezzi_bordero, bordero, bordero_pezzi
+13. `2026_07_10_000013_consolidated_work_servizi_table.php` — work_servizi
+14. `2026_07_10_000014_consolidated_worker_mansioni_table.php` — worker_mansioni (con backfill `trasportatore` sui worker esistenti)
+15. `2026_07_10_000015_consolidated_pivot_tables.php` — deposit_material, work_worker, vehicle_worker, credit_card_worker
+16. `2026_07_10_000016_consolidated_cash_movements_table.php` — cash_movements
+17. `2026_07_10_000017_consolidated_ricevute_table.php` — ricevute
+18. `2026_07_10_000018_consolidated_vehicle_assignment_logs_table.php` — vehicle_assignment_logs
+19. `2026_07_10_000019_consolidated_credit_card_recharges_table.php` — credit_card_recharges
 
-## Migrazioni Disponibili
+## Utilizzo
 
-Le migrazioni sono state consolidate nei seguenti file:
-
-1. `2025_05_26_000000_consolidated_users_table.php` - Tabella utenti con tutti i campi
-2. `2025_05_26_000001_consolidated_materials_table.php` - Tabella materiali
-3. `2025_05_26_000002_consolidated_deposits_table.php` - Tabella depositi
-4. `2025_05_26_000003_consolidated_works_table.php` - Tabella lavori
-5. `2025_05_26_000004_consolidated_workers_table.php` - Tabella lavoratori
-6. `2025_05_26_000005_consolidated_vehicles_table.php` - Tabella veicoli
-7. `2025_05_26_000006_consolidated_customers_table.php` - Tabella clienti
-8. `2025_05_26_000007_consolidated_warehouses_table.php` - Tabella cantieri
-9. `2025_05_26_000008_consolidated_credit_cards_table.php` - Tabella carte prepagate
-10. `2025_05_26_000010_consolidated_pivot_tables.php` - Tabelle pivot (relazioni many-to-many)
-
-## Come utilizzare le migrazioni consolidate
-
-### Opzione 1: Eseguire tutte le migrazioni in una volta
-
-Puoi eseguire tutte le migrazioni consolidate con un solo comando utilizzando il file master:
+Ambiente nuovo (dev locale o setup da zero):
 
 ```bash
-php artisan migrate --path=database/migrations/2025_05_26_000000_run_all_consolidated_migrations.php
+php artisan migrate
 ```
 
-### Opzione 2: Eseguire le migrazioni singolarmente
-
-Puoi anche eseguire ogni migrazione singolarmente se preferisci avere più controllo:
+oppure, per un DB già popolato ma senza tabelle, uno scaffolding pulito:
 
 ```bash
-php artisan migrate --path=database/migrations/2025_05_26_000000_consolidated_users_table.php
-php artisan migrate --path=database/migrations/2025_05_26_000001_consolidated_materials_table.php
-# ... e così via per gli altri file
+php artisan migrate:fresh
 ```
 
-## Pulizia delle vecchie migrazioni
+**Attenzione**: `migrate:fresh` cancella tutte le tabelle esistenti. Non eseguirlo su un database di produzione con dati reali.
 
-Per rimuovere i vecchi file di migrazione e mantenere solo quelli consolidati, è stato predisposto uno script PowerShell:
+## Import manuale MySQL
 
-```powershell
-.\cleanup_migrations.ps1
+Per creare lo schema completo senza passare da Artisan (es. import diretto in un server MySQL di produzione), usare:
+
+```
+database/migrations/consolidated_full_schema.mysql.sql
 ```
 
-Questo script:
-1. Crea un backup di tutti i file di migrazione vecchi in una cartella `database/migrations_backup_YYYYMMDD_HHMMSS`
-2. Rimuove tutti i vecchi file di migrazione lasciando solo quelli consolidati
-3. Fornisce un riepilogo dell'operazione
+Contiene tutti i `CREATE TABLE` nell'ordine corretto (rispetto alle foreign key).
 
-## Nota importante
+## Nota su ambienti già migrati
 
-Prima di eseguire queste migrazioni consolidate, assicurati di:
-
-1. Aver fatto un backup completo del database
-2. Non avere migrazioni in sospeso nel sistema attuale
-
-Per un ambiente completamente nuovo, queste migrazioni creeranno la struttura del database senza necessità di eseguire le vecchie migrazioni incrementali.
-
-## Risoluzione problemi
-
-Se incontri problemi di vincoli di chiave estera durante la migrazione, prova a modificare l'ordine di esecuzione delle migrazioni nel file `2025_05_26_000000_run_all_consolidated_migrations.php`.
+Le migration `2025_05_26_*` e le successive `add_*`/`fix_*`/`update_*` sono state rimosse da questa cartella perché sostituite dai file `2026_07_10_*` sopra elencati. Su un ambiente dove quelle vecchie migration erano già state eseguite (quindi lo schema è già corretto), **non serve rieseguire nulla** — i nuovi file sono utili solo per ambienti nuovi o per ricostruire lo schema da zero. Se in un ambiente esistente Artisan segnala migration mancanti nella tabella `migrations`, verificare prima che lo schema reale corrisponda a quello descritto in `docs/DATABASE.md` prima di eseguire qualunque comando distruttivo.

@@ -303,3 +303,13 @@ use App\Http\Middleware\CheckDeveloperRole;
 Route::middleware(['auth', CheckDeveloperRole::class])->group(function () {
     Route::resource('users', UserController::class);
 });
+
+// Rotte per il tool Export/Import Dati (solo sviluppatori)
+use App\Http\Controllers\DataTransferController;
+
+Route::middleware(['auth', CheckDeveloperRole::class])->group(function () {
+    Route::get('/admin/data-transfer', [DataTransferController::class, 'index'])->name('admin.data-transfer.index');
+    Route::get('/admin/data-transfer/{entity}/export', [DataTransferController::class, 'export'])->name('admin.data-transfer.export');
+    Route::get('/admin/data-transfer/{entity}/template', [DataTransferController::class, 'template'])->name('admin.data-transfer.template');
+    Route::post('/admin/data-transfer/{entity}/import', [DataTransferController::class, 'import'])->name('admin.data-transfer.import');
+});

@@ -48,7 +48,7 @@ Mapping mansione → tipi lavoro accessibili (`Worker::tipiLavoroAccessibili()`)
 - `trasportatore` → `Trasporto`, `Smaltimento`
 - `posatore` → `Servizi`
 
-> Worker esistenti al momento dell'introduzione di questa feature hanno ricevuto automaticamente la mansione `trasportatore` (migration `2026_07_06_100000_create_worker_mansioni_table.php`). Nuovi worker creati da form hanno `trasportatore` pre-selezionato di default, ma l'admin può cambiare la selezione.
+> Worker esistenti al momento dell'introduzione di questa feature hanno ricevuto automaticamente la mansione `trasportatore` (backfill preservato in `2026_07_10_000014_consolidated_worker_mansioni_table.php`). Nuovi worker creati da form hanno `trasportatore` pre-selezionato di default, ma l'admin può cambiare la selezione.
 
 ---
 
@@ -76,7 +76,7 @@ Lavori (commesse) assegnati ai clienti o appaltatori.
 | `latitude_destinazione` | decimal(10,7) nullable | |
 | `longitude_destinazione` | decimal(10,7) nullable | |
 
-> `customer_id`, `nome_destinazione`, `indirizzo_destinazione` erano `NOT NULL` prima dell'introduzione di Lavoro Servizi; resi nullable in `2026_07_05_100001_add_appaltatore_to_works_and_work_servizi.php`.
+> `customer_id`, `nome_destinazione`, `indirizzo_destinazione` sono nullable (necessario per Lavoro Servizi, che usa `appaltatore_id` al posto di `customer_id` e non valorizza i campi destinazione). Schema consolidato in `2026_07_10_000004_consolidated_works_table.php`.
 
 ---
 
@@ -284,6 +284,35 @@ Ricevute di pagamento generate dai dipendenti al termine di un lavoro.
 | `pagamento_effettuato` | boolean | |
 | `somma_pagamento` | decimal nullable | |
 | `foto_bolla` | string nullable | Path file |
+
+---
+
+### `vehicle_assignment_logs`
+Storico assegnazioni/restituzioni veicoli ai dipendenti (log, distinto dalla pivot `vehicle_worker` che tiene l'assegnazione corrente).
+
+| Campo | Tipo | Note |
+|---|---|---|
+| `id` | bigint PK | |
+| `vehicle_id` | FK → vehicles, cascade | |
+| `worker_id` | FK → workers, cascade | |
+| `data_assegnazione` | datetime | |
+| `data_restituzione` | datetime nullable | |
+| `note` | text nullable | |
+| `operazione` | string | `assegnazione` / `restituzione` |
+
+---
+
+### `credit_card_recharges`
+Storico ricariche di una carta prepagata. Nessun Eloquent model dedicato — acceduta via `DB::table()` in `CreditCardRechargeController`.
+
+| Campo | Tipo | Note |
+|---|---|---|
+| `id` | bigint PK | |
+| `credit_card_id` | FK → credit_cards, cascade | |
+| `user_id` | FK → users, nullable, cascade | Chi ha effettuato la ricarica |
+| `importo` | decimal(10,2) | |
+| `data_ricarica` | datetime | |
+| `note` | text nullable | |
 
 ---
 

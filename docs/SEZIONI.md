@@ -283,6 +283,34 @@ Il Borderò è una scheda pezzi/materiali compilata per un Lavoro di tipo **Serv
 
 **Storicità dei dati**: rinominare o cancellare un pezzo dal catalogo **non altera** le righe già salvate in Borderò passati — `bordero_pezzi.nome_pezzo` è uno snapshot copiato al momento del salvataggio, non un riferimento live al catalogo (vedi `docs/DATABASE.md`).
 
+---
+
+### 18. Export/Import Dati (`/admin/data-transfer`) — Solo sviluppatore
+
+**Controller:** `DataTransferController`
+**Servizi:** `App\Services\DataTransfer\EntityRegistry`, `CsvExporter`, `CsvImporter`
+**View:** `data-transfer/index.blade.php`
+**Menu:** voce "Export/Import Dati" nel blocco sidebar riservato allo sviluppatore
+
+Tool per generare/importare CSV delle anagrafiche principali senza passare da seed manuali da backend. Protetto da middleware `CheckDeveloperRole` (solo ruolo `sviluppatore`).
+
+| Azione | Rotta |
+|---|---|
+| Pagina indice | `GET /admin/data-transfer` |
+| Esporta CSV entità | `GET /admin/data-transfer/{entity}/export` |
+| Scarica template (solo header) | `GET /admin/data-transfer/{entity}/template` |
+| Importa CSV entità | `POST /admin/data-transfer/{entity}/import` |
+
+**Entità coperte** (`EntityRegistry::all()`): Clienti, Appaltatori, Materiali, Depositi, Veicoli, Cantieri, Carte Prepagate, Servizi, Lavoratori (con colonna `mansioni` pipe-separated, es. `trasportatore|posatore`), Lavori, Assegnazioni Lavoro-Lavoratore, Lavoro-Servizi.
+
+**Comportamento import:**
+- Streaming riga-per-riga (`fgetcsv`), batch da 200 righe per transazione — evita di caricare l'intero file in memoria.
+- **Upsert per chiave naturale leggibile**: se una riga corrisponde a un record esistente (per email/targa/codice_fiscale/nome/etc a seconda dell'entità) viene aggiornata, altrimenti creata. Le foreign key (es. `works.customer_id`) sono espresse nel CSV per valore leggibile (es. `customer_codice_fiscale`), risolte a ID durante l'import con cache in-memory per evitare N+1.
+- Righe con errore (es. riferimento a un'entità collegata inesistente) **non bloccano l'intero import**: vengono saltate e segnalate a fine import con numero riga e motivo; le righe valide restanti vengono comunque importate.
+- Per `works`, priva di una colonna unique propria, la chiave di match usata è la combinazione `tipo_lavoro + data_esecuzione + cliente`.
+
+**Non incluso** (fuori scope): `ricevute`, `bordero`/`bordero_pezzi`, `cash_movements`, `vehicle_assignment_logs`, `credit_card_recharges` — dati transazionali/storico generati dall'uso quotidiano, non anagrafiche.
+
 **Form** (`bordero/form.blade.php`):
 - Righe pezzo dinamiche (aggiungi/rimuovi): campo con `<datalist>` per scegliere un pezzo esistente o digitarne uno nuovo, + quantità.
 - Status: 3 pill radio — `Completo` (verde) / `In Sospeso` (giallo) / `Non realizzabile` (rosso).
