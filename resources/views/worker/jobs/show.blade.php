@@ -100,6 +100,12 @@
                                     <th>Codice EER:</th>
                                     <td>{{ $work->codice_eer ?? 'N/A' }}</td>
                                 </tr>
+                                @if($work->note)
+                                <tr>
+                                    <th>Note:</th>
+                                    <td>{{ $work->note }}</td>
+                                </tr>
+                                @endif
                             </table>
                         </div>
                     </div>
