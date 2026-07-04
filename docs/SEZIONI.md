@@ -25,7 +25,7 @@ Questa guida descrive ogni sezione funzionale, i percorsi, i controller e le vie
 **View:** `dashboard.blade.php`
 
 - **Admin/Sviluppatore**: mostra i lavori (`works`) pianificati per oggi.
-- **Dipendente**: mostra i propri lavori di oggi e il primo lavoro di domani.
+- **Dipendente**: mostra i propri lavori assegnati di oggi e il primo lavoro di domani. Sezione "Lavori Assegnati" filtrata/con TAB per `tipo_lavoro` in base alle mansioni del worker (stessa logica di `/worker/jobs`, vedi sezione "Lista Lavori Dipendente"), parametro query `?tab=`.
 
 ---
 

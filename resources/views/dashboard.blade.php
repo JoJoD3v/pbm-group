@@ -109,17 +109,29 @@
       <div class="col-lg-12">
         <div class="card shadow mb-4">
           <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <a href="{{ route('dashboard', ['date' => $prevDate]) }}" class="btn btn-sm btn-outline-secondary">
+            <a href="{{ route('dashboard', ['date' => $prevDate, 'tab' => $tab]) }}" class="btn btn-sm btn-outline-secondary">
               <i class="bi bi-chevron-left"></i>
             </a>
             <h6 class="m-0 font-weight-bold text-primary">
               Lavori Assegnati{{ $isToday ? ' Oggi' : '' }} ({{ $currentDate->format('d/m/Y') }})
             </h6>
-            <a href="{{ route('dashboard', ['date' => $nextDate]) }}" class="btn btn-sm btn-outline-secondary">
+            <a href="{{ route('dashboard', ['date' => $nextDate, 'tab' => $tab]) }}" class="btn btn-sm btn-outline-secondary">
               <i class="bi bi-chevron-right"></i>
             </a>
           </div>
           <div class="card-body">
+            @if(count($tipiAccessibili) > 1)
+              <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                  <a class="nav-link {{ $tab === 'tutti' ? 'active' : '' }}" href="{{ route('dashboard', ['date' => $currentDate->format('Y-m-d'), 'tab' => 'tutti']) }}">Tutti</a>
+                </li>
+                @foreach($tipiAccessibili as $tipo)
+                  <li class="nav-item">
+                    <a class="nav-link {{ $tab === $tipo ? 'active' : '' }}" href="{{ route('dashboard', ['date' => $currentDate->format('Y-m-d'), 'tab' => $tipo]) }}">{{ $tipo }}</a>
+                  </li>
+                @endforeach
+              </ul>
+            @endif
             @if($workerTodayWorks->count() > 0)
               <div class="table-responsive">
                 <table class="table table-bordered" id="workerTodayWorksTable" width="100%" cellspacing="0">

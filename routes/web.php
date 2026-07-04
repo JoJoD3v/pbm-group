@@ -33,6 +33,8 @@ Route::get('/dashboard', function (Request $request) {
     $tomorrowFirstWork = null;
     $worker = null;
     $carteAssegnate = collect([]);
+    $tipiAccessibili = [];
+    $tab = 'tutti';
 
     $user = auth()->user();
     $role = strtolower($user->role ?? '');
@@ -51,6 +53,13 @@ Route::get('/dashboard', function (Request $request) {
 
         if ($worker) {
             $carteAssegnate = $worker->assignedCreditCards()->get();
+            $tipiAccessibili = $worker->tipiLavoroAccessibili();
+
+            $tab = $request->query('tab', 'tutti');
+            if ($tab !== 'tutti' && ! in_array($tab, $tipiAccessibili)) {
+                $tab = 'tutti';
+            }
+            $tipiQuery = ($tab === 'tutti') ? $tipiAccessibili : [$tab];
 
             $dayStart = $currentDate->copy()->startOfDay();
             $dayEnd = $currentDate->copy()->endOfDay();
@@ -59,6 +68,7 @@ Route::get('/dashboard', function (Request $request) {
 
             $workerTodayWorks = $worker->works()
                 ->with('customer')
+                ->whereIn('tipo_lavoro', $tipiQuery)
                 ->whereBetween('data_esecuzione', [$dayStart, $dayEnd])
                 ->orderBy('data_esecuzione')
                 ->get();
@@ -71,7 +81,7 @@ Route::get('/dashboard', function (Request $request) {
         }
     }
 
-    return view('dashboard', compact('todayWorks', 'workerTodayWorks', 'tomorrowFirstWork', 'currentDate', 'worker', 'carteAssegnate'));
+    return view('dashboard', compact('todayWorks', 'workerTodayWorks', 'tomorrowFirstWork', 'currentDate', 'worker', 'carteAssegnate', 'tipiAccessibili', 'tab'));
 })->middleware('auth')->name('dashboard');
 
 use App\Http\Controllers\MaterialController;
