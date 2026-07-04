@@ -237,7 +237,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/ricevute/{ricevutaId}', [RicevutaController::class, 'adminUpdate'])->name('admin.ricevute.update');
 });
 
-// Rotte per i report (dipendenti e lavori)
+// Rotte per i report (dipendenti, lavori e clienti)
+use App\Http\Controllers\ReportClientiController;
 use App\Http\Controllers\ReportDipendentiController;
 use App\Http\Controllers\ReportLavoriController;
 
@@ -249,6 +250,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reports/lavori', [ReportLavoriController::class, 'index'])->name('reports.lavori.index');
     Route::post('/reports/lavori', [ReportLavoriController::class, 'generate'])->name('reports.lavori.generate');
     Route::post('/reports/lavori/pdf', [ReportLavoriController::class, 'pdf'])->name('reports.lavori.pdf');
+
+    Route::get('/reports/clienti', [ReportClientiController::class, 'index'])->name('reports.clienti.index');
+    Route::post('/reports/clienti', [ReportClientiController::class, 'generate'])->name('reports.clienti.generate');
+    Route::post('/reports/clienti/pdf', [ReportClientiController::class, 'pdf'])->name('reports.clienti.pdf');
 });
 
 // Rotte per la gestione utenti (solo sviluppatori)

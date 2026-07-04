@@ -142,6 +142,7 @@
         <div class="bg-white py-2 collapse-inner rounded">
           <a class="collapse-item" href="{{ route('reports.dipendenti.index') }}">Dipendenti</a>
           <a class="collapse-item" href="{{ route('reports.lavori.index') }}">Lavori</a>
+          <a class="collapse-item" href="{{ route('reports.clienti.index') }}">Clienti</a>
         </div>
       </div>
     </li>
