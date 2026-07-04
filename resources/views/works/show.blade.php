@@ -280,6 +280,68 @@ use Illuminate\Support\Str;
           </div>
         </div>
       </div>
+
+      <!-- Sezione Borderò -->
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card shadow">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+              <h6 class="m-0 font-weight-bold text-primary">Borderò</h6>
+              <div class="d-flex gap-2">
+                <a href="{{ route('admin.bordero.edit', $work->id) }}" class="btn btn-sm btn-success">
+                  <i class="bi bi-{{ $work->bordero ? 'pencil' : 'plus-lg' }}"></i> {{ $work->bordero ? 'Modifica' : 'Crea Borderò' }}
+                </a>
+                @if($work->bordero)
+                  <a href="{{ route('bordero.pdf', $work->id) }}" target="_blank" class="btn btn-sm btn-danger">
+                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                  </a>
+                @endif
+              </div>
+            </div>
+            <div class="card-body">
+              @if($work->bordero)
+                @php
+                  $borderoBadge = match($work->bordero->status) {
+                      'Completo' => 'success',
+                      'Non realizzabile' => 'danger',
+                      default => 'warning',
+                  };
+                @endphp
+                <p><strong>Status:</strong> <span class="badge bg-{{ $borderoBadge }}">{{ $work->bordero->status }}</span></p>
+
+                @if($work->bordero->pezzi->isNotEmpty())
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                      <thead class="table-dark">
+                        <tr>
+                          <th>Nome Pezzo</th>
+                          <th class="text-end">Quantità</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($work->bordero->pezzi as $riga)
+                          <tr>
+                            <td>{{ $riga->nome_pezzo }}</td>
+                            <td class="text-end">{{ $riga->quantita }}</td>
+                          </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </div>
+                @else
+                  <p class="text-muted">Nessun pezzo registrato.</p>
+                @endif
+
+                <p class="mb-0"><strong>Note Tecniche:</strong><br>{{ $work->bordero->note_tecniche ?: '—' }}</p>
+              @else
+                <div class="alert alert-info mb-0">
+                  Nessun borderò creato per questo lavoro.
+                </div>
+              @endif
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

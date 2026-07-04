@@ -177,6 +177,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Rotte per i lavoratori (dipendenti)
+use App\Http\Controllers\BorderoController;
+use App\Http\Controllers\PezzoBorderoController;
 use App\Http\Controllers\RicevutaController;
 use App\Http\Controllers\WorkerCardController;
 use App\Http\Controllers\WorkerCashFlowController;
@@ -197,6 +199,11 @@ Route::middleware(['auth', CheckWorkerRole::class])->group(function () {
     Route::get('/worker/ricevute/create/{workId}', [RicevutaController::class, 'create'])->name('worker.ricevute.create');
     Route::post('/worker/ricevute', [RicevutaController::class, 'store'])->name('worker.ricevute.store');
     Route::get('/worker/ricevute/{ricevutaId}/pdf', [RicevutaController::class, 'downloadPDF'])->name('worker.ricevute.pdf');
+
+    // Gestione borderò
+    Route::get('/worker/bordero/{workId}', [BorderoController::class, 'edit'])->name('worker.bordero.edit');
+    Route::post('/worker/bordero/{workId}', [BorderoController::class, 'save'])->name('worker.bordero.save');
+    Route::get('/worker/bordero/{workId}/pdf', [BorderoController::class, 'downloadPDF'])->name('worker.bordero.pdf');
 
     // Gestione carte
     Route::get('/worker/cards', [WorkerCardController::class, 'index'])->name('worker.cards');
@@ -235,6 +242,24 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/ricevute', [RicevutaController::class, 'adminStore'])->name('admin.ricevute.store');
     Route::get('/admin/ricevute/{ricevutaId}/edit', [RicevutaController::class, 'adminEdit'])->name('admin.ricevute.edit');
     Route::put('/admin/ricevute/{ricevutaId}', [RicevutaController::class, 'adminUpdate'])->name('admin.ricevute.update');
+});
+
+// PDF borderò per admin/sviluppatore o dipendente assegnato
+Route::get('/bordero/{workId}/pdf', [BorderoController::class, 'downloadPDF'])
+    ->middleware('auth')
+    ->name('bordero.pdf');
+
+// Gestione borderò e catalogo pezzi lato admin (solo admin/sviluppatore)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/bordero/{workId}', [BorderoController::class, 'edit'])->name('admin.bordero.edit');
+    Route::post('/admin/bordero/{workId}', [BorderoController::class, 'save'])->name('admin.bordero.save');
+
+    Route::get('/admin/pezzi-bordero', [PezzoBorderoController::class, 'index'])->name('admin.pezzi-bordero.index');
+    Route::get('/admin/pezzi-bordero/create', [PezzoBorderoController::class, 'create'])->name('admin.pezzi-bordero.create');
+    Route::post('/admin/pezzi-bordero', [PezzoBorderoController::class, 'store'])->name('admin.pezzi-bordero.store');
+    Route::get('/admin/pezzi-bordero/{id}/edit', [PezzoBorderoController::class, 'edit'])->name('admin.pezzi-bordero.edit');
+    Route::put('/admin/pezzi-bordero/{id}', [PezzoBorderoController::class, 'update'])->name('admin.pezzi-bordero.update');
+    Route::delete('/admin/pezzi-bordero/{id}', [PezzoBorderoController::class, 'destroy'])->name('admin.pezzi-bordero.destroy');
 });
 
 // Rotte per i report (dipendenti, lavori e clienti)

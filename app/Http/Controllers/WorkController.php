@@ -189,8 +189,8 @@ class WorkController extends Controller
 
     public function show(Work $work)
     {
-        // Carica le ricevute associate al lavoro
-        $work->load('ricevute');
+        // Carica le ricevute e il borderò associati al lavoro
+        $work->load(['ricevute', 'bordero.pezzi']);
 
         return view('works.show', compact('work'));
     }

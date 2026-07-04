@@ -58,6 +58,8 @@
           <h6 class="collapse-header">Nuovo Lavoro:</h6>
           <a class="collapse-item" href="{{ route('works.create') }}">Lavoro Trasporto</a>
           <a class="collapse-item" href="{{ route('works.create.disposal') }}">Lavoro Smaltimento</a>
+          <h6 class="collapse-header">Borderò:</h6>
+          <a class="collapse-item" href="{{ route('admin.pezzi-bordero.index') }}">Gestione Pezzi Borderò</a>
         </div>
       </div>
     </li>

@@ -78,4 +78,10 @@ class Work extends Model
     {
         return $this->belongsTo(Warehouse::class, 'warehouse_destinazione_id');
     }
+
+    // Relazione con il borderò
+    public function bordero()
+    {
+        return $this->hasOne(Bordero::class);
+    }
 }

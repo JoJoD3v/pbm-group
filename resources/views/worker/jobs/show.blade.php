@@ -12,6 +12,15 @@
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#spesaLavoroModal">
                         <i class="bi bi-currency-euro"></i> Spesa Lavoro
                     </button>
+                    @if($work->bordero)
+                        <a href="{{ route('worker.bordero.edit', $work->id) }}" class="btn btn-info">
+                            <i class="bi bi-clipboard-check"></i> Vedi/Modifica Borderò
+                        </a>
+                    @else
+                        <a href="{{ route('worker.bordero.edit', $work->id) }}" class="btn btn-warning">
+                            <i class="bi bi-clipboard-plus"></i> Creazione Borderò
+                        </a>
+                    @endif
                 @endif
                 <a href="{{ route('worker.jobs') }}" class="btn btn-primary">
                     <i class="bi bi-arrow-left"></i> Torna all'elenco
