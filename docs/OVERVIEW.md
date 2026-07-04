@@ -65,13 +65,16 @@ resources/
     workers/      ← anagrafica dipendenti
     vehicles/     ← automezzi
     customers/    ← clienti
+    appaltatori/  ← appaltatori (mirror di customers)
     materials/    ← materiali
     deposits/     ← depositi
     warehouses/   ← sedi/magazzini
     credit_cards/ ← carte prepagate
     credit_card_assignments/  ← assegnazione carte
     credit_card_recharges/    ← ricariche carte
-    pdf/          ← template PDF ricevute
+    bordero/      ← form creazione/modifica Borderò (condiviso worker/admin)
+    pezzi-bordero/ ← catalogo pezzi Borderò (CRUD admin-only)
+    pdf/          ← template PDF ricevute e Borderò
 
 database/
   migrations/     ← migration consolidate (prefisso 2025_05_26_*)

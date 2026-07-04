@@ -48,11 +48,24 @@ Gestione completa delle commesse di trasporto/smaltimento rifiuti.
 | Modifica | `GET/PUT /works/{id}/edit` |
 | Elimina | `DELETE /works/{id}` |
 | Crea smaltimento | `GET /works/create/disposal` |
+| Crea servizi | `GET /works/create/servizi` |
 | Depositi per materiale (AJAX) | `GET /works/deposits-by-material/{materialId}` |
 
 Campi principali: `tipo_lavoro`, `customer_id`, `status_lavoro`, `data_esecuzione`, `costo_lavoro`, `modalita_pagamento`, punti partenza/destinazione con coordinate, `materiale`, `codice_eer`.
 
 Filtri disponibili in lista: data inizio, data fine, tipo lavoro.
+
+#### Lavoro Servizi (`tipo_lavoro = 'Servizi'`)
+
+Terzo tipo di lavoro (oltre Trasporto e Smaltimento), per fatturare una selezione di servizi a catalogo a un **Cliente o un Appaltatore** (mutuamente esclusivi), invece di trasportare materiale.
+
+- Form dedicato: `works/create_servizi.blade.php`, gestito da `WorkController::createServizi()` (GET) e `WorkController::storeServizi()` (chiamato da `store()` quando `tipo_lavoro === 'Servizi'`).
+- Committente: radio Cliente/Appaltatore → popola `customer_id` oppure `appaltatore_id`.
+- Se Cliente: select "Indirizzo Cliente" (auto-popolato) o "Indirizzo Libero" (Google Places autocomplete) → salvato in `indirizzo_partenza` (riusato come unico "luogo intervento", niente destinazione separata).
+- Se Appaltatore: campo indirizzo disabilitato, placeholder "Vedi Note".
+- Righe servizio dinamiche (aggiungi/rimuovi, pattern `<template>` + JS clone): ogni riga = servizio da catalogo `services` + quantità + checkbox IVA 22%. Salvate in `work_servizi` con snapshot `nome_servizio`/`prezzo_unitario` (sopravvivono a modifiche future del catalogo).
+- `costo_lavoro` finale = somma righe servizio (prezzo × qty × 1.22 se IVA) + campo "Costo Lavoro Extra" manuale opzionale.
+- Solo i lavori con `tipo_lavoro === 'Servizi'` mostrano la card Borderò (admin) e la CTA Borderò (dipendente assegnato) — vedi sezione **Borderò** più sotto.
 
 ---
 
@@ -91,6 +104,15 @@ Campi: `id_worker`, `name_worker`, `cognome_worker`, `license_worker`, `worker_e
 **View:** `customers/`
 
 Resource completa. Supporta due tipi: `privato` (usa `full_name`) e `azienda` (usa `ragione_sociale`).
+
+---
+
+### 4bis. Appaltatori (`/appaltatori`)
+
+**Controller:** `AppaltatoreController`
+**View:** `appaltatori/`
+
+Anagrafica appaltatori (controparte contrattuale diversa dal cliente finale). Mirror esatto di Clienti: resource completa, stessa distinzione persona fisica (`full_name`, `codice_fiscale`) / giuridica (`ragione_sociale`, `partita_iva`). Voce sidebar subito dopo "Clienti". Usato come committente alternativo nel form Lavoro Servizi.
 
 ---
 
@@ -231,6 +253,39 @@ La query usa `whereBetween('data_movimento', [$dataInizio, $dataFine])`.
 **View:** `users/`
 
 Gestione account utenti (solo per ruolo `sviluppatore`). Permette creare, modificare, eliminare utenti e inviare le credenziali via email (`UserCredentialsMail`).
+
+---
+
+### 17. Borderò e Catalogo Pezzi
+
+**Controller:** `BorderoController` (form condiviso admin/worker), `PezzoBorderoController` (catalogo, admin-only)
+**View:** `bordero/form.blade.php`, `pezzi-bordero/`
+**Menu:** Lavori → "Gestione Pezzi Borderò"
+
+Il Borderò è una scheda pezzi/materiali compilata per un Lavoro di tipo **Servizi** (1:1, vincolo `unique` su `work_id`). Disponibile sia per il dipendente assegnato al lavoro sia per l'admin, tramite **la stessa view/form** — non ci sono due form separati come per le Ricevute.
+
+| Azione | Rotta | Ruolo |
+|---|---|---|
+| Form crea/modifica (worker) | `GET /worker/bordero/{workId}` | dipendente assegnato |
+| Salva (worker) | `POST /worker/bordero/{workId}` | dipendente assegnato |
+| PDF (worker) | `GET /worker/bordero/{workId}/pdf` | dipendente assegnato |
+| Form crea/modifica (admin) | `GET /admin/bordero/{workId}` | amministratore/sviluppatore |
+| Salva (admin) | `POST /admin/bordero/{workId}` | amministratore/sviluppatore |
+| PDF (condiviso) | `GET /bordero/{workId}/pdf` | admin o dipendente assegnato |
+
+**Catalogo Pezzi Borderò** (`/admin/pezzi-bordero`, solo admin/sviluppatore): CRUD completo (index/create/store/edit/update/destroy). Il pezzo è condiviso tra tutti i Borderò; se un dipendente digita un nome pezzo non presente nel catalogo durante la compilazione, viene salvato automaticamente nel catalogo per riuso futuro (`PezzoBordero::firstOrCreate`).
+
+**Storicità dei dati**: rinominare o cancellare un pezzo dal catalogo **non altera** le righe già salvate in Borderò passati — `bordero_pezzi.nome_pezzo` è uno snapshot copiato al momento del salvataggio, non un riferimento live al catalogo (vedi `docs/DATABASE.md`).
+
+**Form** (`bordero/form.blade.php`):
+- Righe pezzo dinamiche (aggiungi/rimuovi): campo con `<datalist>` per scegliere un pezzo esistente o digitarne uno nuovo, + quantità.
+- Status: 3 pill radio — `Completo` (verde) / `In Sospeso` (giallo) / `Non realizzabile` (rosso).
+- Textarea "Note Tecniche".
+- Ogni salvataggio sostituisce tutte le righe pezzo esistenti (cancella + ricrea, no diff per riga).
+
+**PDF** (`pdf/bordero.blade.php`, generato via Dompdf): header logo + dati aziendali, titolo "Borderò – Cliente – Data", riepilogo lavoro, tabella pezzi/quantità, badge status, note tecniche.
+
+**Visibilità condizionata**: la card Borderò (in `works/show.blade.php`) e la CTA "Creazione/Vedi Borderò" (in `worker/jobs/show.blade.php`) compaiono **solo** se `$work->tipo_lavoro === 'Servizi'`.
 
 ---
 

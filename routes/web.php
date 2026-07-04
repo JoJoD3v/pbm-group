@@ -90,6 +90,10 @@ use App\Http\Controllers\CustomerController;
 
 Route::resource('customers', CustomerController::class)->middleware('auth');
 
+use App\Http\Controllers\AppaltatoreController;
+
+Route::resource('appaltatori', AppaltatoreController::class)->middleware('auth');
+
 use App\Http\Controllers\WarehouseController;
 
 Route::resource('warehouses', WarehouseController::class)->middleware('auth');
@@ -102,6 +106,7 @@ Route::post('/works/statuses', [WorkController::class, 'statuses'])->middleware(
 Route::post('/works/{work}/complete', [WorkController::class, 'complete'])->middleware('auth')->name('works.complete');
 Route::resource('works', WorkController::class)->middleware('auth');
 Route::get('/works/create/disposal', [WorkController::class, 'createDisposal'])->middleware('auth')->name('works.create.disposal');
+Route::get('/works/create/servizi', [WorkController::class, 'createServizi'])->middleware('auth')->name('works.create.servizi');
 Route::get('/works/deposits-by-material/{materialId}', [WorkController::class, 'getDepositsByMaterial'])->middleware('auth')->name('works.deposits-by-material');
 
 use App\Http\Controllers\WorkerController;

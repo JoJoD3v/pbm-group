@@ -36,27 +36,30 @@ Anagrafica dipendenti operativi.
 ---
 
 ### `works`
-Lavori (commesse) assegnati ai clienti.
+Lavori (commesse) assegnati ai clienti o appaltatori.
 
 | Campo | Tipo | Note |
 |---|---|---|
 | `id` | bigint PK | |
-| `tipo_lavoro` | string | Es. "Trasporto", "Smaltimento" |
-| `customer_id` | FK → customers | |
+| `tipo_lavoro` | string | `Trasporto`, `Smaltimento`, `Servizi` |
+| `customer_id` | FK → customers, nullable | Nullable perché un Lavoro Servizi può usare `appaltatore_id` al suo posto |
+| `appaltatore_id` | FK → appaltatori, nullable | Valorizzato solo per lavori con committente Appaltatore (mutuamente esclusivo con `customer_id`, vincolo applicativo non DB) |
 | `status_lavoro` | string | Default `In Sospeso` |
 | `data_esecuzione` | datetime nullable | |
-| `costo_lavoro` | decimal(10,2) nullable | |
+| `costo_lavoro` | decimal(10,2) nullable | Per Lavoro Servizi: somma righe `work_servizi` + eventuale costo extra manuale |
 | `modalita_pagamento` | string nullable | |
 | `nome_partenza` | string nullable | |
-| `indirizzo_partenza` | string nullable | |
+| `indirizzo_partenza` | string nullable | Per Lavoro Servizi riusato come unico "luogo intervento" |
 | `latitude_partenza` | decimal(10,7) nullable | |
 | `longitude_partenza` | decimal(10,7) nullable | |
-| `materiale` | string nullable | Nome materiale trasportato |
-| `codice_eer` | string nullable | Codice EER rifiuto |
-| `nome_destinazione` | string | |
-| `indirizzo_destinazione` | string | |
+| `materiale` | string nullable | Nome materiale trasportato (solo Trasporto/Smaltimento) |
+| `codice_eer` | string nullable | Codice EER rifiuto (solo Trasporto/Smaltimento) |
+| `nome_destinazione` | string nullable | Non usato da Lavoro Servizi |
+| `indirizzo_destinazione` | string nullable | Non usato da Lavoro Servizi |
 | `latitude_destinazione` | decimal(10,7) nullable | |
 | `longitude_destinazione` | decimal(10,7) nullable | |
+
+> `customer_id`, `nome_destinazione`, `indirizzo_destinazione` erano `NOT NULL` prima dell'introduzione di Lavoro Servizi; resi nullable in `2026_07_05_100001_add_appaltatore_to_works_and_work_servizi.php`.
 
 ---
 
@@ -76,6 +79,92 @@ Clienti committenti dei lavori.
 | `email` | string | |
 | `latitude_customer` | decimal nullable | |
 | `longitude_customer` | decimal nullable | |
+
+---
+
+### `appaltatori`
+Appaltatori (controparte contrattuale diversa dal cliente finale). Mirror strutturale di `customers`.
+
+| Campo | Tipo | Note |
+|---|---|---|
+| `id` | bigint PK | |
+| `tipo_soggetto` | enum(`fisica`,`giuridica`) | |
+| `full_name` | string nullable | Per persona fisica |
+| `codice_fiscale` | string nullable | |
+| `ragione_sociale` | string nullable | Per persona giuridica |
+| `partita_iva` | string nullable | |
+| `address` | string nullable | |
+| `phone` | string nullable | |
+| `email` | string nullable | |
+| `latitude_appaltatore` | decimal(10,7) nullable | |
+| `longitude_appaltatore` | decimal(10,7) nullable | |
+| `note` | text nullable | |
+
+CRUD completo via `AppaltatoreController` (mirror di `CustomerController`), viste in `resources/views/appaltatori/`.
+
+---
+
+### `services`
+Catalogo servizi offerti (usato da Lavoro Servizi).
+
+| Campo | Tipo | Note |
+|---|---|---|
+| `id` | bigint PK | |
+| `nome_servizio` | string | |
+| `prezzo_servizio` | decimal(10,2) | Prezzo unitario di listino |
+
+---
+
+### `work_servizi`
+Righe servizio selezionate per un Lavoro di tipo "Servizi". Prezzo e nome sono uno **snapshot** copiato da `services` al momento del salvataggio: sopravvivono a modifiche/cancellazioni successive del catalogo.
+
+| Campo | Tipo | Note |
+|---|---|---|
+| `id` | bigint PK | |
+| `work_id` | FK → works, cascade | |
+| `service_id` | FK → services, nullable, `set null` | Link opzionale al catalogo; **non usare per la visualizzazione** |
+| `nome_servizio` | string | Snapshot, sempre usato per display |
+| `prezzo_unitario` | decimal(10,2) | Snapshot |
+| `quantita` | integer default 1 | |
+| `iva_applicata` | boolean default false | Se true, subtotale riga ×1.22 |
+
+---
+
+### `pezzi_bordero`
+Catalogo condiviso dei "pezzi" (materiali/parti) utilizzabili nei Borderò. CRUD completo (`PezzoBorderoController`, admin-only) — edit/destroy non impattano righe storiche già registrate (vedi `bordero_pezzi`).
+
+| Campo | Tipo | Note |
+|---|---|---|
+| `id` | bigint PK | |
+| `nome_pezzo` | string unique | |
+
+---
+
+### `bordero`
+Borderò: una scheda pezzi/materiali per Lavoro (1:1 con `works`, solo per `tipo_lavoro = 'Servizi'`), compilata dal dipendente assegnato e modificabile anche da admin tramite la stessa view/form.
+
+| Campo | Tipo | Note |
+|---|---|---|
+| `id` | bigint PK | |
+| `work_id` | FK → works, unique, cascade | Un solo Borderò per Lavoro |
+| `worker_id` | FK → workers, nullable, `set null` | Chi ha compilato/aggiornato per ultimo |
+| `status` | string default `In Sospeso` | `Completo` / `In Sospeso` / `Non realizzabile` |
+| `note_tecniche` | text nullable | |
+
+---
+
+### `bordero_pezzi`
+Righe pezzo/quantità di un Borderò. Stesso pattern di snapshot di `work_servizi`: `nome_pezzo` è copiato da `pezzi_bordero` al salvataggio, `pezzo_bordero_id` è un link opzionale nullable — la cancellazione/rename di un pezzo dal catalogo non altera le righe storiche.
+
+| Campo | Tipo | Note |
+|---|---|---|
+| `id` | bigint PK | |
+| `bordero_id` | FK → bordero, cascade | |
+| `pezzo_bordero_id` | FK → pezzi_bordero, nullable, `set null` | Link opzionale al catalogo; **non usare per la visualizzazione** |
+| `nome_pezzo` | string | Snapshot, sempre usato per display |
+| `quantita` | integer default 1 | |
+
+Ad ogni salvataggio del form Borderò, le righe esistenti vengono cancellate e ricreate (strategia "replace-all", non diff per riga).
 
 ---
 
@@ -196,9 +285,12 @@ Ricevute di pagamento generate dai dipendenti al termine di un lavoro.
 
 ```
 User         hasOne    Worker          (users.email = workers.worker_email)
-Work         belongsTo Customer
+Work         belongsTo Customer (nullable)
+Work         belongsTo Appaltatore (nullable)
 Work         belongsToMany Workers     (work_worker)
 Work         hasMany   Ricevute
+Work         hasMany   WorkServizio  (servizi())
+Work         hasOne    Bordero
 Worker       belongsToMany Works       (work_worker)
 Worker       belongsToMany Vehicles    (vehicle_worker)
 Worker       belongsToMany CreditCards (credit_card_worker, no data_restituzione)
@@ -207,4 +299,12 @@ Material     belongsToMany Deposits    (deposit_material)
 CashMovement belongsTo Worker
 CashMovement belongsTo Work (nullable)
 CashMovement belongsTo CreditCard (nullable)
+WorkServizio belongsTo Work
+WorkServizio belongsTo Service (nullable, solo link opzionale — display usa sempre nome_servizio/prezzo_unitario snapshot)
+Bordero      belongsTo Work
+Bordero      belongsTo Worker (nullable)
+Bordero      hasMany   BorderoPezzo (pezzi())
+BorderoPezzo belongsTo Bordero
+BorderoPezzo belongsTo PezzoBordero (nullable, solo link opzionale — display usa sempre nome_pezzo snapshot)
+PezzoBordero hasMany   BorderoPezzo  (righeBordero())
 ```

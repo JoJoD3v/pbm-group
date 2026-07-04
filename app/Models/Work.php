@@ -12,6 +12,7 @@ class Work extends Model
     protected $fillable = [
         'tipo_lavoro',
         'customer_id',
+        'appaltatore_id',
         'status_lavoro',
         'data_esecuzione',
         'costo_lavoro',
@@ -46,6 +47,18 @@ class Work extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    // Relazione con l'Appaltatore
+    public function appaltatore()
+    {
+        return $this->belongsTo(Appaltatore::class);
+    }
+
+    // Relazione con le righe servizio (Lavoro Servizi)
+    public function servizi()
+    {
+        return $this->hasMany(WorkServizio::class);
     }
 
     // Relazione con il materiale

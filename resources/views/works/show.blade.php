@@ -281,7 +281,8 @@ use Illuminate\Support\Str;
         </div>
       </div>
 
-      <!-- Sezione Borderò -->
+      <!-- Sezione Borderò (solo Lavoro Servizi) -->
+      @if($work->tipo_lavoro === 'Servizi')
       <div class="row mt-4">
         <div class="col-12">
           <div class="card shadow">
@@ -342,6 +343,7 @@ use Illuminate\Support\Str;
           </div>
         </div>
       </div>
+      @endif
     </div>
   </div>
 </div>

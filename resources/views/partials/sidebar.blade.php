@@ -37,6 +37,13 @@
     </li>
 
     <li class="nav-item">
+      <a class="nav-link" href="{{ route('appaltatori.index') }}">
+        <i class="bi bi-person-workspace"></i>
+            <span>Appaltatori</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
       <a class="nav-link" href="{{ route('warehouses.index') }}">
         <i class="bi bi-building-fill-up"></i>
           <span>Cantieri</span>
@@ -58,6 +65,7 @@
           <h6 class="collapse-header">Nuovo Lavoro:</h6>
           <a class="collapse-item" href="{{ route('works.create') }}">Lavoro Trasporto</a>
           <a class="collapse-item" href="{{ route('works.create.disposal') }}">Lavoro Smaltimento</a>
+          <a class="collapse-item" href="{{ route('works.create.servizi') }}">Lavoro Servizi</a>
           <h6 class="collapse-header">Borderò:</h6>
           <a class="collapse-item" href="{{ route('admin.pezzi-bordero.index') }}">Gestione Pezzi Borderò</a>
         </div>

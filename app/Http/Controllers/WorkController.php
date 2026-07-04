@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appaltatore;
 use App\Models\Customer;
 use App\Models\Material;
+use App\Models\Service;
 use App\Models\Warehouse;
 use App\Models\Work;
 use App\Models\Worker;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class WorkController extends Controller
 {
     private function buildFilteredQuery(Request $request)
     {
-        $query = Work::with(['customer', 'workers']);
+        $query = Work::with(['customer', 'appaltatore', 'workers']);
 
         $date = $request->input('data', Carbon::today()->format('Y-m-d'));
         $query->whereDate('data_esecuzione', $date);
@@ -111,6 +114,15 @@ class WorkController extends Controller
         return view('works.create_disposal', compact('customers', 'materials', 'warehouses'));
     }
 
+    public function createServizi()
+    {
+        $customers = Customer::all()->sortBy(fn ($c) => $c->customer_type === 'fisica' ? $c->full_name : $c->ragione_sociale)->values();
+        $appaltatori = Appaltatore::all()->sortBy(fn ($a) => $a->tipo_soggetto === 'fisica' ? $a->full_name : $a->ragione_sociale)->values();
+        $services = Service::orderBy('nome_servizio')->get();
+
+        return view('works.create_servizi', compact('customers', 'appaltatori', 'services'));
+    }
+
     /**
      * Ottieni i depositi associati a un materiale specifico
      */
@@ -123,6 +135,10 @@ class WorkController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->input('tipo_lavoro') === 'Servizi') {
+            return $this->storeServizi($request);
+        }
+
         // La validazione può essere complessa in base alle opzioni scelte; qui un esempio base:
         $request->validate([
             'tipo_lavoro' => 'required|string|max:255',
@@ -187,10 +203,83 @@ class WorkController extends Controller
             ->with('success', 'Work creato con successo.');
     }
 
+    private function storeServizi(Request $request)
+    {
+        $request->validate([
+            'customer_id' => 'required_without:appaltatore_id|nullable|exists:customers,id',
+            'appaltatore_id' => 'required_without:customer_id|nullable|exists:appaltatori,id',
+            'indirizzo_partenza' => 'nullable|string|max:255',
+            'data_esecuzione' => 'nullable|date',
+            'costo_lavoro' => 'nullable|numeric|min:0',
+            'modalita_pagamento' => 'nullable|string|max:255',
+            'note' => 'nullable|string',
+            'servizi' => 'required|array|min:1',
+            'servizi.*.service_id' => 'required|exists:services,id',
+            'servizi.*.quantita' => 'required|integer|min:1',
+            'servizi.*.iva_applicata' => 'nullable|boolean',
+        ]);
+
+        if ($request->filled('customer_id') && $request->filled('appaltatore_id')) {
+            return back()->withInput()
+                ->withErrors(['customer_id' => 'Seleziona solo Cliente oppure solo Appaltatore, non entrambi.']);
+        }
+
+        $dataEsecuzione = $request->filled('data_esecuzione')
+            ? Carbon::parse($request->data_esecuzione)->format('Y-m-d H:i:s')
+            : null;
+
+        $work = DB::transaction(function () use ($request, $dataEsecuzione) {
+            $costoManuale = $request->filled('costo_lavoro') ? (float) $request->costo_lavoro : 0;
+            $totaleServizi = 0;
+
+            $righeServizi = [];
+            foreach ($request->input('servizi') as $riga) {
+                $service = Service::findOrFail($riga['service_id']);
+                $quantita = (int) $riga['quantita'];
+                $ivaApplicata = ! empty($riga['iva_applicata']);
+                $prezzoUnitario = (float) $service->prezzo_servizio;
+
+                $subtotale = $prezzoUnitario * $quantita;
+                if ($ivaApplicata) {
+                    $subtotale *= 1.22;
+                }
+                $totaleServizi += $subtotale;
+
+                $righeServizi[] = [
+                    'service_id' => $service->id,
+                    'nome_servizio' => $service->nome_servizio,
+                    'prezzo_unitario' => $prezzoUnitario,
+                    'quantita' => $quantita,
+                    'iva_applicata' => $ivaApplicata,
+                ];
+            }
+
+            $work = Work::create([
+                'tipo_lavoro' => 'Servizi',
+                'customer_id' => $request->input('customer_id') ?: null,
+                'appaltatore_id' => $request->input('appaltatore_id') ?: null,
+                'data_esecuzione' => $dataEsecuzione,
+                'costo_lavoro' => round($totaleServizi + $costoManuale, 2),
+                'modalita_pagamento' => $request->input('modalita_pagamento'),
+                'indirizzo_partenza' => $request->input('indirizzo_partenza'),
+                'note' => $request->input('note'),
+            ]);
+
+            foreach ($righeServizi as $riga) {
+                $work->servizi()->create($riga);
+            }
+
+            return $work;
+        });
+
+        return redirect()->route('works.show', $work->id)
+            ->with('success', 'Lavoro Servizi creato con successo.');
+    }
+
     public function show(Work $work)
     {
-        // Carica le ricevute e il borderò associati al lavoro
-        $work->load(['ricevute', 'bordero.pezzi']);
+        // Carica le ricevute, il borderò, l'appaltatore e i servizi associati al lavoro
+        $work->load(['ricevute', 'bordero.pezzi', 'appaltatore', 'servizi']);
 
         return view('works.show', compact('work'));
     }

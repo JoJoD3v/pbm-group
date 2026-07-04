@@ -60,6 +60,8 @@
                   <td>
                     @if($work->customer)
                       {{ $work->customer->customer_type == 'fisica' ? $work->customer->full_name : $work->customer->ragione_sociale }}
+                    @elseif($work->appaltatore)
+                      {{ $work->appaltatore->tipo_soggetto == 'fisica' ? $work->appaltatore->full_name : $work->appaltatore->ragione_sociale }} (Appaltatore)
                     @else
                       N/D
                     @endif
