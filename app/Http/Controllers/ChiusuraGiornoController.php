@@ -17,7 +17,7 @@ class ChiusuraGiornoController extends Controller
     private function guardAdmin()
     {
         $role = strtolower(Auth::user()->role ?? '');
-        if (! in_array($role, ['amministratore', 'sviluppatore'])) {
+        if ($role !== 'sviluppatore') {
             return redirect()->route('dashboard')
                 ->with('error', 'Non hai i permessi per accedere a questa risorsa.');
         }

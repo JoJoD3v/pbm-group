@@ -167,7 +167,7 @@
     @endif
 
     <!-- Chiusura del giorno -->
-    @if(Auth::check() && in_array(Auth::user()->role, ['amministratore', 'sviluppatore']))
+    @if(Auth::check() && Auth::user()->role === 'sviluppatore')
     <li class="nav-item">
       <a class="nav-link" href="{{ route('chiusure.index') }}">
         <i class="bi bi-journal-check"></i>

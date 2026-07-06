@@ -7,7 +7,7 @@ CREATE TABLE `chiusure_giorno` (
     `created_by` BIGINT UNSIGNED NULL,
     `created_at` TIMESTAMP NULL,
     `updated_at` TIMESTAMP NULL,
-    PRIMARY KEY (`id`),
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `chiusura_giorno_righe` (
@@ -20,5 +20,5 @@ CREATE TABLE `chiusura_giorno_righe` (
     `chiusura_carta` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     `created_at` TIMESTAMP NULL,
     `updated_at` TIMESTAMP NULL,
-    PRIMARY KEY (`id`),
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
