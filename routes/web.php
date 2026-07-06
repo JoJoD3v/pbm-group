@@ -282,6 +282,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Rotte per i report (dipendenti, lavori e clienti)
+use App\Http\Controllers\ChiusuraGiornoController;
 use App\Http\Controllers\ReportClientiController;
 use App\Http\Controllers\ReportDipendentiController;
 use App\Http\Controllers\ReportLavoriController;
@@ -298,6 +299,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reports/clienti', [ReportClientiController::class, 'index'])->name('reports.clienti.index');
     Route::post('/reports/clienti', [ReportClientiController::class, 'generate'])->name('reports.clienti.generate');
     Route::post('/reports/clienti/pdf', [ReportClientiController::class, 'pdf'])->name('reports.clienti.pdf');
+
+    Route::get('/chiusure-giorno', [ChiusuraGiornoController::class, 'index'])->name('chiusure.index');
+    Route::get('/chiusure-giorno/create', [ChiusuraGiornoController::class, 'create'])->name('chiusure.create');
+    Route::post('/chiusure-giorno', [ChiusuraGiornoController::class, 'store'])->name('chiusure.store');
+    Route::get('/chiusure-giorno/{chiusura}', [ChiusuraGiornoController::class, 'show'])->name('chiusure.show');
+    Route::get('/chiusure-giorno/{chiusura}/pdf', [ChiusuraGiornoController::class, 'pdf'])->name('chiusure.pdf');
 });
 
 // Rotte per la gestione utenti (solo sviluppatori)

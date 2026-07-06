@@ -166,6 +166,16 @@
     </li>
     @endif
 
+    <!-- Chiusura del giorno -->
+    @if(Auth::check() && in_array(Auth::user()->role, ['amministratore', 'sviluppatore']))
+    <li class="nav-item">
+      <a class="nav-link" href="{{ route('chiusure.index') }}">
+        <i class="bi bi-journal-check"></i>
+        <span>Chiusura del giorno</span>
+      </a>
+    </li>
+    @endif
+
     <hr class="sidebar-divider my-0">
 
     <li class="nav-item mt-3">
