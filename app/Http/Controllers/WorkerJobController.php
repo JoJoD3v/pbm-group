@@ -66,12 +66,14 @@ class WorkerJobController extends Controller
             $dayStart = Carbon::parse($currentDate)->startOfDay();
             $dayEnd = Carbon::parse($currentDate)->endOfDay();
 
+            $tabs = $worker->tabsLavoro();
+
             $tab = $request->input('tab', 'tutti');
-            if ($tab !== 'tutti' && ! in_array($tab, $tipiAccessibili)) {
+            if ($tab !== 'tutti' && ! array_key_exists($tab, $tabs)) {
                 $tab = 'tutti';
             }
 
-            $tipiQuery = ($tab === 'tutti') ? $tipiAccessibili : [$tab];
+            $tipiQuery = ($tab === 'tutti') ? $tipiAccessibili : $tabs[$tab]['tipi'];
 
             // Recupera i lavori non assegnati con data di esecuzione nel giorno selezionato,
             // filtrati per i tipi lavoro accessibili in base alle mansioni del worker
@@ -85,7 +87,7 @@ class WorkerJobController extends Controller
 
             Log::info('WorkerJobController: trovati '.$works->count().' lavori non assegnati per '.$currentDate);
 
-            return view('worker.jobs.index', compact('works', 'worker', 'currentDate', 'tipiAccessibili', 'tab'));
+            return view('worker.jobs.index', compact('works', 'worker', 'currentDate', 'tipiAccessibili', 'tabs', 'tab'));
         } catch (\Exception $e) {
             Log::error('WorkerJobController: errore nel recupero dei lavori: '.$e->getMessage());
 

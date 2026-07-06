@@ -120,14 +120,14 @@
             </a>
           </div>
           <div class="card-body">
-            @if(count($tipiAccessibili) > 1)
+            @if(count($tabs) > 1)
               <ul class="nav nav-tabs mb-3">
                 <li class="nav-item">
                   <a class="nav-link {{ $tab === 'tutti' ? 'active' : '' }}" href="{{ route('dashboard', ['date' => $currentDate->format('Y-m-d'), 'tab' => 'tutti']) }}">Tutti</a>
                 </li>
-                @foreach($tipiAccessibili as $tipo)
+                @foreach($tabs as $tabKey => $tabInfo)
                   <li class="nav-item">
-                    <a class="nav-link {{ $tab === $tipo ? 'active' : '' }}" href="{{ route('dashboard', ['date' => $currentDate->format('Y-m-d'), 'tab' => $tipo]) }}">{{ $tipo }}</a>
+                    <a class="nav-link {{ $tab === $tabKey ? 'active' : '' }}" href="{{ route('dashboard', ['date' => $currentDate->format('Y-m-d'), 'tab' => $tabKey]) }}">{{ $tabInfo['label'] }}</a>
                   </li>
                 @endforeach
               </ul>

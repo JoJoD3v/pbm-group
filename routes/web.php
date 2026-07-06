@@ -34,6 +34,7 @@ Route::get('/dashboard', function (Request $request) {
     $worker = null;
     $carteAssegnate = collect([]);
     $tipiAccessibili = [];
+    $tabs = [];
     $tab = 'tutti';
 
     $user = auth()->user();
@@ -54,12 +55,13 @@ Route::get('/dashboard', function (Request $request) {
         if ($worker) {
             $carteAssegnate = $worker->assignedCreditCards()->get();
             $tipiAccessibili = $worker->tipiLavoroAccessibili();
+            $tabs = $worker->tabsLavoro();
 
             $tab = $request->query('tab', 'tutti');
-            if ($tab !== 'tutti' && ! in_array($tab, $tipiAccessibili)) {
+            if ($tab !== 'tutti' && ! array_key_exists($tab, $tabs)) {
                 $tab = 'tutti';
             }
-            $tipiQuery = ($tab === 'tutti') ? $tipiAccessibili : [$tab];
+            $tipiQuery = ($tab === 'tutti') ? $tipiAccessibili : $tabs[$tab]['tipi'];
 
             $dayStart = $currentDate->copy()->startOfDay();
             $dayEnd = $currentDate->copy()->endOfDay();
@@ -81,7 +83,7 @@ Route::get('/dashboard', function (Request $request) {
         }
     }
 
-    return view('dashboard', compact('todayWorks', 'workerTodayWorks', 'tomorrowFirstWork', 'currentDate', 'worker', 'carteAssegnate', 'tipiAccessibili', 'tab'));
+    return view('dashboard', compact('todayWorks', 'workerTodayWorks', 'tomorrowFirstWork', 'currentDate', 'worker', 'carteAssegnate', 'tipiAccessibili', 'tabs', 'tab'));
 })->middleware('auth')->name('dashboard');
 
 use App\Http\Controllers\MaterialController;
@@ -219,6 +221,7 @@ Route::middleware(['auth', CheckWorkerRole::class])->group(function () {
     Route::get('/worker/bordero/{workId}', [BorderoController::class, 'edit'])->name('worker.bordero.edit');
     Route::post('/worker/bordero/{workId}', [BorderoController::class, 'save'])->name('worker.bordero.save');
     Route::get('/worker/bordero/{workId}/pdf', [BorderoController::class, 'downloadPDF'])->name('worker.bordero.pdf');
+    Route::post('/worker/bordero/{workId}/send-email', [BorderoController::class, 'sendEmail'])->name('worker.bordero.send');
 
     // Gestione carte
     Route::get('/worker/cards', [WorkerCardController::class, 'index'])->name('worker.cards');
@@ -268,6 +271,7 @@ Route::get('/bordero/{workId}/pdf', [BorderoController::class, 'downloadPDF'])
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/bordero/{workId}', [BorderoController::class, 'edit'])->name('admin.bordero.edit');
     Route::post('/admin/bordero/{workId}', [BorderoController::class, 'save'])->name('admin.bordero.save');
+    Route::post('/admin/bordero/{workId}/send-email', [BorderoController::class, 'sendEmail'])->name('admin.bordero.send');
 
     Route::get('/admin/pezzi-bordero', [PezzoBorderoController::class, 'index'])->name('admin.pezzi-bordero.index');
     Route::get('/admin/pezzi-bordero/create', [PezzoBorderoController::class, 'create'])->name('admin.pezzi-bordero.create');

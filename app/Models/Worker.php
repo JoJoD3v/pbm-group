@@ -106,4 +106,28 @@ class Worker extends Model
 
         return $tipi;
     }
+
+    /**
+     * Tabs di filtro lavori in base alle mansioni: chiave tab => ['label' => ..., 'tipi' => [...]]
+     */
+    public function tabsLavoro(): array
+    {
+        $tabs = [];
+
+        if ($this->hasMansione('trasportatore')) {
+            $tabs['trasporti-smaltimento'] = [
+                'label' => 'Trasporti e Smaltimento',
+                'tipi' => ['Trasporto', 'Smaltimento'],
+            ];
+        }
+
+        if ($this->hasMansione('posatore')) {
+            $tabs['servizi'] = [
+                'label' => 'Servizi',
+                'tipi' => ['Servizi'],
+            ];
+        }
+
+        return $tabs;
+    }
 }

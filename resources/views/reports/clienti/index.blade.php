@@ -34,6 +34,29 @@
                     @enderror
                 </div>
 
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="data_inizio" class="form-label">Data Inizio</label>
+                        <input type="date"
+                               class="form-control @error('data_inizio') is-invalid @enderror"
+                               id="data_inizio" name="data_inizio"
+                               value="{{ old('data_inizio') }}">
+                        @error('data_inizio')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-6">
+                        <label for="data_fine" class="form-label">Data Fine</label>
+                        <input type="date"
+                               class="form-control @error('data_fine') is-invalid @enderror"
+                               id="data_fine" name="data_fine"
+                               value="{{ old('data_fine') }}">
+                        @error('data_fine')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-search"></i> Genera Report
                 </button>

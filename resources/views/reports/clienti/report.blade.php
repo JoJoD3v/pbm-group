@@ -13,6 +13,13 @@
     <div class="alert alert-info mb-4">
         <strong>Cliente:</strong>
         {{ $customer->customer_type == 'fisica' ? $customer->full_name : $customer->ragione_sociale }}
+        @if($dataInizio || $dataFine)
+            <br>
+            <strong>Periodo:</strong>
+            {{ $dataInizio ? \Carbon\Carbon::parse($dataInizio)->format('d/m/Y') : '...' }}
+            &mdash;
+            {{ $dataFine ? \Carbon\Carbon::parse($dataFine)->format('d/m/Y') : '...' }}
+        @endif
     </div>
 
     {{-- Cards riepilogo --}}
@@ -134,6 +141,8 @@
         <form action="{{ route('reports.clienti.pdf') }}" method="POST" target="_blank">
             @csrf
             <input type="hidden" name="customer_id" value="{{ $customerId }}">
+            <input type="hidden" name="data_inizio" value="{{ $dataInizio }}">
+            <input type="hidden" name="data_fine" value="{{ $dataFine }}">
             <button type="submit" class="btn btn-danger">
                 <i class="bi bi-file-earmark-pdf"></i> Esporta in PDF
             </button>

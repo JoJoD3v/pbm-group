@@ -9,6 +9,12 @@
                 <a href="{{ $pdfRoute }}" target="_blank" class="btn btn-danger">
                     <i class="bi bi-file-earmark-pdf"></i> Esporta PDF
                 </a>
+                <form action="{{ $sendRoute }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-envelope"></i> Invia Borderò a Cliente
+                    </button>
+                </form>
             @endif
         </div>
     </div>

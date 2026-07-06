@@ -11,6 +11,8 @@ use Dompdf\Options;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class BorderoController extends Controller
 {
@@ -53,7 +55,11 @@ class BorderoController extends Controller
             ? route('worker.bordero.pdf', $work->id)
             : route('bordero.pdf', $work->id);
 
-        return view('bordero.form', compact('work', 'bordero', 'catalogoPezzi', 'saveRoute', 'pdfRoute'));
+        $sendRoute = $role === 'dipendente'
+            ? route('worker.bordero.send', $work->id)
+            : route('admin.bordero.send', $work->id);
+
+        return view('bordero.form', compact('work', 'bordero', 'catalogoPezzi', 'saveRoute', 'pdfRoute', 'sendRoute'));
     }
 
     /**
@@ -133,6 +139,84 @@ class BorderoController extends Controller
             abort(404, 'Nessun borderò trovato per questo lavoro.');
         }
 
+        $fileName = 'bordero_lavoro_'.$work->id.'.pdf';
+
+        return response($this->renderPDF($work), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$fileName.'"',
+        ]);
+    }
+
+    /**
+     * Invia il borderò in PDF via email al cliente o all'appaltatore del lavoro.
+     */
+    public function sendEmail($workId)
+    {
+        $work = Work::with(['customer', 'appaltatore', 'bordero.pezzi', 'workers'])->findOrFail($workId);
+
+        $user = Auth::user();
+        $role = strtolower($user->role ?? '');
+        $isAdmin = in_array($role, ['amministratore', 'sviluppatore']);
+        $worker = $user->worker ?: Worker::where('worker_email', $user->email)->first();
+        $isAssignedWorker = $worker && $work->workers->contains($worker->id);
+
+        if (! $isAdmin && ! $isAssignedWorker) {
+            return redirect()->route('dashboard')
+                ->with('error', 'Non sei autorizzato ad accedere a questo borderò.');
+        }
+
+        if (! $work->bordero) {
+            return back()->with('error', 'Nessun borderò trovato per questo lavoro.');
+        }
+
+        $recipient = $work->customer ?? $work->appaltatore;
+
+        if (! $recipient || ! $recipient->email) {
+            return back()->with('error', 'Nessun indirizzo email impostato per il cliente o l\'appaltatore di questo lavoro.');
+        }
+
+        $bordero = $work->bordero;
+        $fileName = 'bordero_lavoro_'.$work->id.'.pdf';
+        $pdfPath = storage_path('app/temp/'.$fileName);
+
+        if (! file_exists(dirname($pdfPath))) {
+            mkdir(dirname($pdfPath), 0755, true);
+        }
+
+        file_put_contents($pdfPath, $this->renderPDF($work));
+
+        try {
+            Mail::send('emails.bordero', [
+                'work' => $work,
+                'bordero' => $bordero,
+                'recipient' => $recipient,
+            ], function ($message) use ($recipient, $work, $pdfPath, $fileName) {
+                $message->to($recipient->email)
+                    ->subject('Borderò lavoro #'.$work->id);
+
+                $message->attach($pdfPath, [
+                    'as' => $fileName,
+                    'mime' => 'application/pdf',
+                ]);
+            });
+        } catch (\Exception $e) {
+            Log::error('Errore invio email borderò: '.$e->getMessage());
+
+            return back()->with('error', 'Errore durante l\'invio dell\'email. Riprova più tardi.');
+        } finally {
+            if (file_exists($pdfPath)) {
+                unlink($pdfPath);
+            }
+        }
+
+        return back()->with('success', 'Borderò inviato con successo a '.$recipient->email.'.');
+    }
+
+    /**
+     * Renderizza il PDF del borderò e ritorna i byte del documento.
+     */
+    private function renderPDF(Work $work): string
+    {
         $bordero = $work->bordero;
 
         $html = view('pdf.bordero', compact('work', 'bordero'))->render();
@@ -147,11 +231,6 @@ class BorderoController extends Controller
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        $fileName = 'bordero_lavoro_'.$work->id.'.pdf';
-
-        return response($dompdf->output(), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="'.$fileName.'"',
-        ]);
+        return $dompdf->output();
     }
 }

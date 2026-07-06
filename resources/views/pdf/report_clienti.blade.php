@@ -137,6 +137,13 @@
     <div class="info-box">
         <strong>Cliente:</strong>
         {{ $customer->customer_type == 'fisica' ? $customer->full_name : $customer->ragione_sociale }}
+        @if(($dataInizio ?? null) || ($dataFine ?? null))
+            <br>
+            <strong>Periodo:</strong>
+            {{ $dataInizio ? \Carbon\Carbon::parse($dataInizio)->format('d/m/Y') : '...' }}
+            &mdash;
+            {{ $dataFine ? \Carbon\Carbon::parse($dataFine)->format('d/m/Y') : '...' }}
+        @endif
     </div>
 
     <div class="summary-row">

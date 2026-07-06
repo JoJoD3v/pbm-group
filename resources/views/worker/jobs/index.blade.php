@@ -38,14 +38,14 @@
             </div>
         @endif
 
-        @if(count($tipiAccessibili) > 1)
+        @if(count($tabs) > 1)
             <ul class="nav nav-tabs mb-3">
                 <li class="nav-item">
                     <a class="nav-link {{ $tab === 'tutti' ? 'active' : '' }}" href="{{ route('worker.jobs', ['data' => $currentDate, 'tab' => 'tutti']) }}">Tutti</a>
                 </li>
-                @foreach($tipiAccessibili as $tipo)
+                @foreach($tabs as $tabKey => $tabInfo)
                     <li class="nav-item">
-                        <a class="nav-link {{ $tab === $tipo ? 'active' : '' }}" href="{{ route('worker.jobs', ['data' => $currentDate, 'tab' => $tipo]) }}">{{ $tipo }}</a>
+                        <a class="nav-link {{ $tab === $tabKey ? 'active' : '' }}" href="{{ route('worker.jobs', ['data' => $currentDate, 'tab' => $tabKey]) }}">{{ $tabInfo['label'] }}</a>
                     </li>
                 @endforeach
             </ul>
