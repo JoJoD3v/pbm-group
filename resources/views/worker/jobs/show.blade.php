@@ -17,6 +17,12 @@
                             <a href="{{ route('worker.bordero.edit', $work->id) }}" class="btn btn-info">
                                 <i class="bi bi-clipboard-check"></i> Vedi/Modifica Borderò
                             </a>
+                            <form action="{{ route('worker.bordero.send', $work->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-envelope"></i> Invia Borderò a Cliente
+                                </button>
+                            </form>
                         @else
                             <a href="{{ route('worker.bordero.edit', $work->id) }}" class="btn btn-warning">
                                 <i class="bi bi-clipboard-plus"></i> Creazione Borderò
