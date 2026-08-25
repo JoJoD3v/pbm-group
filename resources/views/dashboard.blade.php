@@ -20,9 +20,20 @@
             <h6 class="m-0 font-weight-bold text-primary">
               Lavori Programmati{{ $isToday ? ' per Oggi' : '' }} ({{ $currentDate->format('d/m/Y') }})
             </h6>
-            <a href="{{ route('dashboard', ['date' => $nextDate]) }}" class="btn btn-sm btn-outline-secondary">
-              <i class="bi bi-chevron-right"></i>
-            </a>
+            <div class="d-flex align-items-center gap-2">
+              {{-- ponytail: input date nativo, submit GET onchange --}}
+              <form method="GET" action="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 m-0">
+                <input type="date" name="date" class="form-control form-control-sm"
+                       value="{{ $currentDate->format('Y-m-d') }}" onchange="this.form.submit()">
+                <noscript><button type="submit" class="btn btn-sm btn-primary">Filtra</button></noscript>
+              </form>
+              @unless($isToday)
+                <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-primary">Oggi</a>
+              @endunless
+              <a href="{{ route('dashboard', ['date' => $nextDate]) }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </div>
           </div>
           <div class="card-body">
             @if($todayWorks->count() > 0)
