@@ -40,6 +40,7 @@
                         <th>Nome</th>
                         <th>Cognome</th>
                         <th>Email</th>
+                        <th>Username</th>
                         <th>Telefono</th>
                         <th>Ruolo</th>
                         <th>Data Creazione</th>
@@ -52,6 +53,7 @@
                         <td>{{ $user->first_name }}</td>
                         <td>{{ $user->last_name }}</td>
                         <td>{{ $user->email }}</td>
+                        <td>{{ $user->username ?? '—' }}</td>
                         <td>{{ $user->phone ?? 'N/A' }}</td>
                         <td>
                             <span class="badge badge-{{ $user->role === 'sviluppatore' ? 'danger' : ($user->role === 'amministratore' ? 'warning' : 'info') }}">
@@ -82,7 +84,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="text-center">Nessun utente trovato</td>
+                        <td colspan="8" class="text-center">Nessun utente trovato</td>{{-- 8 colonne: Nome, Cognome, Email, Username, Telefono, Ruolo, Data Creazione, Azioni --}}
                     </tr>
                     @endforelse
                 </tbody>

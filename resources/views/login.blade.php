@@ -24,15 +24,16 @@
         @csrf
 
         <div class="form-floating">
-            <input type="email"
-                   name="email"
+            <input type="text"
+                   name="login"
                    class="form-control"
-                   id="email"
-                   placeholder="nome@esempio.com"
-                   value="{{ old('email') }}"
+                   id="login"
+                   placeholder="nome@esempio.com oppure username"
+                   value="{{ old('login') }}"
+                   autofocus
                    required>
-            <label for="email">
-                <i class="fas fa-envelope me-2"></i>Indirizzo Email
+            <label for="login">
+                <i class="fas fa-envelope me-2"></i>Email o Username
             </label>
         </div>
 

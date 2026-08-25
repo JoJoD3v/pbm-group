@@ -38,6 +38,13 @@
                         <p class="text-gray-900">{{ $user->email }}</p>
                     </div>
                     <div class="col-md-6 mb-3">
+                        <strong>Username:</strong>
+                        <p class="text-gray-900">{{ $user->username ?? 'Non impostato' }}</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
                         <strong>Telefono:</strong>
                         <p class="text-gray-900">{{ $user->phone ?? 'Non specificato' }}</p>
                     </div>

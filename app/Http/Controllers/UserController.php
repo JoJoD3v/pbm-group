@@ -38,9 +38,13 @@ class UserController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
             'email'      => 'required|string|email|max:255|unique:users',
+            'username'   => 'nullable|string|max:255|alpha_dash|unique:users,username',
             'phone'      => 'nullable|string|max:20',
             'role'       => 'required|in:sviluppatore,amministratore,dipendente',
             'password'   => 'required|string|min:8|confirmed',
+        ], [
+            'username.alpha_dash' => 'Lo username può contenere solo lettere, numeri, trattini e underscore.',
+            'username.unique' => 'Questo username è già in uso.',
         ]);
 
         // Crea l'utente
@@ -49,6 +53,7 @@ class UserController extends Controller
             'last_name'  => $request->last_name,
             'name'       => $request->first_name . ' ' . $request->last_name,
             'email'      => $request->email,
+            'username'   => $request->username ?: null,
             'phone'      => $request->phone,
             'role'       => $request->role,
             'password'   => Hash::make($request->password),
@@ -92,9 +97,13 @@ class UserController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
             'email'      => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'username'   => 'nullable|string|max:255|alpha_dash|unique:users,username,' . $user->id,
             'phone'      => 'nullable|string|max:20',
             'role'       => 'required|in:sviluppatore,amministratore,dipendente',
             'password'   => 'nullable|string|min:8|confirmed',
+        ], [
+            'username.alpha_dash' => 'Lo username può contenere solo lettere, numeri, trattini e underscore.',
+            'username.unique' => 'Questo username è già in uso.',
         ]);
 
         // Aggiorna i dati dell'utente
@@ -103,6 +112,7 @@ class UserController extends Controller
             'last_name'  => $request->last_name,
             'name'       => $request->first_name . ' ' . $request->last_name,
             'email'      => $request->email,
+            'username'   => $request->username ?: null,
             'phone'      => $request->phone,
             'role'       => $request->role,
         ];

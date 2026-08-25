@@ -17,7 +17,7 @@ Route::post('/register', [UserRegistrationController::class, 'register'])->name(
 use App\Http\Controllers\LoginController;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login.form');
-Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1')->name('login');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', function (Request $request) {

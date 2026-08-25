@@ -113,7 +113,14 @@
                     <span class="credential-label">Email:</span>
                     <span class="credential-value">{{ $user->email }}</span>
                 </div>
-                
+
+                @if($user->username)
+                <div class="credential-item">
+                    <span class="credential-label">Username:</span>
+                    <span class="credential-value">{{ $user->username }}</span>
+                </div>
+                @endif
+
                 <div class="credential-item">
                     <span class="credential-label">Password:</span>
                     <span class="credential-value">{{ $password }}</span>

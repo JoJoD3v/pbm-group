@@ -50,6 +50,19 @@
                     @enderror
                 </div>
 
+                <!-- Username -->
+                <div class="col-md-6 mb-3">
+                    <label for="username" class="form-label">Username (opzionale)</label>
+                    <input type="text" class="form-control @error('username') is-invalid @enderror"
+                           id="username" name="username" value="{{ old('username') }}" placeholder="es. mrossi">
+                    <small class="form-text text-muted">Se impostato, l'utente potrà accedere anche con questo username invece dell'email.</small>
+                    @error('username')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row">
                 <!-- Telefono -->
                 <div class="col-md-6 mb-3">
                     <label for="phone" class="form-label">Numero di Telefono</label>
