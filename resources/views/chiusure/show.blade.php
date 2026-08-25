@@ -46,9 +46,13 @@
                     {{ $riga->worker->full_name ?? 'Lavoratore #'.$riga->worker_id }}
                     @if($mansioni)<span class="text-muted"> — {{ $mansioni }}</span>@endif
                 </h6>
-                <div>
-                    <span class="badge bg-info text-dark me-2">Carta apertura: € {{ number_format($riga->apertura_carta, 2, ',', '.') }}</span>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="badge bg-info text-dark">Carta apertura: € {{ number_format($riga->apertura_carta, 2, ',', '.') }}</span>
                     <span class="badge bg-secondary">Fondo cassa apertura: € {{ number_format($riga->apertura_fondo_cassa, 2, ',', '.') }}</span>
+                    <a href="{{ route('chiusure.pdf', ['chiusura' => $chiusura->id, 'worker' => $riga->worker_id]) }}"
+                       target="_blank" class="btn btn-sm btn-danger">
+                        <i class="bi bi-file-earmark-pdf"></i> Stampa in PDF
+                    </a>
                 </div>
             </div>
             <div class="card-body">

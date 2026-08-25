@@ -107,13 +107,26 @@ class ChiusuraGiornoController extends Controller
         return view('chiusure.show', compact('chiusura', 'datiRighe'));
     }
 
-    public function pdf(ChiusuraGiorno $chiusura)
+    public function pdf(ChiusuraGiorno $chiusura, Request $request)
     {
         if ($redirect = $this->guardAdmin()) {
             return $redirect;
         }
 
         $chiusura->load('righe.worker.mansioni');
+
+        // ponytail: stesso PDF, filtrato su un solo dipendente quando ?worker= e' presente
+        $workerId = $request->query('worker');
+        if ($workerId !== null) {
+            $righe = $chiusura->righe->where('worker_id', (int) $workerId)->values();
+
+            if ($righe->isEmpty()) {
+                abort(404);
+            }
+
+            $chiusura->setRelation('righe', $righe);
+        }
+
         $datiRighe = $this->buildDatiRighe($chiusura);
 
         $html = view('pdf.chiusura_giorno', compact('chiusura', 'datiRighe'))->render();
@@ -128,7 +141,9 @@ class ChiusuraGiornoController extends Controller
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        $filename = 'chiusura_giorno_'.$chiusura->data_chiusura->format('Y-m-d').'.pdf';
+        $filename = 'chiusura_giorno_'.$chiusura->data_chiusura->format('Y-m-d')
+            .($workerId !== null ? '_'.\Illuminate\Support\Str::slug($chiusura->righe->first()->worker->full_name ?? 'worker-'.$workerId) : '')
+            .'.pdf';
 
         return response($dompdf->output(), 200, [
             'Content-Type' => 'application/pdf',

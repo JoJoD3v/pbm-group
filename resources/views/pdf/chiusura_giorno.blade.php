@@ -87,7 +87,13 @@
         };
     @endphp
 
-    <div class="title">Chiusura del giorno — {{ $chiusura->data_chiusura->format('d/m/Y') }}</div>
+    @php
+        $singolo = $chiusura->righe->count() === 1 && request()->query('worker') !== null
+            ? ($chiusura->righe->first()->worker->full_name ?? null)
+            : null;
+    @endphp
+
+    <div class="title">Chiusura del giorno — {{ $chiusura->data_chiusura->format('d/m/Y') }}@if($singolo) — {{ $singolo }}@endif</div>
 
     @forelse($chiusura->righe as $riga)
         @php
