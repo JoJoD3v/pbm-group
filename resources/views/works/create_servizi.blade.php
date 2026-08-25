@@ -72,6 +72,12 @@
           </div>
         </div>
 
+        <div class="mb-3">
+          <label for="indirizzo_partenza" class="form-label">Indirizzo Partenza</label>
+          <input type="text" name="indirizzo_partenza" id="indirizzo_partenza" class="form-control"
+                 value="{{ old('indirizzo_partenza') }}" placeholder="Indirizzo di partenza">
+        </div>
+
         <!-- Luogo Intervento -->
         <div id="clienteIndirizzoOption" class="mb-3">
           <label for="indirizzo_option" class="form-label">Luogo Intervento</label>
@@ -84,12 +90,6 @@
         <div class="mb-3">
           <label for="indirizzo_destinazione" class="form-label">Indirizzo Intervento</label>
           <input type="text" name="indirizzo_destinazione" id="indirizzo_destinazione" class="form-control">
-        </div>
-
-        <div class="mb-3">
-          <label for="indirizzo_partenza" class="form-label">Indirizzo Partenza</label>
-          <input type="text" name="indirizzo_partenza" id="indirizzo_partenza" class="form-control"
-                 value="{{ old('indirizzo_partenza') }}" placeholder="Indirizzo di partenza">
         </div>
 
         <!-- Servizi -->

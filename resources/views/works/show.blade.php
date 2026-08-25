@@ -114,10 +114,10 @@ use Illuminate\Support\Str;
 
               <div class="row mb-3">
                 <div class="col-md-6">
-                  <strong>{{ $work->tipo_lavoro === 'Servizi' ? 'Indirizzo Intervento' : 'Indirizzo Destinazione' }}:</strong>
-                  <p>{{ $work->indirizzo_destinazione ?? 'N/D' }}</p>
                   <strong>Indirizzo Partenza:</strong>
                   <p>{{ $work->indirizzo_partenza ?? 'N/D' }}</p>
+                  <strong>{{ $work->tipo_lavoro === 'Servizi' ? 'Indirizzo Intervento' : 'Indirizzo Destinazione' }}:</strong>
+                  <p>{{ $work->indirizzo_destinazione ?? 'N/D' }}</p>
                 </div>
                 <div class="col-md-6">
                   <strong>Coordinate:</strong>
