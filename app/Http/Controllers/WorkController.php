@@ -208,6 +208,7 @@ class WorkController extends Controller
         $request->validate([
             'customer_id' => 'required_without:appaltatore_id|nullable|exists:customers,id',
             'appaltatore_id' => 'required_without:customer_id|nullable|exists:appaltatori,id',
+            'indirizzo_destinazione' => 'nullable|string|max:255',
             'indirizzo_partenza' => 'nullable|string|max:255',
             'data_esecuzione' => 'nullable|date',
             'costo_lavoro' => 'nullable|numeric|min:0',
@@ -261,6 +262,7 @@ class WorkController extends Controller
                 'data_esecuzione' => $dataEsecuzione,
                 'costo_lavoro' => round($totaleServizi + $costoManuale, 2),
                 'modalita_pagamento' => $request->input('modalita_pagamento'),
+                'indirizzo_destinazione' => $request->input('indirizzo_destinazione'),
                 'indirizzo_partenza' => $request->input('indirizzo_partenza'),
                 'note' => $request->input('note'),
             ]);

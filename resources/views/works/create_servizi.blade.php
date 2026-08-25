@@ -82,8 +82,14 @@
         </div>
 
         <div class="mb-3">
-          <label for="indirizzo_partenza" class="form-label">Indirizzo</label>
-          <input type="text" name="indirizzo_partenza" id="indirizzo_partenza" class="form-control">
+          <label for="indirizzo_destinazione" class="form-label">Indirizzo Intervento</label>
+          <input type="text" name="indirizzo_destinazione" id="indirizzo_destinazione" class="form-control">
+        </div>
+
+        <div class="mb-3">
+          <label for="indirizzo_partenza" class="form-label">Indirizzo Partenza</label>
+          <input type="text" name="indirizzo_partenza" id="indirizzo_partenza" class="form-control"
+                 value="{{ old('indirizzo_partenza') }}" placeholder="Indirizzo di partenza">
         </div>
 
         <!-- Servizi -->
@@ -181,13 +187,20 @@ $(document).ready(function(){
             $('#appaltatoreSection').hide();
             $('#appaltatore_id').val('');
             $('#clienteIndirizzoOption').show();
-            $('#indirizzo_option').trigger('change');
+            // Autocomplete Indirizzo Partenza (sempre libero)
+    if(!$('#indirizzo_partenza').data('autocompleteInitialized')){
+        var autocompletePartenza = new google.maps.places.Autocomplete(document.getElementById('indirizzo_partenza'));
+        autocompletePartenza.setFields(['formatted_address']);
+        $('#indirizzo_partenza').data('autocompleteInitialized', true);
+    }
+
+    $('#indirizzo_option').trigger('change');
         } else {
             $('#clienteSection').hide();
             $('#appaltatoreSection').show();
             $('#customer_id').val('');
             $('#clienteIndirizzoOption').hide();
-            $('#indirizzo_partenza').val('').prop('readonly', true).attr('placeholder', 'Vedi Note');
+            $('#indirizzo_destinazione').val('').prop('readonly', true).attr('placeholder', 'Vedi Note');
         }
     });
 
@@ -195,15 +208,15 @@ $(document).ready(function(){
     $('#indirizzo_option').on('change', function(){
         var selected = $(this).val();
         if(selected === 'cliente'){
-            $('#indirizzo_partenza').prop('readonly', true).attr('placeholder', '');
+            $('#indirizzo_destinazione').prop('readonly', true).attr('placeholder', '');
             var selectedCustomer = $('#customer_id option:selected');
-            $('#indirizzo_partenza').val(selectedCustomer.data('address') || '');
+            $('#indirizzo_destinazione').val(selectedCustomer.data('address') || '');
         } else {
-            $('#indirizzo_partenza').prop('readonly', false).attr('placeholder', '').val('');
-            if(!$('#indirizzo_partenza').data('autocompleteInitialized')){
-                var autocomplete = new google.maps.places.Autocomplete(document.getElementById('indirizzo_partenza'));
+            $('#indirizzo_destinazione').prop('readonly', false).attr('placeholder', '').val('');
+            if(!$('#indirizzo_destinazione').data('autocompleteInitialized')){
+                var autocomplete = new google.maps.places.Autocomplete(document.getElementById('indirizzo_destinazione'));
                 autocomplete.setFields(['formatted_address']);
-                $('#indirizzo_partenza').data('autocompleteInitialized', true);
+                $('#indirizzo_destinazione').data('autocompleteInitialized', true);
             }
         }
     });
@@ -211,7 +224,7 @@ $(document).ready(function(){
     $('#customer_id').on('change', function(){
         if($('#indirizzo_option').val() === 'cliente'){
             var selectedCustomer = $(this).find('option:selected');
-            $('#indirizzo_partenza').val(selectedCustomer.data('address') || '');
+            $('#indirizzo_destinazione').val(selectedCustomer.data('address') || '');
         }
     });
 

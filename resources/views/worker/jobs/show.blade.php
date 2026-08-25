@@ -187,7 +187,9 @@
                         <h6 class="m-0 font-weight-bold text-primary">Indirizzo di Partenza</h6>
                     </div>
                     <div class="card-body">
-                        <p><strong>Nome:</strong> {{ $work->nome_partenza ?? 'N/A' }}</p>
+                        @if($work->tipo_lavoro !== 'Servizi')
+                            <p><strong>Nome:</strong> {{ $work->nome_partenza ?? 'N/A' }}</p>
+                        @endif
                         <p><strong>Indirizzo:</strong> {{ $work->indirizzo_partenza ?? 'N/A' }}</p>
                         
                         @if($work->latitude_partenza && $work->longitude_partenza)
@@ -200,10 +202,12 @@
             <div class="col-lg-6">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Indirizzo di Destinazione</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">{{ $work->tipo_lavoro === 'Servizi' ? 'Indirizzo Intervento' : 'Indirizzo di Destinazione' }}</h6>
                     </div>
                     <div class="card-body">
-                        @if($work->nome_destinazione === 'deposito' && $work->deposit)
+                        @if($work->tipo_lavoro === 'Servizi')
+                            {{-- ponytail: per Servizi l'indirizzo intervento non ha deposito/cantiere --}}
+                        @elseif($work->nome_destinazione === 'deposito' && $work->deposit)
                             <p>
                                 <strong>Discarica:</strong>
                                 {{ $work->deposit->name }}
@@ -228,7 +232,7 @@
                         @else
                             <p><strong>Nome:</strong> {{ $work->nome_destinazione }}</p>
                         @endif
-                        <p><strong>Indirizzo:</strong> {{ $work->indirizzo_destinazione }}</p>
+                        <p><strong>Indirizzo:</strong> {{ $work->indirizzo_destinazione ?? 'N/A' }}</p>
                         
                         @if($work->latitude_destinazione && $work->longitude_destinazione)
                             <div id="map-destinazione" style="height: 250px; width: 100%;"></div>

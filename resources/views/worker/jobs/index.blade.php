@@ -85,14 +85,22 @@
                                         </td>
                                         <td>{{ $work->materiale ?? 'N/D' }}</td>
                                         <td>
-                                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($work->indirizzo_partenza) }}" target="_blank">
+                                            @if($work->indirizzo_partenza)
+<a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($work->indirizzo_partenza) }}" target="_blank">
                                                 {{ $work->indirizzo_partenza }}
                                             </a>
+@else
+N/D
+@endif
                                         </td>
                                         <td>
-                                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($work->indirizzo_destinazione) }}" target="_blank">
+                                            @if($work->indirizzo_destinazione)
+<a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($work->indirizzo_destinazione) }}" target="_blank">
                                                 {{ $work->indirizzo_destinazione }}
                                             </a>
+@else
+N/D
+@endif
                                         </td>
                                         <td>
                                             @php
