@@ -87,6 +87,14 @@
             border-top: 1px solid #e3e7ef;
             padding-top: 8px;
         }
+        .dichiarazione {
+            margin-top: 18px;
+            padding: 10px 12px;
+            border: 1px solid #c0392b;
+            background: #fdecea;
+            color: #7b241c;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -154,6 +162,10 @@
 
     <p><strong>Note Tecniche:</strong></p>
     <div class="info-box">{{ $bordero->note_tecniche ?: '—' }}</div>
+
+    <div class="dichiarazione">
+        <strong>Attenzione!</strong> Con la Presente il Cliente dichiara che il montaggio ed il collaudo dei materiali sono stati eseguiti correttamente.
+    </div>
 
     <div class="footer">
         Documento generato il {{ now()->format('d/m/Y H:i') }} - {{ env('NOME_AZIENDA', config('app.name')) }}.
