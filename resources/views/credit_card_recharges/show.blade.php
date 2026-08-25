@@ -55,8 +55,8 @@
                     </div>
 
                     <div class="mt-3">
-                        <a href="{{ route('credit-card-recharges.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-arrow-left"></i> Torna alla Lista
+                        <a href="{{ route('credit-cards.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Torna alla Lista Carte
                         </a>
                     </div>
                 </div>
