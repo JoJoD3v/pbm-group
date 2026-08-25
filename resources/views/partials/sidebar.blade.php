@@ -37,13 +37,6 @@
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="{{ route('appaltatori.index') }}">
-        <i class="bi bi-person-workspace"></i>
-            <span>Appaltatori</span>
-      </a>
-    </li>
-
-    <li class="nav-item">
       <a class="nav-link" href="{{ route('warehouses.index') }}">
         <i class="bi bi-building-fill-up"></i>
           <span>Cantieri</span>

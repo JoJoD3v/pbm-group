@@ -4,9 +4,11 @@
 <div class="container-fluid mt-4">
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">Elenco Clienti</h6>
+      <h6 class="m-0 font-weight-bold text-primary">Clienti</h6>
     </div>
     <div class="card-body">
+      @include('partials.clienti_tabs', ['tabAttivo' => 'clienti'])
+
       @if(session('success'))
         <div class="alert alert-success">
           {{ session('success') }}
