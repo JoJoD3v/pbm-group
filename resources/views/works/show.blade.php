@@ -16,15 +16,33 @@ use Illuminate\Support\Str;
       @if(!in_array($work->status_lavoro, ['Lavoro Completato', 'Concluso']))
         <form action="{{ route('works.complete', $work->id) }}" method="POST" class="mb-0">
           @csrf
-          <button type="submit" class="btn btn-success btn-sm">
+          <button type="submit" class="btn btn-success btn-sm" @disabled($work->workers->isEmpty()) @if($work->workers->isEmpty()) title="Assegna prima il lavoro a un dipendente" @endif>
             <i class="bi bi-check-circle"></i> Imposta come Completato
           </button>
         </form>
       @else
         <span class="badge badge-success">Lavoro Completato</span>
       @endif
+      @if(auth()->user()->role === 'sviluppatore')
+        <form action="{{ route('works.status.update', $work->id) }}" method="POST" class="mb-0 d-flex align-items-center ml-2">
+          @csrf
+          @method('PATCH')
+          <select name="status_lavoro" class="form-control form-control-sm mr-1">
+            @foreach(\App\Models\Work::STATUSES as $s)
+              <option value="{{ $s }}" @selected($work->status_lavoro === $s)>{{ $s }}</option>
+            @endforeach
+          </select>
+          <button type="submit" class="btn btn-warning btn-sm text-nowrap">Cambia status</button>
+        </form>
+      @endif
     </div>
     <div class="card-body">
+      @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+      @endif
+      @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+      @endif
       <div class="row">
         <!-- Colonna sinistra con i dettagli del lavoro -->
         <div class="col-lg-6">

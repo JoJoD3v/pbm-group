@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Work extends Model
 {
+    public const STATUSES = ['In Sospeso', 'Preso in Carico', 'Lavoro Iniziato', 'Lavoro Completato', 'Concluso', 'Lavoro Annullato'];
+
     use HasFactory;
 
     protected $fillable = [

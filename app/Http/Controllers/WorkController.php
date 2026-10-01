@@ -371,9 +371,26 @@ class WorkController extends Controller
 
     public function complete(Work $work)
     {
+        if (!$work->workers()->exists()) {
+            return redirect()->route('works.show', $work->id)
+                ->with('error', 'Impossibile completare: il lavoro non è assegnato a nessun dipendente.');
+        }
+
         $work->update(['status_lavoro' => 'Lavoro Completato']);
 
         return redirect()->route('works.show', $work->id)
             ->with('success', 'Lavoro impostato come completato.');
+    }
+
+    public function updateStatus(Request $request, Work $work)
+    {
+        $request->validate([
+            'status_lavoro' => 'required|in:' . implode(',', Work::STATUSES),
+        ]);
+
+        $work->update(['status_lavoro' => $request->status_lavoro]);
+
+        return redirect()->route('works.show', $work->id)
+            ->with('success', 'Status del lavoro aggiornato.');
     }
 }

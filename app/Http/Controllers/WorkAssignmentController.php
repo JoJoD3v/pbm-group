@@ -43,7 +43,7 @@ class WorkAssignmentController extends Controller
      */
     public function create()
     {
-        $works = Work::all();
+        $works = Work::with(['workers', 'customer'])->get();
         $workers = Worker::all();
         
         return view('works.assignments.create', compact('works', 'workers'));
@@ -69,8 +69,11 @@ class WorkAssignmentController extends Controller
         }
 
         $work->workers()->attach($worker->id);
-        $work->status_lavoro = 'Preso in Carico';
-        $work->save();
+        // Un lavoro gia' completato resta completato: si registra solo chi l'ha eseguito
+        if ($work->status_lavoro !== 'Lavoro Completato') {
+            $work->status_lavoro = 'Preso in Carico';
+            $work->save();
+        }
         return redirect()->route('work.assignments.create')
                          ->with('success', 'Lavoro assegnato con successo.');
     }

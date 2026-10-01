@@ -313,6 +313,7 @@ use App\Http\Middleware\CheckDeveloperRole;
 
 Route::middleware(['auth', CheckDeveloperRole::class])->group(function () {
     Route::resource('users', UserController::class);
+    Route::patch('/works/{work}/status', [WorkController::class, 'updateStatus'])->name('works.status.update');
 });
 
 // Rotte per il tool Export/Import Dati (solo sviluppatori)
